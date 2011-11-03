@@ -1,0 +1,5 @@
+<div class="new-post">
+  <input id="post-title" type="text" placeholder="Titre"></input>
+  <textarea id="post-content" placeholder="Contenu"></textarea>
+  <a id="submit-post" href="#">&gt;&gt; Post</a>
+</div>

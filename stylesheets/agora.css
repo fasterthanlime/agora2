@@ -31,26 +31,49 @@ body {
   font-size: 12px;
   font-weight: bold;
 }
-img {
-  border: 0;
+
+#main {
+  width: 600px;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.item {
-  float:left;
-  width: 250px;
-  text-align:center;
-  font-size: 12px;
+.new-post {
+  width: 500px;
+  border: 1px solid grey;
+  border-radius: 5px 5px;
 }
-.item-title {
-  font-weight: bold;
+
+.new-post input, .new-post textarea, .new-post button {
+  display: block;
+  width: 480px;
+  font-size: 20px;
+  padding: 10px;
 }
-.item-artist {
-  font-weight: bold;
-  font-size: 14px;
+
+.new-post input:focus, .new-post textarea:focus {
+  background-color: #f0f0f0;
 }
-.item-detail .item-image {
-  float:left;
+
+.new-post input {
+  border: none;
+  border-bottom: 1px solid black;
 }
-.item-detail .item-info {
-  padding: 100px 10px 0px 10px;
+
+.new-post textarea {
+  margin: 0;
+  border: none;
+  height: 10em;
 }
+
+.new-post a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.new-post a:hover {
+  text-decoration: underline;
+}
+
