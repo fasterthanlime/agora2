@@ -1,5 +1,14 @@
+<h2>Nouveau fil de discussion &gt;&gt; <span id="category-name">Categorie</span></h2> 
+
 <div class="new-post">
-  <input id="post-title" type="text" placeholder="Titre"></input>
-  <textarea id="post-content" placeholder="Contenu"></textarea>
-  <a id="submit-post" href="#">&gt;&gt; Post</a>
+  <div class="post-header">
+    <img id="avatar" src="http://dutchmega.nl/avatars/avatar_bender2.png">
+    <span class="nickname">anonymous</span>
+  </div>
+  <div class="post-body">
+    <input class="post-title" type="text" placeholder="Titre"></input>
+    <textarea class="post-content" placeholder="Message"></textarea>
+    <button class="submit-post" class="css3button">Post</a>
+    <div class="clear"></div>
+  </div>
 </div>

@@ -1,48 +1,68 @@
-/******************************************************
- *  json store                 *
-\*****************************************************/
 body {
   font-family: "Lucida Grande", Lucida, Helvetica, Arial, sans-serif;
   background: #FFF;
   color: #333;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
-#header {
-  background: #C97E41;
-  margin: 0px;
-  padding: 20px;
+#container {
+  width: 900px;
 }
-#header h1 {
+
+#sidebar {
+  float: left;
+  width: 300px;
+  background: #C97E41;
+  margin: 0;
+  padding: 0;
+}
+
+#sidebar h1 {
   font-family: Inconsolata, Monaco, Courier, mono;
   color: #FFF;
-  margin: 0px;
+  margin: 0;
 }
 
-#header .user-info {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  text-align: right;
+#sidebar .user-info {
   padding: 10px;
   background: #714625;
   color: #FFF;
   font-size: 12px;
   font-weight: bold;
+  padding: 15px;
 }
 
 #main {
+  float: right;
   width: 600px;
+  height: 100%;
   margin-top: 30px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .new-post {
-  width: 500px;
-  border: 1px solid grey;
-  border-radius: 5px 5px;
+  width: 700px;
+  height: 500px;
+}
+
+.nickname {
+  display: block;
+}
+
+.post-header {
+  float: left;
+  width: 150px;
+  height: 500px;
+  display: inline-block;
+}
+
+.post-body {
+  float: right;
+  width: 550px;
+  height: 500px;
+  display: inline-block;
 }
 
 .new-post input, .new-post textarea, .new-post button {
@@ -53,7 +73,7 @@ body {
 }
 
 .new-post input:focus, .new-post textarea:focus {
-  background-color: #f0f0f0;
+  border: none;
 }
 
 .new-post input {
@@ -68,7 +88,10 @@ body {
 }
 
 .new-post a {
-  color: #fff;
+  display: block;
+  float: right;
+  border: 1px solid black;
+  background-color: green;
   font-weight: 600;
   text-decoration: none;
 }
@@ -77,3 +100,34 @@ body {
   text-decoration: underline;
 }
 
+div.clear {
+  clear: both;
+}
+
+button.css3button {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        color: #123d54;
+        padding: 10px 20px;
+        background: -moz-linear-gradient(
+                top,
+                #afd9fa 0%,
+                #588fad);
+        background: -webkit-gradient(
+                linear, left top, left bottom, 
+                from(#afd9fa),
+                to(#588fad));
+        border-radius: 6px;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        border: 1px solid #003366;
+        -moz-box-shadow:
+                0px 1px 3px rgba(000,000,000,0.5),
+                inset 0px 0px 1px rgba(255,255,255,1);
+        -webkit-box-shadow:
+                0px 1px 3px rgba(000,000,000,0.5),
+                inset 0px 0px 1px rgba(255,255,255,1);
+        text-shadow:
+                0px -1px 0px rgba(000,000,000,0.7),
+                0px 1px 0px rgba(255,255,255,0.3);
+}
