@@ -1,6 +1,12 @@
 # Simple sammy test in CS :)
 
-(Sammy '#main', ->
-  @get '#/', context ->
-    @$elements().html('OH HAI THERE')
-).run
+app = $.sammy '#main', ->
+  @use 'Template'
+
+  @get '#/', (context) ->
+    context.app.swap ''
+    context.$element().html "Booya"
+
+  @bind 'run', ->
+
+$ -> app.run '#/'

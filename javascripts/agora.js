@@ -1,17 +1,14 @@
-(function($) {
-  var app = $.sammy('#main', function() {
+(function() {
+  var app;
+  app = $.sammy('#main', function() {
     this.use('Template');
-
     this.get('#/', function(context) {
       context.app.swap('');
-      context.$element().html("Booya");
+      return context.$element().html("Booya");
     });
-
-    this.bind('run', function() {});
-
+    return this.bind('run', function() {});
   });
-
   $(function() {
-    app.run('#/');
+    return app.run('#/');
   });
-})(jQuery);
+}).call(this);
