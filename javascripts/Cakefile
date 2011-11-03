@@ -1,0 +1,9 @@
+sys = require 'sys'
+{spawn} = require 'child_process'
+
+task 'compile', 'compiles coffee-script files to js', ->
+  watcher = spawn 'coffee', ['--compile', '--lint', 'agora.coffee']
+  watcher.stdout.on 'data', (data) ->
+    sys.print data.toString()
+  watcher.stderr.on 'data', (data) ->
+    sys.print data.toString()

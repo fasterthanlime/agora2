@@ -19,7 +19,8 @@ body {
   color: #FFF;
   margin: 0px;
 }
-#header .cart-info {
+
+#header .user-info {
   position: absolute;
   top: 0px;
   right: 0px;
