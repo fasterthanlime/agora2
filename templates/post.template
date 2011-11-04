@@ -1,14 +1,11 @@
-
-<li class="post new-post">
-  <input class="post-title" type="text" placeholder="Titre"></input>
+<li class="post">
   <div class="post-header">
     <span class="nickname">Anonymous</span>
     <img class="avatar" src="http://soundfxcenter.com/images/sil/766dfd_bender.png">
     <span class="slogan">Mousse de canard</span>
   </div>
   <div class="post-body">
-    <textarea class="post-content" placeholder="Message"></textarea>
-    <button class="submit-post cupid-green">Post</button>
+    <div class="post-content" placeholder="Message"></div>
     <div class="clear"></div>
   </div>
 </li>
