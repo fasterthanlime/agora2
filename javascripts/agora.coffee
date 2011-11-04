@@ -10,8 +10,7 @@ app = $.sammy '#main', ->
       url: 'http://localhost:3000/categories'
       dataType: 'json',
       success: (data) -> data.forEach (category) ->
-        alert('OMG GOT DATA')
-        @render('templates/category.template', {category: category})
+        context.render('templates/category.template', {category: category}).appendTo('.categories')
     })
 
   @get '#/category/:id/new', (context) ->

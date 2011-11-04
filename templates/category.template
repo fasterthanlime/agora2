@@ -1,7 +1,7 @@
 <li class="category">
   <div class="clear"></div>
   <div class="category-header">
-    <p class="category-title"><%= category.title %></p>
+    <h2 class="category-title"><%= category.title %></h2>
     <p class="category-description"><%= category.description %></p>
   </div>
   <div class="clear"></div>

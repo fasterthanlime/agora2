@@ -10,10 +10,9 @@
         dataType: 'json',
         success: function(data) {
           return data.forEach(function(category) {
-            alert('OMG GOT DATA');
-            return this.render('templates/category.template', {
+            return context.render('templates/category.template', {
               category: category
-            });
+            }).appendTo('.categories');
           });
         }
       });
