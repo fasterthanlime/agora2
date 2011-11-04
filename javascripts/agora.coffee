@@ -5,7 +5,14 @@ app = $.sammy '#main', ->
 
   @get '#/', (context) ->
     context.app.swap ''
-    #@partial('templates/home.template')
+    @partial('templates/home.template')
+    $.ajax({
+      url: 'http://localhost:3000/categories'
+      dataType: 'json',
+      success: (data) -> data.forEach (category) ->
+        alert('OMG GOT DATA')
+        @render('templates/category.template', {category: category})
+    })
 
   @get '#/category/:id/new', (context) ->
     thread_id = "chats123"

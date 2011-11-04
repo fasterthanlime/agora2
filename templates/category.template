@@ -1,0 +1,8 @@
+<li class="category">
+  <div class="clear"></div>
+  <div class="category-header">
+    <p class="category-title"><%= category.title %></p>
+    <p class="category-description"><%= category.description %></p>
+  </div>
+  <div class="clear"></div>
+</li>

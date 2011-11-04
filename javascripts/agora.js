@@ -3,7 +3,20 @@
   app = $.sammy('#main', function() {
     this.use('Template');
     this.get('#/', function(context) {
-      return context.app.swap('');
+      context.app.swap('');
+      this.partial('templates/home.template');
+      return $.ajax({
+        url: 'http://localhost:3000/categories',
+        dataType: 'json',
+        success: function(data) {
+          return data.forEach(function(category) {
+            alert('OMG GOT DATA');
+            return this.render('templates/category.template', {
+              category: category
+            });
+          });
+        }
+      });
     });
     this.get('#/category/:id/new', function(context) {
       var him, me, thread, thread_id;
