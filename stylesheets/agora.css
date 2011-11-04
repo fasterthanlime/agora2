@@ -43,11 +43,24 @@ body {
   margin-right: auto;
 }
 
-li.post {
-  list-style-type: none;
+.thread {
   margin-left: 50px;
   width: 700px;
-  height: 500px;
+}
+
+.post {
+  display: block;
+  list-style-type: none;
+  width: 700px;
+  height: 300px;
+}
+
+.post:nth-child(odd) {
+  background-color: #F3F3F3;
+}
+
+.post:nth-child(even) {
+  background-color: #E0E0E0;
 }
 
 .nickname {
@@ -58,7 +71,7 @@ li.post {
   float: left;
   margin-top: 10px;
   width: 200px;
-  height: 500px;
+  height: 300px;
   font-size: 12pt;
   display: inline-block;
 }
@@ -66,19 +79,25 @@ li.post {
 .post-body {
   float: right;
   width: 500px;
-  height: 500px;
+  height: 300px;
   display: inline-block;
 }
 
-.new-post input, .new-post textarea, .new-post button {
+.post-content, .post-title {
+  background-color: transparent;
   display: block;
-  width: 480px;
   font-size: 20px;
   padding: 10px;
+  border: none;
 }
 
-.new-post input {
-  width: 700px;
+.post-content {
+  width: 480px;
+  height: 240px;
+}
+
+.post-title {
+  width: 680px;
 }
 
 .new-post input:focus, .new-post textarea:focus {
@@ -86,7 +105,7 @@ li.post {
 }
 
 button.submit-post {
-  font-size: 110% !important;
+  font-size: 100% !important;
   float: right;
 }
 
@@ -98,24 +117,6 @@ button.submit-post {
 .avatar {
   width: 200px;
   height: 200px;
-  margin: 10px;
-}
-
-.new-post textarea {
-  margin: 0;
-  border: none;
-  height: 10em;
-}
-
-.new-post a {
-  float: right;
-  font-size: 15pt;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.new-post a:hover {
-  cursor: pointer;
 }
 
 div.clear {

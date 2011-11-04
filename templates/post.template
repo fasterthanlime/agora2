@@ -1,11 +1,11 @@
 <li class="post">
+  <div class="clear"></div>
   <div class="post-header">
-    <span class="nickname">Anonymous</span>
-    <img class="avatar" src="http://soundfxcenter.com/images/sil/766dfd_bender.png">
-    <span class="slogan">Mousse de canard</span>
+    <span class="nickname"><%= post.user.nickname %></span>
+    <img class="avatar" src="<%= post.user.avatar %>">
+    <span class="slogan"><%= post.user.slogan %></span>
   </div>
   <div class="post-body">
-    <div class="post-content" placeholder="Message"></div>
-    <div class="clear"></div>
+    <div class="post-content"><%= post.content %></div>
   </div>
 </li>
