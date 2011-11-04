@@ -25,6 +25,11 @@ body {
   margin: 0;
 }
 
+.category-title {
+  margin-bottom: 5px;
+  margin-top: 30px;
+}
+
 #sidebar .user-info {
   padding: 10px;
   background: #714625;
@@ -36,15 +41,13 @@ body {
 
 #main {
   float: right;
-  width: 600px;
+  width: 550px;
+  margin-left: 50px;
   height: 100%;
   margin-top: 30px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.thread {
-  margin-left: 50px;
+.thread, .categories {
   width: 700px;
 }
 
