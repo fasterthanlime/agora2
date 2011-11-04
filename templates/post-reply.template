@@ -1,0 +1,15 @@
+<li class="post">
+  <input class="reply-thread" type="hidden" value="<%= post.thread %>"></input>
+  <div class="clear"></div>
+  <div class="post-header">
+    <p class="nickname"><%= post.user.nickname %></p>
+    <p><img class="avatar" src="<%= post.user.avatar %>"></p>
+    <p class="slogan"><%= post.user.slogan %></p>
+  </div>
+  <div class="post-body">
+    <textarea class="post-content" placeholder="Message"></textarea>
+    <div class="post-preview" style="display: none;"></div>
+    <button class="submit-post cupid-green">Post</button>
+  </div>
+  <div class="clear"></div>
+</li>

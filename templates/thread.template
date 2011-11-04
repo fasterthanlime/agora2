@@ -1,3 +1,5 @@
+<h2 class="thread-title"><%= thread.title %></h2>
+
 <ul class="thread" id="<%= thread.id %>">
   
 </ul>

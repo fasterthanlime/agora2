@@ -14,7 +14,7 @@ body {
   float: left;
   width: 300px;
   height: 700px;
-  background: #C97E41;
+  background: white;
   margin: 0;
   padding: 0;
 }
@@ -23,6 +23,7 @@ body {
   font-family: Inconsolata, Monaco, Courier, mono;
   color: #FFF;
   margin: 0;
+  padding: 5px;
 }
 
 .category-title {
@@ -44,7 +45,7 @@ body {
   width: 550px;
   margin-left: 50px;
   height: 100%;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .thread, .categories {
@@ -134,7 +135,6 @@ body {
   background-color: transparent;
   display: block;
   font-size: 14px;
-  padding: 5px;
   border: none;
 }
 
@@ -143,6 +143,7 @@ body {
 }
 
 .post-content, .post-preview {
+  padding: 5px;
   width: 540px;
   min-height: 197px;
   height: 100%;
@@ -157,7 +158,11 @@ strong {
 }
 
 .post-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 24px;
   width: 690px;
+  padding: 0;
 }
 
 .new-post input:focus, .new-post textarea:focus {

@@ -4,5 +4,5 @@
     <a href="#/<%= category.slug %>"><h2 class="category-title"><%= category.title %></h2></a>
     <p class="category-description"><%= category.description %></p>
   </div>
-  <div class="clear"></div>
+  <div class="clear"><hr></div>
 </li>

@@ -23,7 +23,7 @@
     });
   });
   app.get('/categories', function(req, res) {
-    return Category.find({}, function(err, cats) {
+    return Category.find({}, ['slug', 'title', 'description', '_id'], function(err, cats) {
       return res.send(JSON.stringify(cats));
     });
   });
@@ -36,8 +36,15 @@
       }));
     });
   });
+  app.get('/thread/:tid', function(req, res) {
+    return Thread.findById(req.params.tid, function(err, thread) {
+      return res.send(JSON.stringify({
+        thread: thread
+      }));
+    });
+  });
   app.post('/new-thread', function(req, res) {
-    var post, thread;
+    var category, post, thread;
     thread = new Thread({
       username: req.body.username,
       title: req.body.title
@@ -49,6 +56,10 @@
     post.save();
     thread.posts.push(post);
     thread.save();
+    category = Category.findById(req.body.category, function(err, category) {
+      category.threads.push(thread);
+      return category.save();
+    });
     return res.send(JSON.stringify({
       result: 'success',
       id: thread._id

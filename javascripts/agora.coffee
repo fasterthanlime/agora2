@@ -27,6 +27,28 @@ app = $.sammy '#main', ->
         context.partial('templates/category.template', {category: data.category}).then ->
           context.render('templates/new-thread.template', { post: { user: me, category: data.category._id }}).appendTo('.threads').then ->
             @trigger 'setup-new-thread-hooks'
+            data.category.threads.forEach (thread) ->
+                context.render('templates/thread-summary.template', { category: data.category, thread: thread }).appendTo('.threads')
+    })
+
+  @get '#/:slug/:tid', (context) ->
+    thread_id = @params['tid']
+    $.ajax({
+      url: HOST + 'thread/' + thread_id
+      dataType: 'json'
+      success: (data) ->
+        user = {
+          nickname: data.thread.nickname
+          slogan: "Un pour tous, tous pour un"
+          avatar: ""
+        }
+        context.partial('templates/thread.template', {thread: data.thread}).then ->
+          converter = new Showdown.converter()
+          data.thread.posts.forEach (post) ->
+            text = converter.makeHtml(post.source)
+            context.render('templates/post.template', {post: {content: text, user: user}}).appendTo('.thread').then ->
+              context.render('templates/post-reply.template', {post: {user: user, thread: thread_id}}).appendTo('.thread')
+
     })
 
   @bind 'setup-new-thread-hooks', ->

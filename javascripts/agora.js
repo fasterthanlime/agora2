@@ -44,7 +44,52 @@
                 category: data.category._id
               }
             }).appendTo('.threads').then(function() {
-              return this.trigger('setup-new-thread-hooks');
+              this.trigger('setup-new-thread-hooks');
+              return data.category.threads.forEach(function(thread) {
+                return context.render('templates/thread-summary.template', {
+                  category: data.category,
+                  thread: thread
+                }).appendTo('.threads');
+              });
+            });
+          });
+        }
+      });
+    });
+    this.get('#/:slug/:tid', function(context) {
+      var thread_id;
+      thread_id = this.params['tid'];
+      return $.ajax({
+        url: HOST + 'thread/' + thread_id,
+        dataType: 'json',
+        success: function(data) {
+          var user;
+          user = {
+            nickname: data.thread.nickname,
+            slogan: "Un pour tous, tous pour un",
+            avatar: ""
+          };
+          return context.partial('templates/thread.template', {
+            thread: data.thread
+          }).then(function() {
+            var converter;
+            converter = new Showdown.converter();
+            return data.thread.posts.forEach(function(post) {
+              var text;
+              text = converter.makeHtml(post.source);
+              return context.render('templates/post.template', {
+                post: {
+                  content: text,
+                  user: user
+                }
+              }).appendTo('.thread').then(function() {
+                return context.render('templates/post-reply.template', {
+                  post: {
+                    user: user,
+                    thread: thread_id
+                  }
+                }).appendTo('.thread');
+              });
             });
           });
         }

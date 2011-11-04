@@ -20,12 +20,16 @@ app.get '/', (req, res) ->
   res.render 'index.html', { layout: false }
 
 app.get '/categories', (req, res) ->
-  Category.find {}, (err, cats) ->
+  Category.find {}, ['slug', 'title', 'description', '_id'], (err, cats) ->
     res.send JSON.stringify(cats)
 
 app.get '/category/:slug', (req, res) ->
   Category.findOne {slug: req.params.slug}, (err, cat) ->
     res.send JSON.stringify({category: cat})
+
+app.get '/thread/:tid', (req, res) ->
+  Thread.findById req.params.tid, (err, thread) ->
+    res.send JSON.stringify {thread: thread}
 
 app.post '/new-thread', (req, res) ->
   thread = new Thread({username: req.body.username, title: req.body.title})
@@ -36,7 +40,10 @@ app.post '/new-thread', (req, res) ->
   post.save()
   thread.posts.push(post)
   thread.save()
-  res.send JSON.stringify({result: 'success', id: thread._id})
+  category = Category.findById req.body.category, (err, category) ->
+    category.threads.push(thread)
+    category.save()
+  res.send JSON.stringify {result: 'success', id: thread._id}
 
 port = 3000
 sys.puts('Now listening on port ' + port)
