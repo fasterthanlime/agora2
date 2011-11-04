@@ -58,7 +58,7 @@ body {
 }
 
 .new-post {
-  height: 250px;
+  height: 100%;
 }
 
 .post:nth-child(odd) {
@@ -144,7 +144,8 @@ body {
 
 .post-content, .post-preview {
   width: 540px;
-  height: 197px;
+  min-height: 197px;
+  height: 100%;
 }
 
 em {
