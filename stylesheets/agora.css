@@ -69,6 +69,38 @@ body {
   background-color: #F1F1F1;
 }
 
+.post h1 {
+  font-size: 36px;
+  margin 0 0 18px 0;
+  color #333;
+}
+
+.post h2 {
+  font-size: 30px;
+  margin 0 0 10px 0;
+  color #555;
+}
+
+.post h3 {
+  font-size: 24px;
+  margin: 0 0 6px 0;
+  color: #777;
+}
+
+.post h4 {
+  font-size: 18px;
+  margin: 0 0 6px 0;
+  color: #555;
+  font-style: italic;
+}
+
+.post h5 {
+  font-size: 16px;
+  margin 0 0 6px 0;
+  color #777;
+  font-style: italic;
+}
+
 .slogan {
   font-size: 80%;
 }
@@ -98,7 +130,7 @@ body {
   display: inline-block;
 }
 
-.post-content, .post-title {
+.post-content, .post-title, .post-preview {
   background-color: transparent;
   display: block;
   font-size: 14px;
@@ -110,13 +142,21 @@ body {
   text-align: center;
 }
 
-.post-content {
+.post-content, .post-preview {
   width: 540px;
   height: 197px;
 }
 
+em {
+  font-style: italic !important;
+}
+
+strong {
+  font-weight: bold !important;
+}
+
 .post-title {
-  width: 680px;
+  width: 690px;
 }
 
 .new-post input:focus, .new-post textarea:focus {

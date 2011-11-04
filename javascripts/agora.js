@@ -1,25 +1,25 @@
 (function() {
-  var app;
+  var HOST, app;
+  HOST = 'http://192.168.1.64:3000/';
   app = $.sammy('#main', function() {
     this.use('Template');
     this.get('#/', function(context) {
       context.app.swap('');
       this.partial('templates/home.template');
       return $.ajax({
-        url: 'http://localhost:3000/categories',
+        url: HOST + 'categories',
         dataType: 'json',
         success: function(data) {
           return data.forEach(function(category) {
-            return context.render('templates/category.template', {
+            return context.render('templates/category-summary.template', {
               category: category
             }).appendTo('.categories');
           });
         }
       });
     });
-    this.get('#/category/:id/new', function(context) {
-      var him, me, thread, thread_id;
-      thread_id = "chats123";
+    this.get('#/:slug', function(context) {
+      var him, me, slug;
       me = {
         nickname: "BlueSky",
         slogan: "Win j'en ai eu ma dows, COMME MA BITE",
@@ -30,43 +30,68 @@
         slogan: "Mousse de canard",
         avatar: "/stylesheets/avatar1.png"
       };
-      this.partial('templates/thread.template', {
-        thread: {
-          id: thread_id
+      slug = this.params['slug'];
+      return $.ajax({
+        url: HOST + 'category/' + slug,
+        dataType: 'json',
+        success: function(data) {
+          return context.partial('templates/category.template', {
+            category: data.category
+          }).then(function() {
+            return context.render('templates/new-thread.template', {
+              post: {
+                user: me,
+                category: data.category._id
+              }
+            }).appendTo('.threads').then(function() {
+              return this.trigger('setup-new-thread-hooks');
+            });
+          });
         }
-      }).appendTo(this.$element());
-      thread = '#' + thread_id;
-      this.render('templates/new-thread.template', {
-        post: {
-          user: him
-        }
-      }).appendTo(thread);
-      this.render('templates/post.template', {
-        post: {
-          user: me,
-          content: "Les anarchistes c'est le bien!"
-        }
-      }).appendTo(thread);
-      this.render('templates/post.template', {
-        post: {
-          user: him,
-          content: "Merde"
-        }
-      }).appendTo(thread);
-      this.render('templates/post.template', {
-        post: {
-          user: me,
-          content: "On retrouve une idée commune avec Kadoc."
-        }
-      }).appendTo(thread);
-      return this.render('templates/post.template', {
-        post: {
-          user: him,
-          content: "Il m'énerve lui"
-        }
-      }).appendTo(thread);
+      });
     });
-    return this.bind('run', function() {});
+    this.bind('setup-new-thread-hooks', function() {
+      var context;
+      context = this;
+      $('.post-title').blur(function() {
+        if ($(this).val() === "") {
+          return $('.new-post').slideUp();
+        }
+      });
+      $('.post-title').focus(function() {
+        return $('.new-post').slideDown();
+      });
+      $('.submit-post').click(function() {
+        return context.trigger('new-thread');
+      });
+      $('.post-content').blur(function() {
+        var converter, text;
+        converter = new Showdown.converter();
+        text = converter.makeHtml($('.post-content').val());
+        $('.post-preview').html(text).show();
+        return $('.post-content').hide();
+      });
+      return $('.post-preview').click(function() {
+        $('.post-preview').hide();
+        return $('.post-content').show().focus();
+      });
+    });
+    return this.bind('new-thread', function(context) {
+      context = this;
+      return $.ajax({
+        url: HOST + 'new-thread',
+        type: 'POST',
+        data: {
+          username: "bluesky",
+          category: $('.post-category').val(),
+          title: $('.post-title').val(),
+          source: $('.post-content').val()
+        },
+        success: function(data) {
+          return alert("Should make the post a real one! Huhu");
+        }
+      });
+    });
   });
   $(function() {
     return app.run('#/');

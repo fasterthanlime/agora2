@@ -12,7 +12,7 @@ User = new Schema({
 mongoose.model('User', User)
 
 Post = new Schema({
-  username: [User],
+  username: String,
   source: String
 })
 mongoose.model('Post', Post)

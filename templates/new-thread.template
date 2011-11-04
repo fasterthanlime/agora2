@@ -1,9 +1,10 @@
 
 <li class="header">
-  <input class="post-title" type="text" placeholder="Titre"></input>
+  <input class="post-title" type="text" placeholder="Nouveau sujet..."></input>
+  <input class="post-category" type="hidden" value="<%= post.category %>"></input>
 </li>
 
-<li class="post new-post">
+<li class="post new-post" style="display: none;">
   <div class="clear"></div>
   <div class="post-header">
     <p class="nickname"><%= post.user.nickname %></p>
@@ -12,6 +13,7 @@
   </div>
   <div class="post-body">
     <textarea class="post-content" placeholder="Message"></textarea>
+    <div class="post-preview" style="display: none;"></div>
     <button class="submit-post cupid-green">Post</button>
   </div>
   <div class="clear"></div>
