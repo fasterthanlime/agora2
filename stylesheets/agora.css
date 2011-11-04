@@ -52,48 +52,64 @@ body {
   display: block;
   list-style-type: none;
   width: 700px;
-  height: 300px;
+}
+
+.new-post {
+  height: 250px;
 }
 
 .post:nth-child(odd) {
-  background-color: #F3F3F3;
+  background-color: #F8F8F8;
 }
 
 .post:nth-child(even) {
-  background-color: #E0E0E0;
+  background-color: #F1F1F1;
+}
+
+.slogan {
+  font-size: 80%;
 }
 
 .nickname {
   display: block;
+  margin-top: 2px;
 }
 
 .post-header {
   float: left;
-  margin-top: 10px;
-  width: 200px;
-  height: 300px;
+  margin-top: 0;
+  width: 150px;
   font-size: 12pt;
   display: inline-block;
 }
 
+.post-header p {
+  margin: 0;
+  padding: 0;
+  margin-top: 2px;
+}
+
 .post-body {
   float: right;
-  width: 500px;
-  height: 300px;
+  width: 550px;
   display: inline-block;
 }
 
 .post-content, .post-title {
   background-color: transparent;
   display: block;
-  font-size: 20px;
-  padding: 10px;
+  font-size: 14px;
+  padding: 5px;
   border: none;
 }
 
+.post-header {
+  text-align: center;
+}
+
 .post-content {
-  width: 480px;
-  height: 240px;
+  width: 540px;
+  height: 197px;
 }
 
 .post-title {
@@ -115,8 +131,8 @@ button.submit-post {
 }
 
 .avatar {
-  width: 200px;
-  height: 200px;
+  width: 128px;
+  height: 128px;
 }
 
 div.clear {

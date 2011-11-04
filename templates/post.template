@@ -1,11 +1,12 @@
 <li class="post">
   <div class="clear"></div>
   <div class="post-header">
-    <span class="nickname"><%= post.user.nickname %></span>
-    <img class="avatar" src="<%= post.user.avatar %>">
-    <span class="slogan"><%= post.user.slogan %></span>
+    <p class="nickname"><%= post.user.nickname %></p>
+    <p><img class="avatar" src="<%= post.user.avatar %>"></p>
+    <p class="slogan"><%= post.user.slogan %></p>
   </div>
   <div class="post-body">
     <div class="post-content"><%= post.content %></div>
   </div>
+  <div class="clear"></div>
 </li>

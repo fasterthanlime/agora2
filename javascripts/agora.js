@@ -3,23 +3,22 @@
   app = $.sammy('#main', function() {
     this.use('Template');
     this.get('#/', function(context) {
-      context.app.swap('');
-      return context.$element().html("Booya");
+      return context.app.swap('');
     });
     this.get('#/category/:id/new', function(context) {
       var him, me, thread, thread_id;
       thread_id = "chats123";
       me = {
         nickname: "BlueSky",
-        slogan: "Win j'en ai eu ma dows",
-        avatar: ""
+        slogan: "Win j'en ai eu ma dows, COMME MA BITE",
+        avatar: "/stylesheets/avatar2.png"
       };
       him = {
         nickname: "Sylvain",
-        slogan: "Win j'en ai eu ma dows",
-        avatar: ""
+        slogan: "Mousse de canard",
+        avatar: "/stylesheets/avatar1.png"
       };
-      this.render('templates/thread.template', {
+      this.partial('templates/thread.template', {
         thread: {
           id: thread_id
         }
@@ -42,10 +41,16 @@
           content: "Merde"
         }
       }).appendTo(thread);
-      return this.render('templates/post.template', {
+      this.render('templates/post.template', {
         post: {
           user: me,
           content: "On retrouve une idée commune avec Kadoc."
+        }
+      }).appendTo(thread);
+      return this.render('templates/post.template', {
+        post: {
+          user: him,
+          content: "Il m'énerve lui"
         }
       }).appendTo(thread);
     });
