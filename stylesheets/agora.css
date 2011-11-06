@@ -145,7 +145,7 @@ body {
 .post-content, .post-preview {
   padding: 5px;
   width: 540px;
-  min-height: 197px;
+  min-height: 130px;
   height: 100%;
 }
 
