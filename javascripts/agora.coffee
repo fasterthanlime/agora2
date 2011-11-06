@@ -102,11 +102,9 @@ app = $.sammy '#main', ->
       content = showdown.makeHtml(post.source)
       context.render('templates/post.template', {post: {content: content, user: FAKE_USER}}).then (postnode) ->
         $(postnode).hide().appendTo('.thread').slideDown()
-        $('.new-post').remove()
-        context.render('templates/post-reply.template', {post: {user: FAKE_USER, tid: tid}}).appendTo('.thread').then ->
-          @trigger 'setup-post-editor'
-          $('.submit-post').click ->
-            context.trigger 'post-reply'
+        $('.new-post').detach().appendTo('.thread')
+        $('.post-preview').click()
+        $('.post-source').val('')
 
   @bind 'new-thread', (context) ->
     $.post HOST + 'new-thread', {

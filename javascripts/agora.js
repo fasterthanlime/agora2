@@ -161,18 +161,9 @@
           }
         }).then(function(postnode) {
           $(postnode).hide().appendTo('.thread').slideDown();
-          $('.new-post').remove();
-          return context.render('templates/post-reply.template', {
-            post: {
-              user: FAKE_USER,
-              tid: tid
-            }
-          }).appendTo('.thread').then(function() {
-            this.trigger('setup-post-editor');
-            return $('.submit-post').click(function() {
-              return context.trigger('post-reply');
-            });
-          });
+          $('.new-post').detach().appendTo('.thread');
+          $('.post-preview').click();
+          return $('.post-source').val('');
         });
       });
     });
