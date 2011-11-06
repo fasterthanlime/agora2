@@ -117,6 +117,19 @@
       }
     });
   });
+  app.get('/user/:username', function(req, res) {
+    return User.findOne({
+      username: req.params.username
+    }, function(err, user) {
+      if (err) {
+        return res.send({
+          result: 'not found'
+        });
+      } else {
+        return res.send(user);
+      }
+    });
+  });
   app.post('/logout', function(req, res) {
     return Token.remove({
       value: req.body.token

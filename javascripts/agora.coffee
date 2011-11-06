@@ -8,8 +8,16 @@ app = $.sammy '#main', ->
   @use 'Storage'
   @use 'Session'
 
+  get_user = (username, cb) ->
+    user = @session('user/' + username)
+    if user
+      cb(user)
+    else
+      $.get(HOST + 'user/' + username, {}, (data) -> cb(data))
+
   @before (context) ->
     @user = @session('user')
+    @get_user = (username, data) -> get_user.apply(@, [username, data])
     if context.path != '#/login'
       if !@user
         $('.user-info').fadeOut()
@@ -85,9 +93,10 @@ app = $.sammy '#main', ->
             if index < thread.posts.length
               post = thread.posts[index]
               content = showdown.makeHtml(post.source)
-              context.render('templates/post.template', {post: {content: content, user: context.user}}).then (post) ->
-                $(post).hide().appendTo('.thread').fadeIn('slow')
-                render0(index + 1)
+              context.get_user post.username, (post_user) ->
+                context.render('templates/post.template', {post: {content: content, user: post_user}}).then (post) ->
+                  $(post).hide().appendTo('.thread').fadeIn('slow')
+                  render0(index + 1)
             else
               context.render('templates/post-reply.template', {post: {user: context.user, tid: tid}}).then (post) ->
                 $(post).hide().appendTo('.thread').fadeIn('slow')

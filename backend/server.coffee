@@ -82,6 +82,13 @@ app.post '/login', (req, res) ->
       else
         res.send { result: 'failure', provided: sha1(req.body.password), stored: user.sha1 }
 
+app.get '/user/:username', (req, res) ->
+  User.findOne { username: req.params.username }, (err, user) ->
+    if err
+      res.send { result: 'not found' }
+    else
+      res.send user 
+
 app.post '/logout', (req, res) ->
   Token.remove { value: req.body.token }, (err, token) ->
     # Well if it wasn't there in the first place, everybody wins!

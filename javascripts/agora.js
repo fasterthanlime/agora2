@@ -3,11 +3,26 @@
   HOST = 'http://192.168.1.64:3000/';
   showdown = new Showdown.converter();
   app = $.sammy('#main', function() {
+    var get_user;
     this.use('Template');
     this.use('Storage');
     this.use('Session');
+    get_user = function(username, cb) {
+      var user;
+      user = this.session('user/' + username);
+      if (user) {
+        return cb(user);
+      } else {
+        return $.get(HOST + 'user/' + username, {}, function(data) {
+          return cb(data);
+        });
+      }
+    };
     this.before(function(context) {
       this.user = this.session('user');
+      this.get_user = function(username, data) {
+        return get_user.apply(this, [username, data]);
+      };
       if (context.path !== '#/login') {
         if (!this.user) {
           $('.user-info').fadeOut();
@@ -111,14 +126,16 @@
               if (index < thread.posts.length) {
                 post = thread.posts[index];
                 content = showdown.makeHtml(post.source);
-                return context.render('templates/post.template', {
-                  post: {
-                    content: content,
-                    user: context.user
-                  }
-                }).then(function(post) {
-                  $(post).hide().appendTo('.thread').fadeIn('slow');
-                  return render0(index + 1);
+                return context.get_user(post.username, function(post_user) {
+                  return context.render('templates/post.template', {
+                    post: {
+                      content: content,
+                      user: post_user
+                    }
+                  }).then(function(post) {
+                    $(post).hide().appendTo('.thread').fadeIn('slow');
+                    return render0(index + 1);
+                  });
                 });
               } else {
                 return context.render('templates/post-reply.template', {
