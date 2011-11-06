@@ -3,6 +3,13 @@
 HOST = 'http://192.168.1.64:3000/'
 showdown = new Showdown.converter()
 
+FAKE_USERNAME = 'bluesky'
+FAKE_USER = {
+  nickname: FAKE_USERNAME
+  slogan: "Un pour tous, tous pour un"
+  avatar: HOST + "stylesheets/avatar1.png"
+}
+
 app = $.sammy '#main', ->
   @use 'Template'
 
@@ -39,23 +46,18 @@ app = $.sammy '#main', ->
       url: HOST + 'thread/' + tid
       dataType: 'json'
       success: (thread) ->
-        user = {
-          nickname: thread.nickname
-          slogan: "Un pour tous, tous pour un"
-          avatar: ""
-        }
         context.partial('templates/thread.template', {thread: thread}).then ->
           render0 = (index) ->
             if index < thread.posts.length
               post = thread.posts[index]
               content = showdown.makeHtml(post.source)
-              context.render('templates/post.template', {post: {content: content, user: user}}).appendTo('.thread').then ->
+              context.render('templates/post.template', {post: {content: content, user: FAKE_USER}}).appendTo('.thread').then ->
                 render0(index + 1)
             else
-              context.render('templates/post-reply.template', {post: {user: user, tid: tid}}).appendTo('.thread').then ->
+              context.render('templates/post-reply.template', {post: {user: FAKE_USER, tid: tid}}).appendTo('.thread').then ->
                 @trigger 'setup-post-editor'
                 $('.submit-post').click ->
-                  context.trigger 'post-reply'
+                  context.trigger 'post-reply', { context: context }
           render0(0)
     })
 
@@ -86,12 +88,25 @@ app = $.sammy '#main', ->
       source.show().focus()
 
   @bind 'post-reply', (context) ->
+    context = @
+    tid = $('.reply-thread').val()
     $.post HOST + 'post-reply', {
-        username: "bluesky"
-        tid: $('.reply-thread').val()
+        username: FAKE_USERNAME
+        tid: tid
         source: $('.post-source').val()
     }, (data) ->
-      alert("post reply successful")
+      post = {
+        username: $('.new-post .nickname').text()
+        source: $('.post-source').val()
+      }
+      content = showdown.makeHtml(post.source)
+      context.render('templates/post.template', {post: {content: content, user: FAKE_USER}}).then (postnode) ->
+        $(postnode).hide().appendTo('.thread').slideDown()
+        $('.new-post').remove()
+        context.render('templates/post-reply.template', {post: {user: FAKE_USER, tid: tid}}).appendTo('.thread').then ->
+          @trigger 'setup-post-editor'
+          $('.submit-post').click ->
+            context.trigger 'post-reply'
 
   @bind 'new-thread', (context) ->
     $.post HOST + 'new-thread', {

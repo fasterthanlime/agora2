@@ -1,7 +1,13 @@
 (function() {
-  var HOST, app, showdown;
+  var FAKE_USER, FAKE_USERNAME, HOST, app, showdown;
   HOST = 'http://192.168.1.64:3000/';
   showdown = new Showdown.converter();
+  FAKE_USERNAME = 'bluesky';
+  FAKE_USER = {
+    nickname: FAKE_USERNAME,
+    slogan: "Un pour tous, tous pour un",
+    avatar: HOST + "stylesheets/avatar1.png"
+  };
   app = $.sammy('#main', function() {
     this.use('Template');
     this.bind('render-all', function(event, args) {
@@ -62,12 +68,6 @@
         url: HOST + 'thread/' + tid,
         dataType: 'json',
         success: function(thread) {
-          var user;
-          user = {
-            nickname: thread.nickname,
-            slogan: "Un pour tous, tous pour un",
-            avatar: ""
-          };
           return context.partial('templates/thread.template', {
             thread: thread
           }).then(function() {
@@ -80,7 +80,7 @@
                 return context.render('templates/post.template', {
                   post: {
                     content: content,
-                    user: user
+                    user: FAKE_USER
                   }
                 }).appendTo('.thread').then(function() {
                   return render0(index + 1);
@@ -88,13 +88,15 @@
               } else {
                 return context.render('templates/post-reply.template', {
                   post: {
-                    user: user,
+                    user: FAKE_USER,
                     tid: tid
                   }
                 }).appendTo('.thread').then(function() {
                   this.trigger('setup-post-editor');
                   return $('.submit-post').click(function() {
-                    return context.trigger('post-reply');
+                    return context.trigger('post-reply', {
+                      context: context
+                    });
                   });
                 });
               }
@@ -138,12 +140,40 @@
       });
     });
     this.bind('post-reply', function(context) {
+      var tid;
+      context = this;
+      tid = $('.reply-thread').val();
       return $.post(HOST + 'post-reply', {
-        username: "bluesky",
-        tid: $('.reply-thread').val(),
+        username: FAKE_USERNAME,
+        tid: tid,
         source: $('.post-source').val()
       }, function(data) {
-        return alert("post reply successful");
+        var content, post;
+        post = {
+          username: $('.new-post .nickname').text(),
+          source: $('.post-source').val()
+        };
+        content = showdown.makeHtml(post.source);
+        return context.render('templates/post.template', {
+          post: {
+            content: content,
+            user: FAKE_USER
+          }
+        }).then(function(postnode) {
+          $(postnode).hide().appendTo('.thread').slideDown();
+          $('.new-post').remove();
+          return context.render('templates/post-reply.template', {
+            post: {
+              user: FAKE_USER,
+              tid: tid
+            }
+          }).appendTo('.thread').then(function() {
+            this.trigger('setup-post-editor');
+            return $('.submit-post').click(function() {
+              return context.trigger('post-reply');
+            });
+          });
+        });
       });
     });
     return this.bind('new-thread', function(context) {

@@ -1,4 +1,4 @@
-<li class="post">
+<li class="post new-post">
   <input class="reply-thread" type="hidden" value="<%= post.tid %>"></input>
   <div class="clear"></div>
   <div class="post-header">
