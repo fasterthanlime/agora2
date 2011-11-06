@@ -1,9 +1,11 @@
 (function() {
-  var Category, mongoose, schemas, sys;
+  var Category, User, mongoose, schemas, sha1, sys;
   sys = require('sys');
+  sha1 = require('sha1');
   mongoose = require('mongoose');
   schemas = require('./schemas');
   Category = mongoose.model('Category');
+  User = mongoose.model('User');
   Category.remove({}, function() {
     new Category({
       slug: 'philo',
@@ -19,6 +21,26 @@
       slug: 'delirium',
       title: 'Délirium',
       description: 'Pour parler de tout et de rien, et même de n\'importe quoi ! Rigolades bienvenues.'
+    }).save();
+  });
+  User.remove({}, function() {
+    new User({
+      username: "sylvain",
+      nickname: "Obélix",
+      email: "bigsylvain@gmail.com",
+      joindate: Date.now(),
+      avatar: "/stylesheets/avatar1.png",
+      slogan: "Pardieu, c'est un inculte!",
+      sha1: sha1("sylvain")
+    }).save();
+    return new User({
+      username: "bluesky",
+      nickname: "Loth",
+      email: "amos@official.fm",
+      joindate: Date.now(),
+      avatar: "/stylesheets/avatar2.png",
+      slogan: "Montjoie! Saint-Denis!",
+      sha1: sha1("bluesky")
     }).save();
   });
   sys.puts('Done populating!');

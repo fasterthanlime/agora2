@@ -1,15 +1,24 @@
 (function() {
-  var FAKE_USER, FAKE_USERNAME, HOST, app, showdown;
+  var HOST, app, showdown;
   HOST = 'http://192.168.1.64:3000/';
   showdown = new Showdown.converter();
-  FAKE_USERNAME = 'bluesky';
-  FAKE_USER = {
-    nickname: FAKE_USERNAME,
-    slogan: "Un pour tous, tous pour un",
-    avatar: HOST + "stylesheets/avatar1.png"
-  };
   app = $.sammy('#main', function() {
     this.use('Template');
+    this.use('Storage');
+    this.use('Session');
+    this.before(function(context) {
+      this.user = this.session('user');
+      if (context.path !== '#/login') {
+        if (!this.user) {
+          $('.user-info').fadeOut();
+          this.redirect('#/login');
+          return false;
+        }
+        $('.nickname').text(this.user.nickname);
+        $('.avatar').attr('src', this.user.avatar);
+        return $('.user-info').fadeIn();
+      }
+    });
     this.bind('render-all', function(event, args) {
       return this.load(HOST + args.path, {
         json: true
@@ -17,8 +26,43 @@
         return this.renderEach(args.template, args.name, content).appendTo(args.target);
       });
     });
+    this.get('#/login', function(context) {
+      return this.partial('templates/login.template').then(function() {
+        return $('#password').keypress(function(event) {
+          if (event.which !== 13) {
+            return;
+          }
+          event.preventDefault();
+          return $.post(HOST + 'login', {
+            login: $('#login').val(),
+            password: $('#password').val()
+          }, function(data) {
+            context.log(data);
+            switch (data.result) {
+              case "failure":
+                return context.log("Log-in failed!");
+              case "success":
+                context.log("Log-in succeeded!");
+                context.session('user', data.user);
+                context.session('token', data.session_token);
+                return context.redirect('#/');
+            }
+          });
+        });
+      });
+    });
+    this.get('#/logout', function(context) {
+      $('.user-info').fadeOut();
+      $.post(HOST + 'logout', {
+        token: this.session('token')
+      }, function(data) {
+        return context.log('Logged out gracefully!');
+      });
+      this.session('user', null);
+      this.session('token', null);
+      return this.redirect('#/login');
+    });
     this.get('#/', function(context) {
-      context.app.swap('');
       this.partial('templates/home.template');
       return this.trigger('render-all', {
         path: 'categories',
@@ -27,18 +71,8 @@
         target: '.categories'
       });
     });
-    this.get('#/:slug', function(context) {
-      var him, me, slug;
-      me = {
-        nickname: "BlueSky",
-        slogan: "Win j'en ai eu ma dows, COMME MA BITE",
-        avatar: "/stylesheets/avatar2.png"
-      };
-      him = {
-        nickname: "Sylvain",
-        slogan: "Mousse de canard",
-        avatar: "/stylesheets/avatar1.png"
-      };
+    this.get('#/r/:slug', function(context) {
+      var slug;
       slug = this.params['slug'];
       return this.load(HOST + 'category/' + slug, {
         json: true
@@ -48,7 +82,7 @@
         });
         return context.render('templates/new-thread.template', {
           post: {
-            user: me,
+            user: context.user,
             category: category._id
           }
         }).appendTo('.threads').then(function() {
@@ -61,7 +95,7 @@
         });
       });
     });
-    this.get('#/:slug/:tid', function(context) {
+    this.get('#/r/:slug/:tid', function(context) {
       var tid;
       tid = this.params['tid'];
       return $.ajax({
@@ -80,18 +114,20 @@
                 return context.render('templates/post.template', {
                   post: {
                     content: content,
-                    user: FAKE_USER
+                    user: context.user
                   }
-                }).appendTo('.thread').then(function() {
+                }).then(function(post) {
+                  $(post).hide().appendTo('.thread').fadeIn('slow');
                   return render0(index + 1);
                 });
               } else {
                 return context.render('templates/post-reply.template', {
                   post: {
-                    user: FAKE_USER,
+                    user: context.user,
                     tid: tid
                   }
-                }).appendTo('.thread').then(function() {
+                }).then(function(post) {
+                  $(post).hide().appendTo('.thread').fadeIn('slow');
                   this.trigger('setup-post-editor');
                   return $('.submit-post').click(function() {
                     return context.trigger('post-reply', {
@@ -115,7 +151,13 @@
         }
       });
       $('.post-title').focus(function() {
-        return $('.new-post').slideDown();
+        var newpost;
+        newpost = $('.new-post');
+        if (newpost.css('display') === 'none') {
+          return $('.new-post').hide().css('height', '0px').show().animate({
+            height: '191px'
+          });
+        }
       });
       return $('.submit-post').click(function() {
         return context.trigger('new-thread');
@@ -144,7 +186,7 @@
       context = this;
       tid = $('.reply-thread').val();
       return $.post(HOST + 'post-reply', {
-        username: FAKE_USERNAME,
+        username: this.user.username,
         tid: tid,
         source: $('.post-source').val()
       }, function(data) {
@@ -157,7 +199,7 @@
         return context.render('templates/post.template', {
           post: {
             content: content,
-            user: FAKE_USER
+            user: context.user
           }
         }).then(function(postnode) {
           $(postnode).hide().appendTo('.thread').slideDown();
@@ -168,8 +210,9 @@
       });
     });
     return this.bind('new-thread', function(context) {
+      context = this;
       return $.post(HOST + 'new-thread', {
-        username: "bluesky",
+        username: this.user.username,
         category: $('.post-category').val(),
         title: $('.post-title').val(),
         source: $('.post-source').val()

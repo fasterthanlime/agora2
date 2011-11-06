@@ -1,12 +1,26 @@
 (function() {
-  var Category, Post, Thread, app, express, mongoose, port, schemas, sys;
+  var Category, Post, TOKEN_DURATION, Thread, Token, User, app, express, generate_token, mongoose, port, schemas, sha1, sys;
   sys = require('sys');
+  sha1 = require('sha1');
   express = require('express');
   mongoose = require('mongoose');
   schemas = require('./schemas');
   Thread = mongoose.model('Thread');
   Post = mongoose.model('Post');
   Category = mongoose.model('Category');
+  User = mongoose.model('User');
+  Token = mongoose.model('Token');
+  TOKEN_DURATION = 86400000;
+  generate_token = function(user) {
+    var token;
+    token = new Token({
+      value: sha1(user + Math.random()),
+      user: user,
+      expiration: Date.now() + TOKEN_DURATION
+    });
+    token.save();
+    return token.value;
+  };
   app = express.createServer();
   app.register('.html', {
     compile: function(str, options) {
@@ -24,19 +38,19 @@
   });
   app.get('/categories', function(req, res) {
     return Category.find({}, ['slug', 'title', 'description', '_id'], function(err, cats) {
-      return res.send(JSON.stringify(cats));
+      return res.send(cats);
     });
   });
   app.get('/category/:slug', function(req, res) {
     return Category.findOne({
       slug: req.params.slug
     }, function(err, cat) {
-      return res.send(JSON.stringify(cat));
+      return res.send(cat);
     });
   });
   app.get('/thread/:tid', function(req, res) {
     return Thread.findById(req.params.tid, function(err, thread) {
-      return res.send(JSON.stringify(thread));
+      return res.send(thread);
     });
   });
   app.post('/new-thread', function(req, res) {
@@ -47,7 +61,8 @@
     });
     post = new Post({
       username: req.body.username,
-      source: req.body.source
+      source: req.body.source,
+      date: Date.now()
     });
     post.save();
     thread.posts.push(post);
@@ -56,24 +71,59 @@
       category.threads.push(thread);
       return category.save();
     });
-    return res.send(JSON.stringify({
+    return res.send({
       result: 'success',
       id: thread._id
-    }));
+    });
   });
   app.post('/post-reply', function(req, res) {
     return Thread.findById(req.body.tid, function(err, thread) {
       var post;
       post = new Post({
         username: req.body.username,
-        source: req.body.source
+        source: req.body.source,
+        date: Date.now()
       });
       post.save();
       thread.posts.push(post);
       thread.save();
-      return res.send(JSON.stringify({
+      return res.send({
         result: 'success'
-      }));
+      });
+    });
+  });
+  app.post('/login', function(req, res) {
+    return User.findOne({
+      username: req.body.login
+    }, function(err, user) {
+      if (err) {
+        return res.send({
+          result: 'not found'
+        });
+      } else {
+        if (sha1(req.body.password) === user.sha1) {
+          return res.send({
+            result: 'success',
+            session_token: generate_token(user.username),
+            user: user
+          });
+        } else {
+          return res.send({
+            result: 'failure',
+            provided: sha1(req.body.password),
+            stored: user.sha1
+          });
+        }
+      }
+    });
+  });
+  app.post('/logout', function(req, res) {
+    return Token.remove({
+      value: req.body.token
+    }, function(err, token) {
+      return res.send({
+        result: 'success'
+      });
     });
   });
   port = 3000;

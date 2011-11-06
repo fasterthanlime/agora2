@@ -34,12 +34,17 @@ body {
 }
 
 #sidebar .user-info {
+  display: none;
   padding: 10px;
   background: #73E773;
   color: white;
   font-size: 12px;
   font-weight: bold;
   padding: 15px;
+}
+
+.avatar {
+  margin: 10px;
 }
 
 #main {
