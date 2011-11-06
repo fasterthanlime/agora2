@@ -1,5 +1,5 @@
 <li class="post">
-  <input class="reply-thread" type="hidden" value="<%= post.thread %>"></input>
+  <input class="reply-thread" type="hidden" value="<%= post.tid %>"></input>
   <div class="clear"></div>
   <div class="post-header">
     <p class="nickname"><%= post.user.nickname %></p>

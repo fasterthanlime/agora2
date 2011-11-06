@@ -56,10 +56,10 @@
       });
     });
     this.get('#/:slug/:tid', function(context) {
-      var thread_id;
-      thread_id = this.params['tid'];
+      var tid;
+      tid = this.params['tid'];
       return $.ajax({
-        url: HOST + 'thread/' + thread_id,
+        url: HOST + 'thread/' + tid,
         dataType: 'json',
         success: function(thread) {
           var user;
@@ -84,10 +84,13 @@
             return context.render('templates/post-reply.template', {
               post: {
                 user: user,
-                thread: thread_id
+                tid: tid
               }
             }).appendTo('.thread').then(function() {
-              return this.trigger('setup-post-editor');
+              this.trigger('setup-post-editor');
+              return $('.submit-post').click(function() {
+                return context.trigger('post-reply');
+              });
             });
           });
         }
@@ -101,16 +104,16 @@
           return $('.new-post').slideUp();
         }
       });
-      return $('.post-title').focus(function() {
+      $('.post-title').focus(function() {
         return $('.new-post').slideDown();
+      });
+      return $('.submit-post').click(function() {
+        return context.trigger('new-thread');
       });
     });
     this.bind('setup-post-editor', function() {
       var context;
       context = this;
-      $('.submit-post').click(function() {
-        return context.trigger('new-thread');
-      });
       $('.post-source').blur(function() {
         var preview, source;
         source = $(this);
@@ -126,20 +129,23 @@
         return source.show().focus();
       });
     });
+    this.bind('post-reply', function(context) {
+      return $.post(HOST + 'post-reply', {
+        username: "bluesky",
+        tid: $('.reply-thread').val(),
+        source: $('.post-source').val()
+      }, function(data) {
+        return alert("post reply successful");
+      });
+    });
     return this.bind('new-thread', function(context) {
-      context = this;
-      return $.ajax({
-        url: HOST + 'new-thread',
-        type: 'POST',
-        data: {
-          username: "bluesky",
-          category: $('.post-category').val(),
-          title: $('.post-title').val(),
-          source: $('.post-content').val()
-        },
-        success: function(data) {
-          return alert("Should make the post a real one! Huhu");
-        }
+      return $.post(HOST + 'new-thread', {
+        username: "bluesky",
+        category: $('.post-category').val(),
+        title: $('.post-title').val(),
+        source: $('.post-source').val()
+      }, function(data) {
+        return alert("new thread successful");
       });
     });
   });

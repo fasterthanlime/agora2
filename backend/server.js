@@ -61,6 +61,22 @@
       id: thread._id
     }));
   });
+  app.post('/post-reply', function(req, res) {
+    sys.puts("Tid = " + req.body.tid);
+    return Thread.findById(req.body.tid, function(err, thread) {
+      var post;
+      post = new Post({
+        username: req.body.username,
+        source: req.body.source
+      });
+      post.save();
+      thread.posts.push(post);
+      thread.save();
+      return res.send(JSON.stringify({
+        result: 'success'
+      }));
+    });
+  });
   port = 3000;
   sys.puts('Now listening on port ' + port);
   app.listen(port);

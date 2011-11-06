@@ -1,7 +1,6 @@
 # Simple sammy test in CS :)
 
 HOST = 'http://192.168.1.64:3000/'
-
 showdown = new Showdown.converter()
 
 app = $.sammy '#main', ->
@@ -35,9 +34,9 @@ app = $.sammy '#main', ->
         @renderEach('templates/thread-summary.template', 'thread', category.threads).appendTo('.threads')
 
   @get '#/:slug/:tid', (context) ->
-    thread_id = @params['tid']
+    tid = @params['tid']
     $.ajax({
-      url: HOST + 'thread/' + thread_id
+      url: HOST + 'thread/' + tid
       dataType: 'json'
       success: (thread) ->
         user = {
@@ -49,8 +48,11 @@ app = $.sammy '#main', ->
           thread.posts.forEach (post) ->
             content = showdown.makeHtml(post.source)
             context.render('templates/post.template', {post: {content: content, user: user}}).appendTo('.thread')
-          context.render('templates/post-reply.template', {post: {user: user, thread: thread_id}}).appendTo('.thread').then ->
+
+          context.render('templates/post-reply.template', {post: {user: user, tid: tid}}).appendTo('.thread').then ->
             @trigger 'setup-post-editor'
+            $('.submit-post').click ->
+              context.trigger 'post-reply'
     })
 
   @bind 'setup-thread-opener', ->
@@ -62,11 +64,11 @@ app = $.sammy '#main', ->
     $('.post-title').focus ->
       $('.new-post').slideDown()
 
-  @bind 'setup-post-editor', ->
-    context = @
     $('.submit-post').click ->
       context.trigger 'new-thread'
 
+  @bind 'setup-post-editor', ->
+    context = @
     $('.post-source').blur ->
       source = $(this)
       source.hide()
@@ -79,19 +81,21 @@ app = $.sammy '#main', ->
       source = preview.parent().children('.post-source')
       source.show().focus()
 
+  @bind 'post-reply', (context) ->
+    $.post HOST + 'post-reply', {
+        username: "bluesky"
+        tid: $('.reply-thread').val()
+        source: $('.post-source').val()
+    }, (data) ->
+      alert("post reply successful")
+
   @bind 'new-thread', (context) ->
-    context = @
-    $.ajax({
-      url: HOST + 'new-thread'
-      type: 'POST',
-      data: {
+    $.post HOST + 'new-thread', {
         username: "bluesky"
         category: $('.post-category').val()
         title: $('.post-title').val()
-        source: $('.post-content').val()
-      }
-      success: (data) ->
-        alert("Should make the post a real one! Huhu")
-    })
+        source: $('.post-source').val()
+    }, (data) ->
+      alert("new thread successful")
 
 $ -> app.run '#/'
