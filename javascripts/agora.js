@@ -3,19 +3,21 @@
   HOST = 'http://192.168.1.64:3000/';
   app = $.sammy('#main', function() {
     this.use('Template');
+    this.bind('render-all', function(event, args) {
+      return this.load(HOST + args.path, {
+        json: true
+      }).then(function(content) {
+        return this.renderEach(args.template, args.name, content).appendTo(args.target);
+      });
+    });
     this.get('#/', function(context) {
       context.app.swap('');
       this.partial('templates/home.template');
-      return $.ajax({
-        url: HOST + 'categories',
-        dataType: 'json',
-        success: function(data) {
-          return data.forEach(function(category) {
-            return context.render('templates/category-summary.template', {
-              category: category
-            }).appendTo('.categories');
-          });
-        }
+      return this.trigger('render-all', {
+        path: 'categories',
+        template: 'templates/category-summary.template',
+        name: 'category',
+        target: '.categories'
       });
     });
     this.get('#/:slug', function(context) {

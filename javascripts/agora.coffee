@@ -5,15 +5,14 @@ HOST = 'http://192.168.1.64:3000/'
 app = $.sammy '#main', ->
   @use 'Template'
 
+  @bind 'render-all', (event, args) ->
+    @load(HOST + args.path, { json: true }).then (content) ->
+      @renderEach(args.template, args.name, content).appendTo(args.target)
+
   @get '#/', (context) ->
     context.app.swap ''
     @partial('templates/home.template')
-    $.ajax({
-      url: HOST + 'categories'
-      dataType: 'json'
-      success: (data) -> data.forEach (category) ->
-        context.render('templates/category-summary.template', {category: category}).appendTo('.categories')
-    })
+    @trigger 'render-all', { path: 'categories', template: 'templates/category-summary.template', name: 'category', target: '.categories' }
 
   @get '#/:slug', (context) ->
     me = {nickname: "BlueSky", slogan: "Win j'en ai eu ma dows, COMME MA BITE", avatar: "/stylesheets/avatar2.png"}
