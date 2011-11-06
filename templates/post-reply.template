@@ -7,7 +7,7 @@
     <p class="slogan"><%= post.user.slogan %></p>
   </div>
   <div class="post-body">
-    <textarea class="post-content" placeholder="Message"></textarea>
+    <textarea class="post-content post-source" placeholder="Message"></textarea>
     <div class="post-preview" style="display: none;"></div>
     <button class="submit-post cupid-green">Post</button>
   </div>

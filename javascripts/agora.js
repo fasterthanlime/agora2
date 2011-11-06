@@ -1,11 +1,9 @@
 (function() {
-  var HOST, app;
+  var HOST, app, showdown;
   HOST = 'http://192.168.1.64:3000/';
+  showdown = new Showdown.converter();
   app = $.sammy('#main', function() {
-    var showdown;
     this.use('Template');
-    this.use('Mustache');
-    showdown = new Showdown.converter();
     this.bind('render-all', function(event, args) {
       return this.load(HOST + args.path, {
         json: true
@@ -48,7 +46,8 @@
             category: category._id
           }
         }).appendTo('.threads').then(function() {
-          this.trigger('setup-new-thread-hooks');
+          this.trigger('setup-thread-opener');
+          this.trigger('setup-post-editor');
           category.threads.forEach(function(thread) {
             return thread.category = category;
           });
@@ -87,7 +86,9 @@
                 user: user,
                 thread: thread_id
               }
-            }).appendTo('.thread');
+            }).appendTo('.thread').then(function() {
+              return this.trigger('setup-post-editor');
+            });
           });
         }
       });
@@ -110,15 +111,19 @@
       $('.submit-post').click(function() {
         return context.trigger('new-thread');
       });
-      $('.post-content').blur(function() {
-        var text;
-        text = showdown.makeHtml($('.post-content').val());
-        $('.post-preview').html(text).show();
-        return $('.post-content').hide();
+      $('.post-source').blur(function() {
+        var preview, source;
+        source = $(this);
+        source.hide();
+        preview = source.parent().children('.post-preview');
+        return preview.html(showdown.makeHtml(source.val())).show();
       });
       return $('.post-preview').click(function() {
-        $('.post-preview').hide();
-        return $('.post-content').show().focus();
+        var preview, source;
+        preview = $(this);
+        preview.hide();
+        source = preview.parent().children('.post-source');
+        return source.show().focus();
       });
     });
     return this.bind('new-thread', function(context) {

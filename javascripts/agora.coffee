@@ -2,11 +2,10 @@
 
 HOST = 'http://192.168.1.64:3000/'
 
+showdown = new Showdown.converter()
+
 app = $.sammy '#main', ->
   @use 'Template'
-  @use 'Mustache'
-
-  showdown = new Showdown.converter()
 
   @bind 'render-all', (event, args) ->
     @load(HOST + args.path, { json: true }).then (content) ->
@@ -30,7 +29,8 @@ app = $.sammy '#main', ->
     @load(HOST + 'category/' + slug, { json: true }).then (category) ->
       context.partial 'templates/category.template', { category: category }
       context.render('templates/new-thread.template', { post: { user: me, category: category._id }}).appendTo('.threads').then ->
-        @trigger 'setup-new-thread-hooks'
+        @trigger 'setup-thread-opener'
+        @trigger 'setup-post-editor'
         category.threads.forEach (thread) -> thread.category = category
         @renderEach('templates/thread-summary.template', 'thread', category.threads).appendTo('.threads')
 
@@ -49,8 +49,8 @@ app = $.sammy '#main', ->
           thread.posts.forEach (post) ->
             content = showdown.makeHtml(post.source)
             context.render('templates/post.template', {post: {content: content, user: user}}).appendTo('.thread')
-          context.render('templates/post-reply.template', {post: {user: user, thread: thread_id}}).appendTo('.thread')
-
+          context.render('templates/post-reply.template', {post: {user: user, thread: thread_id}}).appendTo('.thread').then ->
+            @trigger 'setup-post-editor'
     })
 
   @bind 'setup-thread-opener', ->
@@ -67,14 +67,17 @@ app = $.sammy '#main', ->
     $('.submit-post').click ->
       context.trigger 'new-thread'
 
-    $('.post-content').blur ->
-      text = showdown.makeHtml($('.post-content').val())
-      $('.post-preview').html(text).show()
-      $('.post-content').hide()
+    $('.post-source').blur ->
+      source = $(this)
+      source.hide()
+      preview = source.parent().children('.post-preview')
+      preview.html(showdown.makeHtml(source.val())).show()
 
     $('.post-preview').click ->
-      $('.post-preview').hide()
-      $('.post-content').show().focus()
+      preview = $(this)
+      preview.hide()
+      source = preview.parent().children('.post-source')
+      source.show().focus()
 
   @bind 'new-thread', (context) ->
     context = @
