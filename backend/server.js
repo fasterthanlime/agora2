@@ -62,7 +62,6 @@
     }));
   });
   app.post('/post-reply', function(req, res) {
-    sys.puts("Tid = " + req.body.tid);
     return Thread.findById(req.body.tid, function(err, thread) {
       var post;
       post = new Post({

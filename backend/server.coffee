@@ -46,7 +46,6 @@ app.post '/new-thread', (req, res) ->
   res.send JSON.stringify {result: 'success', id: thread._id}
 
 app.post '/post-reply', (req, res) ->
-  sys.puts("Tid = " + req.body.tid)
   Thread.findById req.body.tid, (err, thread) ->
     post = new Post({
       username: req.body.username
