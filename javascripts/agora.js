@@ -71,27 +71,35 @@
           return context.partial('templates/thread.template', {
             thread: thread
           }).then(function() {
-            thread.posts.forEach(function(post) {
-              var content;
-              content = showdown.makeHtml(post.source);
-              return context.render('templates/post.template', {
-                post: {
-                  content: content,
-                  user: user
-                }
-              }).appendTo('.thread');
-            });
-            return context.render('templates/post-reply.template', {
-              post: {
-                user: user,
-                tid: tid
+            var render0;
+            render0 = function(index) {
+              var content, post;
+              if (index < thread.posts.length) {
+                post = thread.posts[index];
+                content = showdown.makeHtml(post.source);
+                return context.render('templates/post.template', {
+                  post: {
+                    content: content,
+                    user: user
+                  }
+                }).appendTo('.thread').then(function() {
+                  return render0(index + 1);
+                });
+              } else {
+                return context.render('templates/post-reply.template', {
+                  post: {
+                    user: user,
+                    tid: tid
+                  }
+                }).appendTo('.thread').then(function() {
+                  this.trigger('setup-post-editor');
+                  return $('.submit-post').click(function() {
+                    return context.trigger('post-reply');
+                  });
+                });
               }
-            }).appendTo('.thread').then(function() {
-              this.trigger('setup-post-editor');
-              return $('.submit-post').click(function() {
-                return context.trigger('post-reply');
-              });
-            });
+            };
+            return render0(0);
           });
         }
       });

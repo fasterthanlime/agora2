@@ -45,14 +45,18 @@ app = $.sammy '#main', ->
           avatar: ""
         }
         context.partial('templates/thread.template', {thread: thread}).then ->
-          thread.posts.forEach (post) ->
-            content = showdown.makeHtml(post.source)
-            context.render('templates/post.template', {post: {content: content, user: user}}).appendTo('.thread')
-
-          context.render('templates/post-reply.template', {post: {user: user, tid: tid}}).appendTo('.thread').then ->
-            @trigger 'setup-post-editor'
-            $('.submit-post').click ->
-              context.trigger 'post-reply'
+          render0 = (index) ->
+            if index < thread.posts.length
+              post = thread.posts[index]
+              content = showdown.makeHtml(post.source)
+              context.render('templates/post.template', {post: {content: content, user: user}}).appendTo('.thread').then ->
+                render0(index + 1)
+            else
+              context.render('templates/post-reply.template', {post: {user: user, tid: tid}}).appendTo('.thread').then ->
+                @trigger 'setup-post-editor'
+                $('.submit-post').click ->
+                  context.trigger 'post-reply'
+          render0(0)
     })
 
   @bind 'setup-thread-opener', ->
