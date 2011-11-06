@@ -31,16 +31,12 @@
     return Category.findOne({
       slug: req.params.slug
     }, function(err, cat) {
-      return res.send(JSON.stringify({
-        category: cat
-      }));
+      return res.send(JSON.stringify(cat));
     });
   });
   app.get('/thread/:tid', function(req, res) {
     return Thread.findById(req.params.tid, function(err, thread) {
-      return res.send(JSON.stringify({
-        thread: thread
-      }));
+      return res.send(JSON.stringify(thread));
     });
   });
   app.post('/new-thread', function(req, res) {

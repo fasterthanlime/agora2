@@ -2,7 +2,10 @@
   var HOST, app;
   HOST = 'http://192.168.1.64:3000/';
   app = $.sammy('#main', function() {
+    var showdown;
     this.use('Template');
+    this.use('Mustache');
+    showdown = new Showdown.converter();
     this.bind('render-all', function(event, args) {
       return this.load(HOST + args.path, {
         json: true
@@ -33,29 +36,24 @@
         avatar: "/stylesheets/avatar1.png"
       };
       slug = this.params['slug'];
-      return $.ajax({
-        url: HOST + 'category/' + slug,
-        dataType: 'json',
-        success: function(data) {
-          return context.partial('templates/category.template', {
-            category: data.category
-          }).then(function() {
-            return context.render('templates/new-thread.template', {
-              post: {
-                user: me,
-                category: data.category._id
-              }
-            }).appendTo('.threads').then(function() {
-              this.trigger('setup-new-thread-hooks');
-              return data.category.threads.forEach(function(thread) {
-                return context.render('templates/thread-summary.template', {
-                  category: data.category,
-                  thread: thread
-                }).appendTo('.threads');
-              });
-            });
+      return this.load(HOST + 'category/' + slug, {
+        json: true
+      }).then(function(category) {
+        context.partial('templates/category.template', {
+          category: category
+        });
+        return context.render('templates/new-thread.template', {
+          post: {
+            user: me,
+            category: category._id
+          }
+        }).appendTo('.threads').then(function() {
+          this.trigger('setup-new-thread-hooks');
+          category.threads.forEach(function(thread) {
+            return thread.category = category;
           });
-        }
+          return this.renderEach('templates/thread-summary.template', 'thread', category.threads).appendTo('.threads');
+        });
       });
     });
     this.get('#/:slug/:tid', function(context) {
@@ -64,40 +62,37 @@
       return $.ajax({
         url: HOST + 'thread/' + thread_id,
         dataType: 'json',
-        success: function(data) {
+        success: function(thread) {
           var user;
           user = {
-            nickname: data.thread.nickname,
+            nickname: thread.nickname,
             slogan: "Un pour tous, tous pour un",
             avatar: ""
           };
           return context.partial('templates/thread.template', {
-            thread: data.thread
+            thread: thread
           }).then(function() {
-            var converter;
-            converter = new Showdown.converter();
-            return data.thread.posts.forEach(function(post) {
-              var text;
-              text = converter.makeHtml(post.source);
+            thread.posts.forEach(function(post) {
+              var content;
+              content = showdown.makeHtml(post.source);
               return context.render('templates/post.template', {
                 post: {
-                  content: text,
+                  content: content,
                   user: user
                 }
-              }).appendTo('.thread').then(function() {
-                return context.render('templates/post-reply.template', {
-                  post: {
-                    user: user,
-                    thread: thread_id
-                  }
-                }).appendTo('.thread');
-              });
+              }).appendTo('.thread');
             });
+            return context.render('templates/post-reply.template', {
+              post: {
+                user: user,
+                thread: thread_id
+              }
+            }).appendTo('.thread');
           });
         }
       });
     });
-    this.bind('setup-new-thread-hooks', function() {
+    this.bind('setup-thread-opener', function() {
       var context;
       context = this;
       $('.post-title').blur(function() {
@@ -105,16 +100,19 @@
           return $('.new-post').slideUp();
         }
       });
-      $('.post-title').focus(function() {
+      return $('.post-title').focus(function() {
         return $('.new-post').slideDown();
       });
+    });
+    this.bind('setup-post-editor', function() {
+      var context;
+      context = this;
       $('.submit-post').click(function() {
         return context.trigger('new-thread');
       });
       $('.post-content').blur(function() {
-        var converter, text;
-        converter = new Showdown.converter();
-        text = converter.makeHtml($('.post-content').val());
+        var text;
+        text = showdown.makeHtml($('.post-content').val());
         $('.post-preview').html(text).show();
         return $('.post-content').hide();
       });

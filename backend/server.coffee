@@ -21,15 +21,15 @@ app.get '/', (req, res) ->
 
 app.get '/categories', (req, res) ->
   Category.find {}, ['slug', 'title', 'description', '_id'], (err, cats) ->
-    res.send JSON.stringify(cats)
+    res.send JSON.stringify cats
 
 app.get '/category/:slug', (req, res) ->
   Category.findOne {slug: req.params.slug}, (err, cat) ->
-    res.send JSON.stringify({category: cat})
+    res.send JSON.stringify cat
 
 app.get '/thread/:tid', (req, res) ->
   Thread.findById req.params.tid, (err, thread) ->
-    res.send JSON.stringify {thread: thread}
+    res.send JSON.stringify thread
 
 app.post '/new-thread', (req, res) ->
   thread = new Thread({username: req.body.username, title: req.body.title})
