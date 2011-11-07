@@ -7,14 +7,14 @@ app = $.sammy '#main', ->
   @use 'Storage'
   @use 'Session'
 
-  get_user = (username, cb) ->
+  getUser = (username, cb) ->
     user = @session('user/' + username)
     if user
       cb(user)
     else
       $.get('/user/' + username, {}, (data) -> cb(data))
 
-  format_date = (timestamp) ->
+  formatDate = (timestamp) ->
     pad = (number) ->
       if number < 10 
         '0' + number
@@ -25,7 +25,7 @@ app = $.sammy '#main', ->
 
   @before (context) ->
     @user = @session('user')
-    @get_user = (username, data) -> get_user.apply(@, [username, data])
+    @getUser = (username, data) -> getUser.apply(@, [username, data])
     if context.path != '#/login'
       if !@user
         $('.user-info').fadeOut()
@@ -43,12 +43,12 @@ app = $.sammy '#main', ->
   @get '#/u/:username', { token: @session( 'token' ) }, (context) ->
     username = @params.username
     $.get '/user/' + username, { token: @session( 'token' ) }, (user) ->
-      context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
+      context.partial('templates/profile.template', { user: user, date: formatDate(user.joindate) })
 
   # Own profile page
   @get '#/u', (context) ->
     $.get '/user/' + @user.username, { token: @session( 'token' ) }, (user) ->
-      context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
+      context.partial('templates/profile.template', { user: user, date: formatDate(user.joindate) })
 
   # Login box
   @get '#/login', (context) ->
@@ -119,8 +119,8 @@ app = $.sammy '#main', ->
             if index < thread.posts.length
               post = thread.posts[index]
               content = showdown.makeHtml(post.source)
-              context.get_user post.username, (post_user) ->
-                context.render('templates/post.template', {post: {content: content, date: format_date(post.date), user: post_user}}).then (post) ->
+              context.getUser post.username, (postUser) ->
+                context.render('templates/post.template', {post: {content: content, date: formatDate(post.date), user: postUser}}).then (post) ->
                   $(post).appendTo('.thread')
                   render0(index + 1)
             else
@@ -170,7 +170,7 @@ app = $.sammy '#main', ->
         token: @session('token')
     }, (data) ->
       content = showdown.makeHtml($('.post-source').val())
-      context.render('templates/post.template', {post: {content: content, user: context.user, date: format_date(data.date)}}).then (postnode) ->
+      context.render('templates/post.template', {post: {content: content, user: context.user, date: formatDate(data.date)}}).then (postnode) ->
         $(postnode).hide().appendTo('.thread').slideDown()
         $('.new-post').detach().appendTo('.thread')
         $('.post-preview').click()
