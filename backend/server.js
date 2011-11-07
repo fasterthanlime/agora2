@@ -1,5 +1,5 @@
 (function() {
-  var Category, Post, TOKEN_DURATION, Thread, Token, User, app, express, generate_token, mongoose, port, requiresToken, schemas, sendTokenError, sha1, sys;
+  var Category, Post, TOKEN_DURATION, Thread, Token, User, app, express, generateToken, mongoose, port, requiresToken, schemas, sendTokenError, sha1, sys;
   sys = require('sys');
   sha1 = require('sha1');
   express = require('express');
@@ -11,7 +11,7 @@
   User = mongoose.model('User');
   Token = mongoose.model('Token');
   TOKEN_DURATION = 86400000;
-  generate_token = function(user) {
+  generateToken = function(user) {
     var token;
     token = new Token({
       value: sha1(user + Math.random()),
@@ -138,7 +138,7 @@
         if (sha1(req.body.password) === user.sha1) {
           return res.send({
             result: 'success',
-            session_token: generate_token(user.username),
+            session_token: generateToken(user.username),
             user: user
           });
         } else {

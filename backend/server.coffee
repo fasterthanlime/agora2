@@ -12,7 +12,7 @@ Token = mongoose.model('Token')
 
 TOKEN_DURATION = 86400000
 
-generate_token = (user) ->
+generateToken = (user) ->
   token = new Token({
     value: sha1(user + Math.random()) # yeah, there'll be dots, nobody cares
     user: user
@@ -99,7 +99,7 @@ app.post '/login', (req, res) ->
       res.send { result: 'not found' }
     else
       if sha1(req.body.password) == user.sha1
-        res.send { result: 'success', session_token: generate_token(user.username), user: user }
+        res.send { result: 'success', session_token: generateToken(user.username), user: user }
       else
         res.send { result: 'failure', provided: sha1(req.body.password), stored: user.sha1 }
 
