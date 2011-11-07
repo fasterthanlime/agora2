@@ -31,7 +31,7 @@ isValidToken = (value, cb) ->
   Token.findOne { value: value }, (err, token) ->
     cb err || !token? || token.expiration < Date.now(), token
 
-requiresToken = (func) ->
+requireToken = (func) ->
   return (req, res) ->
     _args = arguments
     _this = this
@@ -54,19 +54,19 @@ app.use(express.bodyParser());
 app.get '/', (req, res) ->
   res.render 'index.html', { layout: false }
 
-app.get '/categories', requiresToken (req, res) ->
+app.get '/categories', requireToken (req, res) ->
   Category.find {}, ['slug', 'title', 'description', '_id'], (err, cats) ->
     res.send cats
 
-app.get '/category/:slug', requiresToken (req, res) ->
+app.get '/category/:slug', requireToken (req, res) ->
   Category.findOne { slug: req.params.slug }, (err, cat) ->
     res.send cat
 
-app.get '/thread/:tid', requiresToken (req, res) ->
+app.get '/thread/:tid', requireToken (req, res) ->
   Thread.findById req.params.tid, (err, thread) ->
     res.send thread
 
-app.post '/new-thread', requiresToken (req, res) ->
+app.post '/new-thread', requireToken (req, res) ->
   thread = new Thread({ username: req.body.username, title: req.body.title })
   post = new Post({
     username: req.body.username
@@ -84,7 +84,7 @@ app.post '/new-thread', requiresToken (req, res) ->
     user.save()
   res.send { result: 'success', id: thread._id }
 
-app.post '/post-reply', requiresToken (req, res) ->
+app.post '/post-reply', requireToken (req, res) ->
   Thread.findById req.body.tid, (err, thread) ->
     post = new Post({
       username: req.body.username
@@ -109,7 +109,7 @@ app.post '/login', (req, res) ->
       else
         res.send { result: 'failure', provided: sha1(req.body.password) }
 
-app.get '/user/:username', requiresToken (req, res) ->
+app.get '/user/:username', requireToken (req, res) ->
   User.findOne { username: req.params.username }, (err, user) ->
     if err
       res.send { result: 'not found' }
