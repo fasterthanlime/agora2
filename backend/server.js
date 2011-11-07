@@ -23,6 +23,7 @@
   };
   sendTokenError = function(res) {
     return res.send({
+      result: 'error',
       error: 'Invalid token'
     });
   };
@@ -149,8 +150,7 @@
         } else {
           return res.send({
             result: 'failure',
-            provided: sha1(req.body.password),
-            stored: user.sha1
+            provided: sha1(req.body.password)
           });
         }
       }
