@@ -1,5 +1,5 @@
 
-<li class="header">
+<li class="header new-header">
   <input class="post-title" type="text" placeholder="Nouveau sujet..."></input>
   <input class="post-category" type="hidden" value="<%= post.category %>"></input>
 </li>

@@ -28,7 +28,7 @@
         }
       };
       date = new Date(timestamp);
-      return pad(date.getUTCDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getUTCMonth()] + " " + date.getUTCFullYear() + " à " + pad(date.getUTCHours()) + ":" + pad(date.getUTCMinutes()) + ":" + pad(date.getUTCSeconds());
+      return pad(date.getDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getMonth()] + " " + date.getFullYear() + " à " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds());
     };
     this.before(function(context) {
       this.user = this.session('user');
@@ -237,14 +237,39 @@
       });
     });
     return this.bind('new-thread', function(context) {
+      var category, title;
       context = this;
+      category = $('.post-category').val();
+      title = $('.post-title').val();
       return $.post(HOST + 'new-thread', {
         username: this.user.username,
-        category: $('.post-category').val(),
-        title: $('.post-title').val(),
+        category: category,
+        title: title,
         source: $('.post-source').val()
       }, function(data) {
-        return alert("new thread successful");
+        title = $('.new-header .post-title').val();
+        context.log(title);
+        $('.new-header, .new-post').remove();
+        return context.render('templates/thread-summary.template', {
+          thread: {
+            category: {
+              slug: 'blahhh FIXME'
+            },
+            _id: data.id,
+            title: title
+          }
+        }).then(function(postnode) {
+          $(postnode).hide().prependTo('.thread').slideDown();
+          return context.render('templates/new-thread.template', {
+            post: {
+              user: context.user,
+              category: category
+            }
+          }).appendTo('.threads').then(function() {
+            this.trigger('setup-thread-opener');
+            return this.trigger('setup-post-editor');
+          });
+        });
       });
     });
   });

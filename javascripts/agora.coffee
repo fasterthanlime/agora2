@@ -22,7 +22,7 @@ app = $.sammy '#main', ->
       else
         '' + number
     date = new Date(timestamp)
-    pad(date.getUTCDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getUTCMonth()] + " " + date.getUTCFullYear() + " à " + pad(date.getUTCHours()) + ":" + pad(date.getUTCMinutes()) + ":" + pad(date.getUTCSeconds())
+    pad(date.getDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getMonth()] + " " + date.getFullYear() + " à " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds())
 
   @before (context) ->
     @user = @session('user')
@@ -160,12 +160,22 @@ app = $.sammy '#main', ->
 
   @bind 'new-thread', (context) ->
     context = @
+    category = $('.post-category').val()
+    title = $('.post-title').val()
     $.post HOST + 'new-thread', {
         username: @user.username
-        category: $('.post-category').val()
-        title: $('.post-title').val()
+        category: category
+        title: title
         source: $('.post-source').val()
     }, (data) ->
-      alert("new thread successful")
+      title = $('.new-header .post-title').val()
+      context.log title
+      $('.new-header, .new-post').remove()
+      context.render('templates/thread-summary.template', { thread: { category: { slug: 'blahhh FIXME' }, _id: data.id, title: title } }).then (postnode) ->
+        $(postnode).hide().prependTo('.thread').slideDown()
+        context.render('templates/new-thread.template', { post: { user: context.user, category: category }}).appendTo('.threads').then ->
+          @trigger 'setup-thread-opener'
+          @trigger 'setup-post-editor'
+ 
 
 $ -> app.run '#/'
