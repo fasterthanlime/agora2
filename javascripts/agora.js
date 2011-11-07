@@ -1,6 +1,5 @@
 (function() {
-  var HOST, app, showdown;
-  HOST = 'http://ldmf.ch/';
+  var app, showdown;
   showdown = new Showdown.converter();
   app = $.sammy('#main', function() {
     var format_date, get_user;
@@ -13,7 +12,7 @@
       if (user) {
         return cb(user);
       } else {
-        return $.get(HOST + 'user/' + username, {}, function(data) {
+        return $.get('/user/' + username, {}, function(data) {
           return cb(data);
         });
       }
@@ -47,7 +46,7 @@
       }
     });
     this.bind('render-all', function(event, args) {
-      return this.load(HOST + args.path, {
+      return this.load('/' + args.path, {
         json: true
       }).then(function(content) {
         return this.renderEach(args.template, args.name, content).appendTo(args.target);
@@ -56,7 +55,7 @@
     this.get('#/u/:username', function(context) {
       var username;
       username = this.params.username;
-      return $.get(HOST + 'user/' + username, {}, function(user) {
+      return $.get('/user/' + username, {}, function(user) {
         return context.partial('templates/profile.template', {
           user: user,
           date: format_date(user.joindate)
@@ -64,7 +63,7 @@
       });
     });
     this.get('#/u', function(context) {
-      return $.get(HOST + 'user/' + this.user.username, {}, function(user) {
+      return $.get('/user/' + this.user.username, {}, function(user) {
         return context.partial('templates/profile.template', {
           user: user,
           date: format_date(user.joindate)
@@ -78,7 +77,7 @@
             return;
           }
           event.preventDefault();
-          return $.post(HOST + 'login', {
+          return $.post('/login', {
             login: $('#login').val(),
             password: $('#password').val()
           }, function(data) {
@@ -98,7 +97,7 @@
     });
     this.get('#/logout', function(context) {
       $('.user-info').fadeOut();
-      $.post(HOST + 'logout', {
+      $.post('/logout', {
         token: this.session('token')
       }, function(data) {
         return context.log('Logged out gracefully!');
@@ -118,7 +117,7 @@
     });
     this.get('#/r/:slug', function(context) {
       this.slug = this.params['slug'];
-      return $.get(HOST + 'category/' + this.slug, {}, function(category) {
+      return $.get('/category/' + this.slug, {}, function(category) {
         var render0;
         context.partial('templates/category.template', {
           category: category
@@ -152,7 +151,7 @@
       var tid;
       tid = this.params['tid'];
       return $.ajax({
-        url: HOST + 'thread/' + tid,
+        url: '/thread/' + tid,
         dataType: 'json',
         success: function(thread) {
           return context.partial('templates/thread.template', {
@@ -241,7 +240,7 @@
       var tid;
       context = this;
       tid = $('.reply-thread').val();
-      return $.post(HOST + 'post-reply', {
+      return $.post('/post-reply', {
         username: this.user.username,
         tid: tid,
         source: $('.post-source').val()
@@ -267,7 +266,7 @@
       context = this;
       category = $('.post-category').val();
       title = $('.post-title').val();
-      return $.post(HOST + 'new-thread', {
+      return $.post('/new-thread', {
         username: this.user.username,
         category: category,
         title: title,

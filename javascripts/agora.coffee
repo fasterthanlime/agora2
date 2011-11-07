@@ -1,6 +1,5 @@
 # Simple sammy test in CS :)
 
-HOST = 'http://ldmf.ch/'
 showdown = new Showdown.converter()
 
 app = $.sammy '#main', ->
@@ -13,7 +12,7 @@ app = $.sammy '#main', ->
     if user
       cb(user)
     else
-      $.get(HOST + 'user/' + username, {}, (data) -> cb(data))
+      $.get('/user/' + username, {}, (data) -> cb(data))
 
   format_date = (timestamp) ->
     pad = (number) ->
@@ -37,18 +36,18 @@ app = $.sammy '#main', ->
       $('.user-info').fadeIn()
 
   @bind 'render-all', (event, args) ->
-    @load(HOST + args.path, { json: true }).then (content) ->
+    @load('/' + args.path, { json: true }).then (content) ->
       @renderEach(args.template, args.name, content).appendTo(args.target)
 
   # Others' profile pages
   @get '#/u/:username', (context) ->
     username = @params.username
-    $.get HOST + 'user/' + username, {}, (user) ->
+    $.get '/user/' + username, {}, (user) ->
       context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
 
   # Own profile page
   @get '#/u', (context) ->
-    $.get HOST + 'user/' + @user.username, {}, (user) ->
+    $.get '/user/' + @user.username, {}, (user) ->
       context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
 
   # Login box
@@ -57,7 +56,7 @@ app = $.sammy '#main', ->
       $('#password').keypress (event) ->
         return unless event.which == 13
         event.preventDefault()
-        $.post HOST + 'login', { login: $('#login').val(), password: $('#password').val() }, (data) ->
+        $.post '/login', { login: $('#login').val(), password: $('#password').val() }, (data) ->
           context.log data
           switch data.result
             when "failure"
@@ -70,7 +69,7 @@ app = $.sammy '#main', ->
 
   @get '#/logout', (context) ->
     $('.user-info').fadeOut()
-    $.post HOST + 'logout', { token: @session('token') }, (data) ->
+    $.post '/logout', { token: @session('token') }, (data) ->
       context.log 'Logged out gracefully!'
       # Note that if we don't, it's no biggie. Token
       # will end up expiring anyways.
@@ -93,7 +92,7 @@ app = $.sammy '#main', ->
   @get '#/r/:slug', (context) ->
     @slug = @params['slug']
 
-    $.get HOST + 'category/' + @slug, {}, (category) ->
+    $.get '/category/' + @slug, {}, (category) ->
       context.partial 'templates/category.template', { category: category }
       context.render('templates/new-thread.template', { post: { user: context.user, category: category._id }}).prependTo('.threads').then ->
         @trigger 'setup-thread-opener'
@@ -111,7 +110,7 @@ app = $.sammy '#main', ->
   @get '#/r/:slug/:tid', (context) ->
     tid = @params['tid']
     $.ajax({
-      url: HOST + 'thread/' + tid
+      url: '/thread/' + tid
       dataType: 'json'
       success: (thread) ->
         context.partial('templates/thread.template', {thread: thread}).then ->
@@ -163,7 +162,7 @@ app = $.sammy '#main', ->
   @bind 'post-reply', (context) ->
     context = @
     tid = $('.reply-thread').val()
-    $.post HOST + 'post-reply', {
+    $.post '/post-reply', {
         username: @user.username
         tid: tid
         source: $('.post-source').val()
@@ -179,7 +178,7 @@ app = $.sammy '#main', ->
     context = @
     category = $('.post-category').val()
     title = $('.post-title').val()
-    $.post HOST + 'new-thread', {
+    $.post '/new-thread', {
         username: @user.username
         category: category
         title: title
