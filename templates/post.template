@@ -6,6 +6,8 @@
     <p class="slogan"><%= post.user.slogan %></p>
   </div>
   <div class="post-body">
+    <div class="post-date"><%= post.date %></div>
+    <div class="clear">
     <div class="post-content"><%= post.content %></div>
   </div>
   <div class="clear"></div>

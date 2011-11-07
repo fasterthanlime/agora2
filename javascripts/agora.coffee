@@ -1,6 +1,6 @@
 # Simple sammy test in CS :)
 
-HOST = 'http://192.168.1.64:3000/'
+HOST = 'http://ldmf.ch/'
 showdown = new Showdown.converter()
 
 app = $.sammy '#main', ->
@@ -14,6 +14,15 @@ app = $.sammy '#main', ->
       cb(user)
     else
       $.get(HOST + 'user/' + username, {}, (data) -> cb(data))
+
+  format_date = (timestamp) ->
+    pad = (number) ->
+      if number < 10 
+        '0' + number
+      else
+        '' + number
+    date = new Date(timestamp)
+    pad(date.getUTCDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getUTCMonth()] + " " + date.getUTCFullYear() + " à " + pad(date.getUTCHours()) + ":" + pad(date.getUTCMinutes()) + ":" + pad(date.getUTCSeconds())
 
   @before (context) ->
     @user = @session('user')
@@ -94,7 +103,7 @@ app = $.sammy '#main', ->
               post = thread.posts[index]
               content = showdown.makeHtml(post.source)
               context.get_user post.username, (post_user) ->
-                context.render('templates/post.template', {post: {content: content, user: post_user}}).then (post) ->
+                context.render('templates/post.template', {post: {content: content, date: format_date(post.date), user: post_user}}).then (post) ->
                   $(post).hide().appendTo('.thread').fadeIn('slow')
                   render0(index + 1)
             else

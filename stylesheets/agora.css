@@ -118,6 +118,12 @@ body {
   margin-top: 2px;
 }
 
+.post-date {
+  color: #444;
+  font-size: 80%;
+  float: right;
+}
+
 .post-header {
   float: left;
   margin-top: 0;

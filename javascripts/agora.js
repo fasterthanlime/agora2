@@ -1,9 +1,9 @@
 (function() {
   var HOST, app, showdown;
-  HOST = 'http://192.168.1.64:3000/';
+  HOST = 'http://ldmf.ch/';
   showdown = new Showdown.converter();
   app = $.sammy('#main', function() {
-    var get_user;
+    var format_date, get_user;
     this.use('Template');
     this.use('Storage');
     this.use('Session');
@@ -17,6 +17,18 @@
           return cb(data);
         });
       }
+    };
+    format_date = function(timestamp) {
+      var date, pad;
+      pad = function(number) {
+        if (number < 10) {
+          return '0' + number;
+        } else {
+          return '' + number;
+        }
+      };
+      date = new Date(timestamp);
+      return pad(date.getUTCDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getUTCMonth()] + " " + date.getUTCFullYear() + " à " + pad(date.getUTCHours()) + ":" + pad(date.getUTCMinutes()) + ":" + pad(date.getUTCSeconds());
     };
     this.before(function(context) {
       this.user = this.session('user');
@@ -130,6 +142,7 @@
                   return context.render('templates/post.template', {
                     post: {
                       content: content,
+                      date: format_date(post.date),
                       user: post_user
                     }
                   }).then(function(post) {
