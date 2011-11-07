@@ -107,7 +107,7 @@ app.post '/login', (req, res) ->
       if sha1(req.body.password) == user.sha1
         res.send { result: 'success', session_token: generateToken(user.username), user: user }
       else
-        res.send { result: 'failure', provided: sha1(req.body.password), stored: user.sha1 }
+        res.send { result: 'failure', provided: sha1(req.body.password) }
 
 app.get '/user/:username', requiresToken (req, res) ->
   User.findOne { username: req.params.username }, (err, user) ->
