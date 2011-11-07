@@ -23,6 +23,7 @@ generateToken = (user) ->
 
 sendTokenError = (res) ->
   res.send {
+    result: 'error'
     error: 'Invalid token'
   }
 
