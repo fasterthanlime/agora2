@@ -38,7 +38,7 @@ body {
   padding: 10px;
   background: #73E773;
   color: white;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
   padding: 15px;
 }
@@ -201,3 +201,16 @@ div.clear {
   clear: both;
 }
 
+.profile-table {
+  border: 1px solid grey;
+}
+
+.profile-table tr td, .profile-table tr th {
+  padding: 5px; 
+  border: 1px solid grey;
+}
+
+.profile-table tr th {
+  font-weight: bold;
+  text-align: center;
+}

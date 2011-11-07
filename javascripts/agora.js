@@ -53,6 +53,11 @@
         return this.renderEach(args.template, args.name, content).appendTo(args.target);
       });
     });
+    this.get('#/profile', function(context) {
+      return this.partial('templates/profile.template', {
+        date: format_date(this.user.joindate)
+      });
+    });
     this.get('#/login', function(context) {
       return this.partial('templates/login.template').then(function() {
         return $('#password').keypress(function(event) {
@@ -101,25 +106,34 @@
     this.get('#/r/:slug', function(context) {
       var slug;
       slug = this.params['slug'];
-      return this.load(HOST + 'category/' + slug, {
-        json: true
-      }).then(function(category) {
+      return $.get(HOST + 'category/' + slug, {}, function(category) {
+        var render0;
         context.partial('templates/category.template', {
           category: category
         });
-        return context.render('templates/new-thread.template', {
+        context.render('templates/new-thread.template', {
           post: {
             user: context.user,
             category: category._id
           }
-        }).appendTo('.threads').then(function() {
+        }).prependTo('.threads').then(function() {
           this.trigger('setup-thread-opener');
-          this.trigger('setup-post-editor');
-          category.threads.forEach(function(thread) {
-            return thread.category = category;
-          });
-          return this.renderEach('templates/thread-summary.template', 'thread', category.threads).appendTo('.threads');
+          return this.trigger('setup-post-editor');
         });
+        render0 = function(index) {
+          var thread;
+          if (index < category.threads.length) {
+            thread = category.threads[category.threads.length - 1 - index];
+            thread.category = category;
+            return context.render('templates/thread-summary.template', {
+              thread: thread
+            }).then(function(threadnode) {
+              $(threadnode).appendTo('.threads');
+              return render0(index + 1);
+            });
+          }
+        };
+        return render0(0);
       });
     });
     this.get('#/r/:slug/:tid', function(context) {
@@ -146,7 +160,7 @@
                       user: post_user
                     }
                   }).then(function(post) {
-                    $(post).hide().appendTo('.thread').fadeIn('slow');
+                    $(post).appendTo('.thread');
                     return render0(index + 1);
                   });
                 });
@@ -157,7 +171,7 @@
                     tid: tid
                   }
                 }).then(function(post) {
-                  $(post).hide().appendTo('.thread').fadeIn('slow');
+                  $(post).appendTo('.thread');
                   this.trigger('setup-post-editor');
                   return $('.submit-post').click(function() {
                     return context.trigger('post-reply', {
@@ -259,13 +273,13 @@
             title: title
           }
         }).then(function(postnode) {
-          $(postnode).hide().prependTo('.thread').slideDown();
+          $(postnode).hide().prependTo('.threads').slideDown();
           return context.render('templates/new-thread.template', {
             post: {
               user: context.user,
               category: category
             }
-          }).appendTo('.threads').then(function() {
+          }).prependTo('.threads').then(function() {
             this.trigger('setup-thread-opener');
             return this.trigger('setup-post-editor');
           });

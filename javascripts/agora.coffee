@@ -40,6 +40,10 @@ app = $.sammy '#main', ->
     @load(HOST + args.path, { json: true }).then (content) ->
       @renderEach(args.template, args.name, content).appendTo(args.target)
 
+  # Profile page
+  @get '#/profile', (context) ->
+    @partial('templates/profile.template', { date: format_date(@user.joindate) })
+
   # Login box
   @get '#/login', (context) ->
     @partial('templates/login.template').then ->
@@ -82,13 +86,19 @@ app = $.sammy '#main', ->
   @get '#/r/:slug', (context) ->
     slug = @params['slug']
 
-    @load(HOST + 'category/' + slug, { json: true }).then (category) ->
+    $.get HOST + 'category/' + slug, {}, (category) ->
       context.partial 'templates/category.template', { category: category }
-      context.render('templates/new-thread.template', { post: { user: context.user, category: category._id }}).appendTo('.threads').then ->
+      context.render('templates/new-thread.template', { post: { user: context.user, category: category._id }}).prependTo('.threads').then ->
         @trigger 'setup-thread-opener'
         @trigger 'setup-post-editor'
-        category.threads.forEach (thread) -> thread.category = category
-        @renderEach('templates/thread-summary.template', 'thread', category.threads).appendTo('.threads')
+      render0 = (index) ->
+        if index < category.threads.length
+          thread = category.threads[category.threads.length - 1 - index]
+          thread.category = category
+          context.render('templates/thread-summary.template', { thread: thread }).then (threadnode) ->
+            $(threadnode).appendTo('.threads')
+            render0(index + 1)
+      render0(0)
 
   # Message list in a thread
   @get '#/r/:slug/:tid', (context) ->
@@ -104,11 +114,11 @@ app = $.sammy '#main', ->
               content = showdown.makeHtml(post.source)
               context.get_user post.username, (post_user) ->
                 context.render('templates/post.template', {post: {content: content, date: format_date(post.date), user: post_user}}).then (post) ->
-                  $(post).hide().appendTo('.thread').fadeIn('slow')
+                  $(post).appendTo('.thread')
                   render0(index + 1)
             else
               context.render('templates/post-reply.template', {post: {user: context.user, tid: tid}}).then (post) ->
-                $(post).hide().appendTo('.thread').fadeIn('slow')
+                $(post).appendTo('.thread')
                 @trigger 'setup-post-editor'
                 $('.submit-post').click ->
                   context.trigger 'post-reply', { context: context }
@@ -172,8 +182,8 @@ app = $.sammy '#main', ->
       context.log title
       $('.new-header, .new-post').remove()
       context.render('templates/thread-summary.template', { thread: { category: { slug: 'blahhh FIXME' }, _id: data.id, title: title } }).then (postnode) ->
-        $(postnode).hide().prependTo('.thread').slideDown()
-        context.render('templates/new-thread.template', { post: { user: context.user, category: category }}).appendTo('.threads').then ->
+        $(postnode).hide().prependTo('.threads').slideDown()
+        context.render('templates/new-thread.template', { post: { user: context.user, category: category }}).prependTo('.threads').then ->
           @trigger 'setup-thread-opener'
           @trigger 'setup-post-editor'
  
