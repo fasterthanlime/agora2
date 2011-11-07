@@ -26,15 +26,20 @@ sendTokenError = (res) ->
     error: 'Invalid token'
   }
 
+isValidToken = (value, cb) ->
+  Token.findOne { value: value }, (err, token) ->
+    cb err || !token? || token.expiration < Date.now(), token
+
 requiresToken = (func) ->
   return (req, res) ->
     _args = arguments
     _this = this
-    Token.findOne { value: req.param('token') }, (err, token) ->
-      if (err || !token? || token.expiration < Date.now())
+    isValidToken req.param('token'), (valid) ->
+      if valid
         sendTokenError res
       else
         func.apply( _this, _args )
+
 
 app = express.createServer()
 

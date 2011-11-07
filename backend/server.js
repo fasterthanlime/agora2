@@ -1,5 +1,5 @@
 (function() {
-  var Category, Post, TOKEN_DURATION, Thread, Token, User, app, express, generateToken, mongoose, port, requiresToken, schemas, sendTokenError, sha1, sys;
+  var Category, Post, TOKEN_DURATION, Thread, Token, User, app, express, generateToken, isValidToken, mongoose, port, requiresToken, schemas, sendTokenError, sha1, sys;
   sys = require('sys');
   sha1 = require('sha1');
   express = require('express');
@@ -26,15 +26,20 @@
       error: 'Invalid token'
     });
   };
+  isValidToken = function(value, cb) {
+    return Token.findOne({
+      value: value
+    }, function(err, token) {
+      return cb(err || !(token != null) || token.expiration < Date.now(), token);
+    });
+  };
   requiresToken = function(func) {
     return function(req, res) {
       var _args, _this;
       _args = arguments;
       _this = this;
-      return Token.findOne({
-        value: req.param('token')
-      }, function(err, token) {
-        if (err || !(token != null) || token.expiration < Date.now()) {
+      return isValidToken(req.param('token'), function(valid) {
+        if (valid) {
           return sendTokenError(res);
         } else {
           return func.apply(_this, _args);
