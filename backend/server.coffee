@@ -31,8 +31,6 @@ requiresToken = (func) ->
     _args = arguments
     _this = this
     Token.findOne { value: req.param('token') }, (err, token) ->
-      console.dir(err)
-      console.dir(token)
       if (err || !token? || token.expiration < Date.now())
         sendTokenError res
       else

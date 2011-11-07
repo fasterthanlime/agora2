@@ -34,8 +34,6 @@
       return Token.findOne({
         value: req.param('token')
       }, function(err, token) {
-        console.dir(err);
-        console.dir(token);
         if (err || !(token != null) || token.expiration < Date.now()) {
           return sendTokenError(res);
         } else {
