@@ -220,16 +220,13 @@
         tid: tid,
         source: $('.post-source').val()
       }, function(data) {
-        var content, post;
-        post = {
-          username: $('.new-post .nickname').text(),
-          source: $('.post-source').val()
-        };
-        content = showdown.makeHtml(post.source);
+        var content;
+        content = showdown.makeHtml($('.post-source').val());
         return context.render('templates/post.template', {
           post: {
             content: content,
-            user: context.user
+            user: context.user,
+            date: format_date(data.date)
           }
         }).then(function(postnode) {
           $(postnode).hide().appendTo('.thread').slideDown();

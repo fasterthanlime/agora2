@@ -151,12 +151,8 @@ app = $.sammy '#main', ->
         tid: tid
         source: $('.post-source').val()
     }, (data) ->
-      post = {
-        username: $('.new-post .nickname').text()
-        source: $('.post-source').val()
-      }
-      content = showdown.makeHtml(post.source)
-      context.render('templates/post.template', {post: {content: content, user: context.user}}).then (postnode) ->
+      content = showdown.makeHtml($('.post-source').val())
+      context.render('templates/post.template', {post: {content: content, user: context.user, date: format_date(data.date)}}).then (postnode) ->
         $(postnode).hide().appendTo('.thread').slideDown()
         $('.new-post').detach().appendTo('.thread')
         $('.post-preview').click()

@@ -88,7 +88,8 @@
       thread.posts.push(post);
       thread.save();
       return res.send({
-        result: 'success'
+        result: 'success',
+        date: post.date
       });
     });
   });

@@ -70,7 +70,7 @@ app.post '/post-reply', (req, res) ->
     post.save()
     thread.posts.push(post)
     thread.save()
-    res.send { result: 'success' }
+    res.send { result: 'success', date: post.date }
 
 app.post '/login', (req, res) ->
   User.findOne { username: req.body.login }, (err, user) ->
