@@ -55,9 +55,12 @@ app.post '/new-thread', (req, res) ->
   post.save()
   thread.posts.push(post)
   thread.save()
-  category = Category.findById req.body.category, (err, category) ->
+  Category.findById req.body.category, (err, category) ->
     category.threads.push(thread)
     category.save()
+  User.findOne { username: req.body.username }, (err, user) ->
+    user.posts += 1
+    user.save()
   res.send { result: 'success', id: thread._id }
 
 app.post '/post-reply', (req, res) ->
@@ -70,6 +73,9 @@ app.post '/post-reply', (req, res) ->
     post.save()
     thread.posts.push(post)
     thread.save()
+    User.findOne { username: req.body.username }, (err, user) ->
+      user.posts += 1
+      user.save()
     res.send { result: 'success', date: post.date }
 
 app.post '/login', (req, res) ->

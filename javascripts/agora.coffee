@@ -40,9 +40,16 @@ app = $.sammy '#main', ->
     @load(HOST + args.path, { json: true }).then (content) ->
       @renderEach(args.template, args.name, content).appendTo(args.target)
 
-  # Profile page
-  @get '#/profile', (context) ->
-    @partial('templates/profile.template', { date: format_date(@user.joindate) })
+  # Others' profile pages
+  @get '#/u/:username', (context) ->
+    username = @params.username
+    $.get HOST + 'user/' + username, {}, (user) ->
+      context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
+
+  # Own profile page
+  @get '#/u', (context) ->
+    $.get HOST + 'user/' + @user.username, {}, (user) ->
+      context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
 
   # Login box
   @get '#/login', (context) ->
@@ -84,9 +91,9 @@ app = $.sammy '#main', ->
 
   # Thread list in a category
   @get '#/r/:slug', (context) ->
-    slug = @params['slug']
+    @slug = @params['slug']
 
-    $.get HOST + 'category/' + slug, {}, (category) ->
+    $.get HOST + 'category/' + @slug, {}, (category) ->
       context.partial 'templates/category.template', { category: category }
       context.render('templates/new-thread.template', { post: { user: context.user, category: category._id }}).prependTo('.threads').then ->
         @trigger 'setup-thread-opener'
@@ -181,7 +188,7 @@ app = $.sammy '#main', ->
       title = $('.new-header .post-title').val()
       context.log title
       $('.new-header, .new-post').remove()
-      context.render('templates/thread-summary.template', { thread: { category: { slug: 'blahhh FIXME' }, _id: data.id, title: title } }).then (postnode) ->
+      context.render('templates/thread-summary.template', { thread: { category: { slug: context.slug }, _id: data.id, title: title } }).then (postnode) ->
         $(postnode).hide().prependTo('.threads').slideDown()
         context.render('templates/new-thread.template', { post: { user: context.user, category: category }}).prependTo('.threads').then ->
           @trigger 'setup-thread-opener'

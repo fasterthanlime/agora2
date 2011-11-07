@@ -1,9 +1,11 @@
 <li class="post">
   <div class="clear"></div>
   <div class="post-header">
-    <p class="nickname"><%= post.user.nickname %></p>
-    <p><img class="avatar" src="<%= post.user.avatar %>"></p>
-    <p class="slogan"><%= post.user.slogan %></p>
+    <a href="#/u/<%= post.user.username %>">
+      <p class="nickname"><%= post.user.nickname %></p>
+      <p><img class="avatar" src="<%= post.user.avatar %>"></p>
+      <p class="slogan"><%= post.user.slogan %></p>
+    </a>
   </div>
   <div class="post-body">
     <div class="post-date"><%= post.date %></div>

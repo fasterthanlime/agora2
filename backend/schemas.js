@@ -8,6 +8,7 @@
     nickname: String,
     email: String,
     joindate: Number,
+    posts: Number,
     slogan: String,
     avatar: String,
     sha1: String

@@ -32,6 +32,7 @@ User.remove {}, ->
     nickname: "Obélix"
     email: "bigsylvain@gmail.com"
     joindate: Date.now()
+    posts: 0
     avatar: "/stylesheets/avatar1.png"
     slogan: "Pardieu, c'est un inculte!"
     sha1: sha1("sylvain")
@@ -42,6 +43,7 @@ User.remove {}, ->
     nickname: "Loth"
     email: "amos@official.fm"
     joindate: Date.now()
+    posts: 0
     avatar: "/stylesheets/avatar2.png"
     slogan: "Montjoie! Saint-Denis!"
     sha1: sha1("bluesky")

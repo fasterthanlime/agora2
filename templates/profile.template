@@ -10,12 +10,20 @@
     <td><%= user.nickname %></td>
   </tr>
   <tr>
+    <th>E-mail</th>
+    <td><%= user.email %></td>
+  </tr>
+  <tr>
     <th colspan="2">
       <img class="avatar" src="<%= user.avatar %>">
     </th>
   <tr>
     <th>Avatar</th>
     <td><%= user.avatar %></td>
+  </tr>
+  <tr>
+    <th>Nombre de posts</th>
+    <td><%= user.posts %></td>
   </tr>
   <tr>
     <th>Join date</th>

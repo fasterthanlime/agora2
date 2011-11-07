@@ -54,7 +54,7 @@
     });
   });
   app.post('/new-thread', function(req, res) {
-    var category, post, thread;
+    var post, thread;
     thread = new Thread({
       username: req.body.username,
       title: req.body.title
@@ -67,9 +67,15 @@
     post.save();
     thread.posts.push(post);
     thread.save();
-    category = Category.findById(req.body.category, function(err, category) {
+    Category.findById(req.body.category, function(err, category) {
       category.threads.push(thread);
       return category.save();
+    });
+    User.findOne({
+      username: req.body.username
+    }, function(err, user) {
+      user.posts += 1;
+      return user.save();
     });
     return res.send({
       result: 'success',
@@ -87,6 +93,12 @@
       post.save();
       thread.posts.push(post);
       thread.save();
+      User.findOne({
+        username: req.body.username
+      }, function(err, user) {
+        user.posts += 1;
+        return user.save();
+      });
       return res.send({
         result: 'success',
         date: post.date

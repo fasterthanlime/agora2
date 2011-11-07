@@ -53,9 +53,22 @@
         return this.renderEach(args.template, args.name, content).appendTo(args.target);
       });
     });
-    this.get('#/profile', function(context) {
-      return this.partial('templates/profile.template', {
-        date: format_date(this.user.joindate)
+    this.get('#/u/:username', function(context) {
+      var username;
+      username = this.params.username;
+      return $.get(HOST + 'user/' + username, {}, function(user) {
+        return context.partial('templates/profile.template', {
+          user: user,
+          date: format_date(user.joindate)
+        });
+      });
+    });
+    this.get('#/u', function(context) {
+      return $.get(HOST + 'user/' + this.user.username, {}, function(user) {
+        return context.partial('templates/profile.template', {
+          user: user,
+          date: format_date(user.joindate)
+        });
       });
     });
     this.get('#/login', function(context) {
@@ -104,9 +117,8 @@
       });
     });
     this.get('#/r/:slug', function(context) {
-      var slug;
-      slug = this.params['slug'];
-      return $.get(HOST + 'category/' + slug, {}, function(category) {
+      this.slug = this.params['slug'];
+      return $.get(HOST + 'category/' + this.slug, {}, function(category) {
         var render0;
         context.partial('templates/category.template', {
           category: category
@@ -267,7 +279,7 @@
         return context.render('templates/thread-summary.template', {
           thread: {
             category: {
-              slug: 'blahhh FIXME'
+              slug: context.slug
             },
             _id: data.id,
             title: title
