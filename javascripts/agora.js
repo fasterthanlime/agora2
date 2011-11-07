@@ -52,10 +52,14 @@
         return this.renderEach(args.template, args.name, content).appendTo(args.target);
       });
     });
-    this.get('#/u/:username', function(context) {
+    this.get('#/u/:username', {
+      token: this.session('token')
+    }, function(context) {
       var username;
       username = this.params.username;
-      return $.get('/user/' + username, {}, function(user) {
+      return $.get('/user/' + username, {
+        token: this.session('token')
+      }, function(user) {
         return context.partial('templates/profile.template', {
           user: user,
           date: format_date(user.joindate)
@@ -63,7 +67,9 @@
       });
     });
     this.get('#/u', function(context) {
-      return $.get('/user/' + this.user.username, {}, function(user) {
+      return $.get('/user/' + this.user.username, {
+        token: this.session('token')
+      }, function(user) {
         return context.partial('templates/profile.template', {
           user: user,
           date: format_date(user.joindate)
@@ -109,7 +115,7 @@
     this.get('#/', function(context) {
       this.partial('templates/home.template');
       return this.trigger('render-all', {
-        path: 'categories',
+        path: 'categories?token=' + this.session('token'),
         template: 'templates/category-summary.template',
         name: 'category',
         target: '.categories'
@@ -117,7 +123,9 @@
     });
     this.get('#/r/:slug', function(context) {
       this.slug = this.params['slug'];
-      return $.get('/category/' + this.slug, {}, function(category) {
+      return $.get('/category/' + this.slug, {
+        token: this.session('token')
+      }, function(category) {
         var render0;
         context.partial('templates/category.template', {
           category: category
@@ -152,6 +160,9 @@
       tid = this.params['tid'];
       return $.ajax({
         url: '/thread/' + tid,
+        data: {
+          token: this.session('token')
+        },
         dataType: 'json',
         success: function(thread) {
           return context.partial('templates/thread.template', {
@@ -243,7 +254,8 @@
       return $.post('/post-reply', {
         username: this.user.username,
         tid: tid,
-        source: $('.post-source').val()
+        source: $('.post-source').val(),
+        token: this.session('token')
       }, function(data) {
         var content;
         content = showdown.makeHtml($('.post-source').val());
@@ -270,7 +282,8 @@
         username: this.user.username,
         category: category,
         title: title,
-        source: $('.post-source').val()
+        source: $('.post-source').val(),
+        token: this.session('token')
       }, function(data) {
         title = $('.new-header .post-title').val();
         context.log(title);

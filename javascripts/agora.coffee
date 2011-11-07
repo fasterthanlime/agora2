@@ -40,14 +40,14 @@ app = $.sammy '#main', ->
       @renderEach(args.template, args.name, content).appendTo(args.target)
 
   # Others' profile pages
-  @get '#/u/:username', (context) ->
+  @get '#/u/:username', { token: @session( 'token' ) }, (context) ->
     username = @params.username
-    $.get '/user/' + username, {}, (user) ->
+    $.get '/user/' + username, { token: @session( 'token' ) }, (user) ->
       context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
 
   # Own profile page
   @get '#/u', (context) ->
-    $.get '/user/' + @user.username, {}, (user) ->
+    $.get '/user/' + @user.username, { token: @session( 'token' ) }, (user) ->
       context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
 
   # Login box
@@ -82,7 +82,7 @@ app = $.sammy '#main', ->
   @get '#/', (context) ->
     @partial('templates/home.template')
     @trigger 'render-all', {
-      path: 'categories'
+      path: 'categories?token=' + @session('token')
       template: 'templates/category-summary.template'
       name: 'category'
       target: '.categories'
@@ -92,7 +92,7 @@ app = $.sammy '#main', ->
   @get '#/r/:slug', (context) ->
     @slug = @params['slug']
 
-    $.get '/category/' + @slug, {}, (category) ->
+    $.get '/category/' + @slug, { token: @session('token') }, (category) ->
       context.partial 'templates/category.template', { category: category }
       context.render('templates/new-thread.template', { post: { user: context.user, category: category._id }}).prependTo('.threads').then ->
         @trigger 'setup-thread-opener'
@@ -111,6 +111,7 @@ app = $.sammy '#main', ->
     tid = @params['tid']
     $.ajax({
       url: '/thread/' + tid
+      data: { token: @session( 'token' ) }
       dataType: 'json'
       success: (thread) ->
         context.partial('templates/thread.template', {thread: thread}).then ->
@@ -166,6 +167,7 @@ app = $.sammy '#main', ->
         username: @user.username
         tid: tid
         source: $('.post-source').val()
+        token: @session('token')
     }, (data) ->
       content = showdown.makeHtml($('.post-source').val())
       context.render('templates/post.template', {post: {content: content, user: context.user, date: format_date(data.date)}}).then (postnode) ->
@@ -183,6 +185,7 @@ app = $.sammy '#main', ->
         category: category
         title: title
         source: $('.post-source').val()
+        token: @session( 'token' )
     }, (data) ->
       title = $('.new-header .post-title').val()
       context.log title

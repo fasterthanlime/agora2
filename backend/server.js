@@ -1,5 +1,5 @@
 (function() {
-  var Category, Post, TOKEN_DURATION, Thread, Token, User, app, express, generate_token, mongoose, port, schemas, sha1, sys;
+  var Category, Post, TOKEN_DURATION, Thread, Token, User, app, express, generate_token, mongoose, port, requiresToken, schemas, sendTokenError, sha1, sys;
   sys = require('sys');
   sha1 = require('sha1');
   express = require('express');
@@ -21,6 +21,29 @@
     token.save();
     return token.value;
   };
+  sendTokenError = function(res) {
+    return res.send({
+      error: 'Invalid token'
+    });
+  };
+  requiresToken = function(func) {
+    return function(req, res) {
+      var _args, _this;
+      _args = arguments;
+      _this = this;
+      return Token.findOne({
+        value: req.param('token')
+      }, function(err, token) {
+        console.dir(err);
+        console.dir(token);
+        if (err || !(token != null) || token.expiration < Date.now()) {
+          return sendTokenError(res);
+        } else {
+          return func.apply(_this, _args);
+        }
+      });
+    };
+  };
   app = express.createServer();
   app.register('.html', {
     compile: function(str, options) {
@@ -36,24 +59,24 @@
       layout: false
     });
   });
-  app.get('/categories', function(req, res) {
+  app.get('/categories', requiresToken(function(req, res) {
     return Category.find({}, ['slug', 'title', 'description', '_id'], function(err, cats) {
       return res.send(cats);
     });
-  });
-  app.get('/category/:slug', function(req, res) {
+  }));
+  app.get('/category/:slug', requiresToken(function(req, res) {
     return Category.findOne({
       slug: req.params.slug
     }, function(err, cat) {
       return res.send(cat);
     });
-  });
-  app.get('/thread/:tid', function(req, res) {
+  }));
+  app.get('/thread/:tid', requiresToken(function(req, res) {
     return Thread.findById(req.params.tid, function(err, thread) {
       return res.send(thread);
     });
-  });
-  app.post('/new-thread', function(req, res) {
+  }));
+  app.post('/new-thread', requiresToken(function(req, res) {
     var post, thread;
     thread = new Thread({
       username: req.body.username,
@@ -81,8 +104,8 @@
       result: 'success',
       id: thread._id
     });
-  });
-  app.post('/post-reply', function(req, res) {
+  }));
+  app.post('/post-reply', requiresToken(function(req, res) {
     return Thread.findById(req.body.tid, function(err, thread) {
       var post;
       post = new Post({
@@ -104,7 +127,7 @@
         date: post.date
       });
     });
-  });
+  }));
   app.post('/login', function(req, res) {
     return User.findOne({
       username: req.body.login
@@ -130,7 +153,7 @@
       }
     });
   });
-  app.get('/user/:username', function(req, res) {
+  app.get('/user/:username', requiresToken(function(req, res) {
     return User.findOne({
       username: req.params.username
     }, function(err, user) {
@@ -142,7 +165,7 @@
         return res.send(user);
       }
     });
-  });
+  }));
   app.post('/logout', function(req, res) {
     return Token.remove({
       value: req.body.token
