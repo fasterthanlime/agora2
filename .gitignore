@@ -2,3 +2,4 @@
 .DS_Store
 javascripts/*.js
 backend/*.js
+data/
