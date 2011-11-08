@@ -1,5 +1,5 @@
 *.swp
 .DS_Store
-javascripts/*.js
+frontend/js/*.js
 backend/*.js
 data/
