@@ -1,2 +1,5 @@
 *.swp
 .DS_Store
+frontend/javascripts/*.js
+backend/*.js
+data/

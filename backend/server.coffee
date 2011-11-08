@@ -12,7 +12,7 @@ Token = mongoose.model('Token')
 
 TOKEN_DURATION = 86400000
 
-generate_token = (user) ->
+generateToken = (user) ->
   token = new Token({
     value: sha1(user + Math.random()) # yeah, there'll be dots, nobody cares
     user: user
@@ -21,31 +21,52 @@ generate_token = (user) ->
   token.save()
   token.value
 
+sendTokenError = (res) ->
+  res.send {
+    result: 'error'
+    error: 'Invalid token'
+  }
+
+isValidToken = (value, cb) ->
+  Token.findOne { value: value }, (err, token) ->
+    cb err || !token? || token.expiration < Date.now(), token
+
+requireToken = (func) ->
+  return (req, res) ->
+    _args = arguments
+    _this = this
+    isValidToken req.param('token'), (valid) ->
+      if valid
+        sendTokenError res
+      else
+        func.apply( _this, _args )
+
+
 app = express.createServer()
 
 app.register('.html', {
   compile: (str, options) -> (locals) -> return str
 });
 
-app.use(express.static(__dirname + '/../'))
+app.use(express.static(__dirname + '/../frontend/'))
 app.use(express.bodyParser());
 
 app.get '/', (req, res) ->
   res.render 'index.html', { layout: false }
 
-app.get '/categories', (req, res) ->
+app.get '/categories', requireToken (req, res) ->
   Category.find {}, ['slug', 'title', 'description', '_id'], (err, cats) ->
     res.send cats
 
-app.get '/category/:slug', (req, res) ->
+app.get '/category/:slug', requireToken (req, res) ->
   Category.findOne { slug: req.params.slug }, (err, cat) ->
     res.send cat
 
-app.get '/thread/:tid', (req, res) ->
+app.get '/thread/:tid', requireToken (req, res) ->
   Thread.findById req.params.tid, (err, thread) ->
     res.send thread
 
-app.post '/new-thread', (req, res) ->
+app.post '/new-thread', requireToken (req, res) ->
   thread = new Thread({ username: req.body.username, title: req.body.title })
   post = new Post({
     username: req.body.username
@@ -63,7 +84,7 @@ app.post '/new-thread', (req, res) ->
     user.save()
   res.send { result: 'success', id: thread._id }
 
-app.post '/post-reply', (req, res) ->
+app.post '/post-reply', requireToken (req, res) ->
   Thread.findById req.body.tid, (err, thread) ->
     post = new Post({
       username: req.body.username
@@ -84,16 +105,20 @@ app.post '/login', (req, res) ->
       res.send { result: 'not found' }
     else
       if sha1(req.body.password) == user.sha1
-        res.send { result: 'success', session_token: generate_token(user.username), user: user }
+        res.send { result: 'success', session_token: generateToken(user.username), user: user }
       else
-        res.send { result: 'failure', provided: sha1(req.body.password), stored: user.sha1 }
+        res.send { result: 'failure' }
 
-app.get '/user/:username', (req, res) ->
-  User.findOne { username: req.params.username }, (err, user) ->
-    if err
-      res.send { result: 'not found' }
-    else
-      res.send user 
+app.get '/user/:username', requireToken (req, res) ->
+  User.findOne(
+    { username: req.params.username },
+    [ 'username', 'nickname', 'email', 'joindate', 'posts', 'slogan', 'avatar' ],
+    (err, user) ->
+      if err
+        res.send { error: 'not found' }
+      else
+        res.send user 
+  )
 
 app.post '/logout', (req, res) ->
   Token.remove { value: req.body.token }, (err, token) ->

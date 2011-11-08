@@ -1,6 +1,5 @@
 # Simple sammy test in CS :)
 
-HOST = 'http://ldmf.ch/'
 showdown = new Showdown.converter()
 
 app = $.sammy '#main', ->
@@ -8,14 +7,14 @@ app = $.sammy '#main', ->
   @use 'Storage'
   @use 'Session'
 
-  get_user = (username, cb) ->
+  getUser = (username, cb) ->
     user = @session('user/' + username)
     if user
       cb(user)
     else
-      $.get(HOST + 'user/' + username, {}, (data) -> cb(data))
+      $.get('/user/' + username, {}, (data) -> cb(data))
 
-  format_date = (timestamp) ->
+  formatDate = (timestamp) ->
     pad = (number) ->
       if number < 10 
         '0' + number
@@ -26,7 +25,7 @@ app = $.sammy '#main', ->
 
   @before (context) ->
     @user = @session('user')
-    @get_user = (username, data) -> get_user.apply(@, [username, data])
+    @getUser = (username, data) -> getUser.apply(@, [username, data])
     if context.path != '#/login'
       if !@user
         $('.user-info').fadeOut()
@@ -37,19 +36,19 @@ app = $.sammy '#main', ->
       $('.user-info').fadeIn()
 
   @bind 'render-all', (event, args) ->
-    @load(HOST + args.path, { json: true }).then (content) ->
+    @load('/' + args.path, { json: true }).then (content) ->
       @renderEach(args.template, args.name, content).appendTo(args.target)
 
   # Others' profile pages
-  @get '#/u/:username', (context) ->
+  @get '#/u/:username', { token: @session( 'token' ) }, (context) ->
     username = @params.username
-    $.get HOST + 'user/' + username, {}, (user) ->
-      context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
+    $.get '/user/' + username, { token: @session( 'token' ) }, (user) ->
+      context.partial('templates/profile.template', { user: user, date: formatDate(user.joindate) })
 
   # Own profile page
   @get '#/u', (context) ->
-    $.get HOST + 'user/' + @user.username, {}, (user) ->
-      context.partial('templates/profile.template', { user: user, date: format_date(user.joindate) })
+    $.get '/user/' + @user.username, { token: @session( 'token' ) }, (user) ->
+      context.partial('templates/profile.template', { user: user, date: formatDate(user.joindate) })
 
   # Login box
   @get '#/login', (context) ->
@@ -57,7 +56,7 @@ app = $.sammy '#main', ->
       $('#password').keypress (event) ->
         return unless event.which == 13
         event.preventDefault()
-        $.post HOST + 'login', { login: $('#login').val(), password: $('#password').val() }, (data) ->
+        $.post '/login', { login: $('#login').val(), password: $('#password').val() }, (data) ->
           context.log data
           switch data.result
             when "failure"
@@ -70,7 +69,7 @@ app = $.sammy '#main', ->
 
   @get '#/logout', (context) ->
     $('.user-info').fadeOut()
-    $.post HOST + 'logout', { token: @session('token') }, (data) ->
+    $.post '/logout', { token: @session('token') }, (data) ->
       context.log 'Logged out gracefully!'
       # Note that if we don't, it's no biggie. Token
       # will end up expiring anyways.
@@ -83,7 +82,7 @@ app = $.sammy '#main', ->
   @get '#/', (context) ->
     @partial('templates/home.template')
     @trigger 'render-all', {
-      path: 'categories'
+      path: 'categories?token=' + @session('token')
       template: 'templates/category-summary.template'
       name: 'category'
       target: '.categories'
@@ -93,7 +92,7 @@ app = $.sammy '#main', ->
   @get '#/r/:slug', (context) ->
     @slug = @params['slug']
 
-    $.get HOST + 'category/' + @slug, {}, (category) ->
+    $.get '/category/' + @slug, { token: @session('token') }, (category) ->
       context.partial 'templates/category.template', { category: category }
       context.render('templates/new-thread.template', { post: { user: context.user, category: category._id }}).prependTo('.threads').then ->
         @trigger 'setup-thread-opener'
@@ -111,7 +110,8 @@ app = $.sammy '#main', ->
   @get '#/r/:slug/:tid', (context) ->
     tid = @params['tid']
     $.ajax({
-      url: HOST + 'thread/' + tid
+      url: '/thread/' + tid
+      data: { token: @session( 'token' ) }
       dataType: 'json'
       success: (thread) ->
         context.partial('templates/thread.template', {thread: thread}).then ->
@@ -119,8 +119,8 @@ app = $.sammy '#main', ->
             if index < thread.posts.length
               post = thread.posts[index]
               content = showdown.makeHtml(post.source)
-              context.get_user post.username, (post_user) ->
-                context.render('templates/post.template', {post: {content: content, date: format_date(post.date), user: post_user}}).then (post) ->
+              context.getUser post.username, (postUser) ->
+                context.render('templates/post.template', {post: {content: content, date: formatDate(post.date), user: postUser}}).then (post) ->
                   $(post).appendTo('.thread')
                   render0(index + 1)
             else
@@ -163,13 +163,14 @@ app = $.sammy '#main', ->
   @bind 'post-reply', (context) ->
     context = @
     tid = $('.reply-thread').val()
-    $.post HOST + 'post-reply', {
+    $.post '/post-reply', {
         username: @user.username
         tid: tid
         source: $('.post-source').val()
+        token: @session('token')
     }, (data) ->
       content = showdown.makeHtml($('.post-source').val())
-      context.render('templates/post.template', {post: {content: content, user: context.user, date: format_date(data.date)}}).then (postnode) ->
+      context.render('templates/post.template', {post: {content: content, user: context.user, date: formatDate(data.date)}}).then (postnode) ->
         $(postnode).hide().appendTo('.thread').slideDown()
         $('.new-post').detach().appendTo('.thread')
         $('.post-preview').click()
@@ -179,11 +180,12 @@ app = $.sammy '#main', ->
     context = @
     category = $('.post-category').val()
     title = $('.post-title').val()
-    $.post HOST + 'new-thread', {
+    $.post '/new-thread', {
         username: @user.username
         category: category
         title: title
         source: $('.post-source').val()
+        token: @session( 'token' )
     }, (data) ->
       title = $('.new-header .post-title').val()
       context.log title
