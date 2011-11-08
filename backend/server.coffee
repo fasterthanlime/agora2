@@ -36,7 +36,6 @@ storage = require('./storage')
 
 # shit's messed up, rename the module later
 gateway = storage.Gateway
-gateway.storage = new storage.ForumStorage()
 
 server = dnode(gateway)
 server.listen app
