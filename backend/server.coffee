@@ -110,11 +110,15 @@ app.post '/login', (req, res) ->
         res.send { result: 'failure' }
 
 app.get '/user/:username', requireToken (req, res) ->
-  User.findOne { username: req.params.username }, (err, user) ->
-    if err
-      res.send { result: 'not found' }
-    else
-      res.send user 
+  User.findOne(
+    { username: req.params.username },
+    [ 'username', 'nickname', 'email', 'joindate', 'posts', 'slogan', 'avatar' ],
+    (err, user) ->
+      if err
+        res.send { error: 'not found' }
+      else
+        res.send user 
+  )
 
 app.post '/logout', (req, res) ->
   Token.remove { value: req.body.token }, (err, token) ->
