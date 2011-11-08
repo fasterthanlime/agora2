@@ -35,6 +35,14 @@ app = $.sammy '#main', ->
       $('.avatar').attr('src', @user.avatar)
       $('.user-info').fadeIn()
 
+  @bind 'run', ->
+    context = @
+    DNode.connect (remote) ->
+      console.log remote
+      context.remote = remote
+      remote.login 'bluesky', 'bluesky', (session) ->
+        console.log 'Logged in, yay! user = ', session.user
+
   @bind 'render-all', (event, args) ->
     @load('/' + args.path, { json: true }).then (content) ->
       @renderEach(args.template, args.name, content).appendTo(args.target)
