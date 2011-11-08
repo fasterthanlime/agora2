@@ -8,15 +8,15 @@ POST `/login`
 Request:
 
     {
-      username: 'The username',
+      username: 'The username'
       password: 'The password's SHA-1 hash'
     }
     
 Response:
 
     {
-      result        : 'success',
-      session_token : 'The authentication token',
+      result        : 'success'
+      session_token : 'The authentication token'
       user          : 'The full record of the authenticated user'
     }
       or
@@ -46,9 +46,9 @@ GET `/category/:slug?token=$token`
 Response:
 
     {
-      _id         : 'The category's id,
-      name        : 'The category's name,
-      description : 'The category's description',
+      _id         : 'The category's id
+      name        : 'The category's name
+      description : 'The category's description'
       threads     : [ Thread ]
     }
     
@@ -61,7 +61,7 @@ GET `/thread/:tid?token=$token`
 Response:
 
     {
-      title : 'The thread's title',
+      title : 'The thread's title'
       posts : [ Post ]
     }
     
@@ -82,12 +82,12 @@ Response:
     }
       or
     {
-      username  : 'The user's username',
-      nickname  : 'The user's nickname',
-      email     : 'The user's email',
-      joindate  : 'The date at which the user joined',
-      posts     : 'The number of posts by this user',
-      slogan    : 'The user's slogan',
+      username  : 'The user's username'
+      nickname  : 'The user's nickname'
+      email     : 'The user's email'
+      joindate  : 'The date at which the user joined'
+      posts     : 'The number of posts by this user'
+      slogan    : 'The user's slogan'
       avatar    : 'The URL to the user's avatar'
     }
 
@@ -98,17 +98,17 @@ POST `/new-thread`
 Request:
     
     {
-      username : 'username',
-      title    : 'Thread title',
-      source   : 'First post's Markdown source',
+      username : 'username'
+      title    : 'Thread title'
+      source   : 'First post's Markdown source'
       token    : 'Authentication token'
     }
     
 Response:
 
     {
-      result  : 'success' || 'error',
-      id      : 'The new thread's id',
+      result  : 'success' || 'error'
+      id      : 'The new thread's id'
       error   : 'An error message, only if an error occured'
     }
 
