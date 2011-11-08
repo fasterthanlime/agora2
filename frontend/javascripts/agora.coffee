@@ -38,9 +38,10 @@ app = $.sammy '#main', ->
   @bind 'run', ->
     context = @
     DNode.connect (remote) ->
+      console.log remote
       context.remote = remote
-      remote.login 'bluesky', 'bluesky', (user) ->
-        console.log 'Logged in, yay! user = ', user
+      remote.login 'bluesky', 'bluesky', (session) ->
+        console.log 'Logged in, yay! user = ', session.user
 
   @bind 'render-all', (event, args) ->
     @load('/' + args.path, { json: true }).then (content) ->

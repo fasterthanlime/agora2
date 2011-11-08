@@ -2,15 +2,6 @@ sys = require('sys')
 sha1 = require('sha1')
 express = require('express')
 
-generateToken = (user) ->
-  token = new Token({
-    value: sha1(user + Math.random()) # yeah, there'll be dots, nobody cares
-    user: user
-    expiration: Date.now() + TOKEN_DURATION
-  })
-  token.save()
-  token.value
-
 sendTokenError = (res) ->
   res.send {
     result: 'error'
@@ -42,7 +33,12 @@ app.use(express.bodyParser());
 
 dnode = require('dnode')
 storage = require('./storage')
-server = dnode(storage.ForumStorage)
+
+# shit's messed up, rename the module later
+gateway = storage.Gateway
+gateway.storage = new storage.ForumStorage()
+
+server = dnode(gateway)
 server.listen app
 
 app.get '/', (req, res) ->

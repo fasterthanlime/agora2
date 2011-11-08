@@ -1,3 +1,4 @@
+sha1 = require('sha1')
 mongoose = require('mongoose')
 schemas = require('./schemas')
 
@@ -16,15 +17,27 @@ validate: (object, fields, cb) ->
       return
   cb()
 
-exports.ForumStorage = {
-  clients: []
+generateToken = (user) ->
+  token = new Token({
+    value: sha1(user + Math.random()) # yeah, there'll be dots, nobody cares
+    user: user
+    expiration: Date.now() + TOKEN_DURATION
+  })
+  token.save()
+  token.value
 
-  registerClient: (client) ->
-    clients.push client
 
-  login: (user, password, cb) ->
-    console.log 'Attempted login with user ', user
-    cb({ user: user, joke: 'Why did cancer cross the road? To get to the other lung!' })
+class Session
+  constructor: (@user) ->
+    @token = generateToken @user
+
+class ForumStorage
+  constructor: ->
+    @sessions = []
+
+  addSession: (session) ->
+    console.log 'New session: ', session
+    @sessions.push session
 
   startThread: (_thread, _post, cb) ->
     validate _thread, ['categoryId', 'title'], (err) ->
@@ -46,6 +59,21 @@ exports.ForumStorage = {
         post.save()
         cb(post._id)
         notify('postReply', [threadId, post])
+
+module.exports = {
+ 
+  ForumStorage: ForumStorage 
+  Gateway: {
+    # storage, of type ForumStorage
+
+    login: (user, password, onLogged) ->
+      # TODO: find User in database, associate with session
+      console.log 'Attempted login with user ', user
+      session = new Session (user)
+      @storage.addSession session
+      onLogged session
+  }
+
 } 
 
 
