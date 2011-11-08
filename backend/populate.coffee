@@ -33,7 +33,7 @@ User.remove {}, ->
     email: "bigsylvain@gmail.com"
     joindate: Date.now()
     posts: 0
-    avatar: "/stylesheets/avatar1.png"
+    avatar: "/css/avatar1.png"
     slogan: "Pardieu, c'est un inculte!"
     sha1: sha1("sylvain")
   }).save()
@@ -44,7 +44,7 @@ User.remove {}, ->
     email: "amos@official.fm"
     joindate: Date.now()
     posts: 0
-    avatar: "/stylesheets/avatar2.png"
+    avatar: "/css/avatar2.png"
     slogan: "Montjoie! Saint-Denis!"
     sha1: sha1("bluesky")
   }).save()

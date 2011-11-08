@@ -48,7 +48,7 @@ app.register('.html', {
   compile: (str, options) -> (locals) -> return str
 });
 
-app.use(express.static(__dirname + '/../'))
+app.use(express.static(__dirname + '/../frontend/'))
 app.use(express.bodyParser());
 
 app.get '/', (req, res) ->
