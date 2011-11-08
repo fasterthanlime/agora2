@@ -10,16 +10,24 @@ Token = mongoose.model('Token')
 
 TOKEN_DURATION = 86400000
 
-validate: (object, fields, cb) ->
+validate = (object, fields, cb) ->
   fields.forEach (field) ->
     if !(cb.hasOwnProperty field)
       cb('Missing property ' + field)
       return
   cb()
 
+# Probably an abomination, but works nicely to
+# send any object via dnode
+sanitize = (object, blacklist) ->
+  newObject = JSON.parse JSON.stringify object
+  blacklist.forEach (banned) ->
+    delete newObject[banned]
+  newObject
+
 generateToken = (user) ->
   token = new Token({
-    value: sha1(user + Math.random()) # yeah, there'll be dots, nobody cares
+    value: sha1(user + Math.random())
     user: user
     expiration: Date.now() + TOKEN_DURATION
   })
@@ -28,8 +36,9 @@ generateToken = (user) ->
 
 
 class Session
-  constructor: (@user) ->
-    @token = generateToken @user
+  constructor: (user) ->
+    @user = sanitize(user, ['sha1'])
+    @token = generateToken @user.username
 
 class ForumStorage
   constructor: ->
@@ -59,19 +68,25 @@ class ForumStorage
         post.save()
         cb(post._id)
         notify('postReply', [threadId, post])
+store = new ForumStorage()
 
 module.exports = {
- 
-  ForumStorage: ForumStorage 
+
+  store: store 
   Gateway: {
     # storage, of type ForumStorage
 
-    login: (user, password, onLogged) ->
+    login: (username, password, cb) ->
       # TODO: find User in database, associate with session
-      console.log 'Attempted login with user ', user
-      session = new Session (user)
-      @storage.addSession session
-      onLogged session
+      console.log 'Attempted login with username ', username
+      User.findOne { username: username }, (err, user) ->
+        if (err || !user)
+          console.log 'User not found: ', username, ' error: ', err
+          cb { status: 'error' }
+        else
+          session = new Session (user)
+          store.addSession session
+          cb { status: 'success', session: sanitize(session, ['sha1']) }
   }
 
 } 
