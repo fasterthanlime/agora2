@@ -22,6 +22,10 @@ exports.ForumStorage = {
   registerClient: (client) ->
     clients.push client
 
+  login: (user, password, cb) ->
+    console.log 'Attempted login with user ', user
+    cb({ user: user, joke: 'Why did cancer cross the road? To get to the other lung!' })
+
   startThread: (_thread, _post, cb) ->
     validate _thread, ['categoryId', 'title'], (err) ->
       if (err)
