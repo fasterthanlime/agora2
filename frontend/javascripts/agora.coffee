@@ -2,11 +2,14 @@
 
 showdown = new Showdown.converter()
 
-app = $.sammy '#main', ->
+app = $.sammy '#main', ( app ) ->
+  
   @use 'Template'
   @use 'Storage'
   @use 'Session'
-
+  
+  app.remote = null
+  
   getUser = (username, cb) ->
     user = @session('user/' + username)
     if user
@@ -24,7 +27,7 @@ app = $.sammy '#main', ->
     pad(date.getDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getMonth()] + " " + date.getFullYear() + " à " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds())
 
   @before (context) ->
-    @user = @session('user')
+    @user = @session 'user'
     @getUser = (username, data) -> getUser.apply(@, [username, data])
     if context.path != '#/login'
       if !@user
@@ -37,15 +40,19 @@ app = $.sammy '#main', ->
 
   @bind 'run', ->
     context = @
+    @trigger 'before-dnode-connect'
     DNode.connect (remote) ->
-      console.log remote
-      context.remote = remote
-      remote.login 'bluesky', 'bluesky', (result) ->
-        if (result.status != 'success')
-          console.log 'Error while logging in: ', err
-        else
-          console.log 'Logged in, yay! session = ', result.session
+      app.remote = remote
+      context.trigger 'after-dnode-connect'
 
+  @bind 'before-dnode-connect', ->
+    console.log 'before-dnode-connect'
+    @$element().hide()
+    
+  @bind 'after-dnode-connect', ->
+    console.log 'after-dnode-connect'
+    @$element().fadeIn()
+  
   @bind 'render-all', (event, args) ->
     @load('/' + args.path, { json: true }).then (content) ->
       @renderEach(args.template, args.name, content).appendTo(args.target)
@@ -67,16 +74,16 @@ app = $.sammy '#main', ->
       $('#password').keypress (event) ->
         return unless event.which == 13
         event.preventDefault()
-        $.post '/login', { login: $('#login').val(), password: $('#password').val() }, (data) ->
-          context.log data
-          switch data.result
-            when "failure"
-              context.log "Log-in failed!"
-            when "success"
-              context.log "Log-in succeeded!"
-              context.session('user', data.user)
-              context.session('token', data.session_token)
-              context.redirect('#/')
+        # TODO: Change this ASAP! SHA-1( password )
+        console.log $('#login').val(), $('#password').val()
+        app.remote.login $('#login').val(), $('#password').val(), (result) ->
+          if (result.status != 'success')
+            console.log 'Error while logging in: ', result
+          else
+            console.log 'Logged in, yay! session = ', result
+            context.session 'user', result.session.user
+            context.session 'token', result.session.token
+            context.redirect '#/'
 
   @get '#/logout', (context) ->
     $('.user-info').fadeOut()
