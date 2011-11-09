@@ -46,6 +46,14 @@ class Session
     @user = sanitize(user, ['sha1'])
     @token = generateToken @user.username
 
+  getRemote: ->
+    session = @
+    return (name, args) ->
+      if args instanceof Array
+        session[name].apply(session, args)
+      else
+        session[name].apply(session, [args])
+
   logout: ->
     token = @token
     Token.remove { value: @token }, (err) ->
@@ -120,10 +128,21 @@ module.exports = {
     # storage, of type ForumStorage
     resume: (token, cb) ->
       console.log 'Trying to resume from token ', token
+      found = false
       store.sessions.forEach (session) ->
         if session.token == token
           console.log 'Found session!'
-          cb session
+          cb {
+            status: 'success'
+            remote: session.getRemote()
+          }
+          found = true
+      if !found
+        console.log 'Not found! Logging poor fucker off'
+        cb {
+          status: 'failure'
+        }
+
 
     login: (username, password, listener) ->
       # TODO: find User in database, associate with session
@@ -138,11 +157,7 @@ module.exports = {
           listener.onLogin {
             status: 'success'
             session: sanitize(session, ['listener'])
-            remote: (name, args) ->
-                if args instanceof Array
-                  session[name].apply(session, args)
-                else
-                  session[name].apply(session, [args])
+            remote: session.getRemote()
           }
   }
 

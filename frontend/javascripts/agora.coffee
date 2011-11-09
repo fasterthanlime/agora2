@@ -52,10 +52,20 @@ app = $.sammy '#main', ( app ) ->
     @$element().hide()
     
   @bind 'after-dnode-connect', ->
+    context = @
     console.log 'after-dnode-connect'
     if @session('token')
-      app.gateway.resume @session('token'), (remote) ->
-        app.remote = remote 
+      app.gateway.resume @session('token'), (result) ->
+        if result.status == 'success'
+          app.remote = result.remote
+          console.log 'Resumed!'
+          context.redirect '#/'
+        else
+          console.log 'Could not resume session, forced log off'
+          $('.user-info').fadeOut()
+          context.session('token', null)
+          context.session('user', null)
+          context.redirect '#/login'
     @$element().fadeIn()
   
   @bind 'render-all', (event, args) ->
