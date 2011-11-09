@@ -34,9 +34,8 @@ generateToken = (user) ->
   token.save()
   token.value
 
-
 class Session
-  constructor: (user) ->
+  constructor: (user, @listener) ->
     @user = sanitize(user, ['sha1'])
     @token = generateToken @user.username
 
@@ -48,6 +47,13 @@ class ForumStorage
     console.log 'New session: ', session
     @sessions.push session
 
+  notify: (token, method, args) ->
+    @sessions.forEach (session) ->
+      if session.token != token
+        # RPC on other connected clients, ftw
+        console.log 'notify -> ', session.user.username, ' of ', method, args
+        session.listener[method].apply(null, args)
+
   startThread: (_thread, _post, cb) ->
     validate _thread, ['categoryId', 'title'], (err) ->
       if (err)
@@ -56,18 +62,23 @@ class ForumStorage
         thread = new Thread(_thread)
         thread.save()
         cb(thread._id)
-        reply(thread._id, _post)
-        notify('newThread', [thread])
+        @notify(token, 'newThread', [thread])
+        @reply(thread._id, _post)
 
-  reply: (threadId, _post, cb) ->
+  reply: (token, threadId, _post, cb) ->
     validate _post, ['threadId', 'userId', 'source'], (err) ->
       if (err)
         console.log 'Received invalid post reply ', thread, ' - error = ', err
       else
         post = new Post(_post)
         post.save()
+        Thread.findById threadId, (err, thread) ->
+          thread.posts.push(post)
+          thread.save()
+
         cb(post._id)
-        notify('postReply', [threadId, post])
+        @notify(token, 'postReply', [threadId, post])
+
 store = new ForumStorage()
 
 module.exports = {
@@ -76,7 +87,7 @@ module.exports = {
   Gateway: {
     # storage, of type ForumStorage
 
-    login: (username, password, cb) ->
+    login: (username, password, listener) ->
       # TODO: find User in database, associate with session
       console.log 'Attempted login with username ', username
       User.findOne { username: username }, (err, user) ->
@@ -84,9 +95,10 @@ module.exports = {
           console.log 'User not found: ', username, ' error: ', err
           cb { status: 'error' }
         else
-          session = new Session (user)
+          session = new Session(user, listener)
           store.addSession session
-          cb { status: 'success', session: sanitize(session, ['sha1']) }
+          if (listener.onLogin)
+            listener.onLogin { status: 'success', session: sanitize(session, ['listener']) }
   }
 
 } 
