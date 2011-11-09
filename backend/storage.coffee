@@ -97,8 +97,7 @@ module.exports = {
         else
           session = new Session(user, listener)
           store.addSession session
-          if (listener.onLogin)
-            listener.onLogin { status: 'success', session: sanitize(session, ['listener']) }
+          listener.onLogin { status: 'success', session: sanitize(session, ['listener']) }
   }
 
 } 

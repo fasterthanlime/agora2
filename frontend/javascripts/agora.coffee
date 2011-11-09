@@ -76,14 +76,16 @@ app = $.sammy '#main', ( app ) ->
         event.preventDefault()
         # TODO: Change this ASAP! SHA-1( password )
         console.log $('#login').val(), $('#password').val()
-        app.remote.login $('#login').val(), $('#password').val(), (result) ->
-          if (result.status != 'success')
-            console.log 'Error while logging in: ', result
-          else
-            console.log 'Logged in, yay! session = ', result
-            context.session 'user', result.session.user
-            context.session 'token', result.session.token
-            context.redirect '#/'
+        app.remote.login $('#login').val(), $('#password').val(), {
+          onLogin: (result) ->
+            if (result.status != 'success')
+              console.log 'Error while logging in: ', result
+            else
+              console.log 'Logged in, yay! session = ', result
+              context.session 'user', result.session.user
+              context.session 'token', result.session.token
+              context.redirect '#/'
+        }
 
   @get '#/logout', (context) ->
     $('.user-info').fadeOut()
