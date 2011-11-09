@@ -8,6 +8,7 @@ app = $.sammy '#main', ( app ) ->
   @use 'Storage'
   @use 'Session'
   
+  app.gateway = null
   app.remote = null
   
   getUser = (username, cb) ->
@@ -27,6 +28,7 @@ app = $.sammy '#main', ( app ) ->
     pad(date.getDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getMonth()] + " " + date.getFullYear() + " à " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds())
 
   @before (context) ->
+    @remote = app.remote
     @user = @session 'user'
     @getUser = (username, data) -> getUser.apply(@, [username, data])
     if context.path != '#/login'
@@ -41,8 +43,8 @@ app = $.sammy '#main', ( app ) ->
   @bind 'run', ->
     context = @
     @trigger 'before-dnode-connect'
-    DNode.connect (remote) ->
-      app.remote = remote
+    DNode.connect (gateway) ->
+      app.gateway = gateway
       context.trigger 'after-dnode-connect'
 
   @bind 'before-dnode-connect', ->
@@ -76,8 +78,10 @@ app = $.sammy '#main', ( app ) ->
         event.preventDefault()
         # TODO: Change this ASAP! SHA-1( password )
         console.log $('#login').val(), $('#password').val()
-        app.remote.login $('#login').val(), $('#password').val(), {
+        app.gateway.login $('#login').val(), $('#password').val(), {
           onLogin: (result) ->
+            app.remote = result.remote
+            console.log 'Got remote ', app.remote
             if (result.status != 'success')
               console.log 'Error while logging in: ', result
             else
@@ -89,7 +93,7 @@ app = $.sammy '#main', ( app ) ->
 
   @get '#/logout', (context) ->
     $('.user-info').fadeOut()
-    $.post '/logout', { token: @session('token') }, (data) ->
+    @remote 'logout', ->
       context.log 'Logged out gracefully!'
       # Note that if we don't, it's no biggie. Token
       # will end up expiring anyways.

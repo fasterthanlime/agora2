@@ -25,6 +25,13 @@ sanitize = (object, blacklist) ->
     delete newObject[banned]
   newObject
 
+without = (object, blacklist = []) ->
+  newObject = JSON.parse JSON.stringify object
+  blacklist.forEach (banned) ->
+    if ( index = newObject.indexOf banned ) != 1
+      newObject.splice index, 1
+  newObject
+
 generateToken = (user) ->
   token = new Token({
     value: sha1(user + Math.random())
@@ -39,13 +46,22 @@ class Session
     @user = sanitize(user, ['sha1'])
     @token = generateToken @user.username
 
+  logout: ->
+    token = @token
+    Token.remove { value: @token }, (err) ->
+      console.log 'Session with token ', token, ' logged out.'
+    store.removeSession @
+
 class ForumStorage
   constructor: ->
     @sessions = []
 
   addSession: (session) ->
-    console.log 'New session: ', session
+    console.log 'New session with token ', session.token
     @sessions.push session
+
+  removeSession: (session) ->
+    @sessions = without(@sessions, [session])
 
   notify: (token, method, args) ->
     @sessions.forEach (session) ->
@@ -97,7 +113,15 @@ module.exports = {
         else
           session = new Session(user, listener)
           store.addSession session
-          listener.onLogin { status: 'success', session: sanitize(session, ['listener']) }
+          listener.onLogin {
+            status: 'success'
+            session: sanitize(session, ['listener'])
+            remote: (name, args) ->
+                if args instanceof Array
+                  session[name].apply(session, args)
+                else
+                  session[name].apply(session, [args])
+          }
   }
 
 } 
