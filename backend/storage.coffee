@@ -21,8 +21,8 @@ validate = (object, fields, cb) ->
 # send any object via dnode
 sanitize = (object, blacklist) ->
   newObject = JSON.parse JSON.stringify object
-  blacklist.forEach (banned) ->
-    delete newObject[banned]
+  if blacklist then blacklist.forEach (banned) ->
+      delete newObject[banned]
   newObject
 
 without = (object, blacklist = []) ->
@@ -52,6 +52,9 @@ class Session
       console.log 'Session with token ', token, ' logged out.'
     store.removeSession @
 
+  getSnapshot: (cb) ->
+    store.getSnapshot @token, cb
+
 class ForumStorage
   constructor: ->
     @sessions = []
@@ -70,7 +73,8 @@ class ForumStorage
         console.log 'notify -> ', session.user.username, ' of ', method, args
         session.listener[method].apply(null, args)
 
-  startThread: (_thread, _post, cb) ->
+  startThread: (token, _thread, _post, cb) ->
+    # TODO: verify token
     validate _thread, ['categoryId', 'title'], (err) ->
       if (err)
         console.log 'Received invalid thread object ', thread, ' - error = ', err
@@ -82,6 +86,7 @@ class ForumStorage
         @reply(thread._id, _post)
 
   reply: (token, threadId, _post, cb) ->
+    # TODO: verify token
     validate _post, ['threadId', 'userId', 'source'], (err) ->
       if (err)
         console.log 'Received invalid post reply ', thread, ' - error = ', err
@@ -95,6 +100,17 @@ class ForumStorage
         cb(post._id)
         @notify(token, 'postReply', [threadId, post])
 
+  getSnapshot: (token, cb) ->
+    # TODO: verify token
+    User.find {}, (err, users) ->
+      cb 'user', sanitize(users)
+    Category.find {}, (err, cats) ->
+      cb 'categories', sanitize(cats)
+    Thread.find {}, (err, threads) ->
+      cb 'threads', sanitize(threads)
+    Post.find {}, (err, posts) ->
+      cb 'posts', sanitize(posts)
+
 store = new ForumStorage()
 
 module.exports = {
@@ -102,6 +118,12 @@ module.exports = {
   store: store 
   Gateway: {
     # storage, of type ForumStorage
+    resume: (token, cb) ->
+      console.log 'Trying to resume from token ', token
+      store.sessions.forEach (session) ->
+        if session.token == token
+          console.log 'Found session!'
+          cb session
 
     login: (username, password, listener) ->
       # TODO: find User in database, associate with session

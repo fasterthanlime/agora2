@@ -53,6 +53,9 @@ app = $.sammy '#main', ( app ) ->
     
   @bind 'after-dnode-connect', ->
     console.log 'after-dnode-connect'
+    if @session('token')
+      app.gateway.resume @session('token'), (remote) ->
+        app.remote = remote 
     @$element().fadeIn()
   
   @bind 'render-all', (event, args) ->
@@ -105,6 +108,10 @@ app = $.sammy '#main', ( app ) ->
   # Category list
   @get '#/', (context) ->
     @partial('templates/home.template')
+    console.log 'Getting snapshot'
+    @remote 'getSnapshot', (type, data) ->
+      console.log 'Got ' + type, data
+
     @trigger 'render-all', {
       path: 'categories?token=' + @session('token')
       template: 'templates/category-summary.template'
