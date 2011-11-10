@@ -159,8 +159,12 @@ app = $.sammy '#main', ( app ) ->
     @partial('templates/home.template')
 
     context.storage.get 'categories', (table) ->
-      table.query().each (cat) ->
-        console.log JSON.stringify cat
+      tables = table.query().get()
+      render0 = (i) ->
+        context.render('templates/category-summary.template', { category: tables[i] }).appendTo('.categories').then ->
+          if i < tables.length
+            render0 i + 1
+      render0 0
     
     #@bind 'render-all', (event, args) ->
     #  @load('/' + args.path, { json: true }).then (content) ->
