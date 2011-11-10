@@ -1,23 +1,62 @@
-# Simple sammy test in CS :)
 
 showdown = new Showdown.converter()
+
+allDefined = (object, fields) ->
+  console.log 'Testing for fields', fields, 'in object', JSON.stringify object
+  result = true
+  fields.forEach (field) ->
+    if !(object.hasOwnProperty field)
+      console.log 'Missing key', field, 'in object', JSON.stringify object
+      result = false
+  result
+
+class Storage
+  constructor: (@session, @remote) ->
+    # TODO: restore freshness from local storage 
+    # along with other saved data
+    @lastUpdate = -1
+    @tables = {}
+    @callbacks = {}
+
+    console.log 'Storage initialized with freshness', @lastUpdate
+    if @lastUpdate == -1
+      self = @
+      @remote 'getSnapshot', (tableName, data) ->
+        self.store(tableName, data)
+        self.callbacks[tableName] ||= []
+        self.callbacks[tableName].forEach (cb) ->
+          cb(self.tables[tableName])
+        self.callbacks[tableName] = []
+
+  store: (tableName, data) ->
+    query = TAFFY(data)
+    @tables[tableName] = { present: true, query: query }
+    console.log 'Just stored table', tableName, 'it has', query().count(), 'elements'
+
+  get: (tableName, cb) ->
+    console.log 'Retrieving table', tableName
+    if (@tables.hasOwnProperty tableName)
+      console.log 'Immediate retrieval'
+      cb @tables[tableName]
+    else
+      console.log 'Queued!'
+      @callbacks[tableName] ||= []
+      @callbacks[tableName].push cb
+
+
+  save: ->
+    console.log 'TODO: implement Storage::save'
 
 app = $.sammy '#main', ( app ) ->
   
   @use 'Template'
   @use 'Storage'
   @use 'Session'
-  
+
+  app.storage = null
   app.gateway = null
   app.remote = null
   
-  getUser = (username, cb) ->
-    user = @session('user/' + username)
-    if user
-      cb(user)
-    else
-      $.get('/user/' + username, {}, (data) -> cb(data))
-
   formatDate = (timestamp) ->
     pad = (number) ->
       if number < 10 
@@ -29,13 +68,17 @@ app = $.sammy '#main', ( app ) ->
 
   @before (context) ->
     @remote = app.remote
+    @storage = app.storage
     @user = @session 'user'
-    @getUser = (username, data) -> getUser.apply(@, [username, data])
+
     if context.path != '#/login'
       if !@user
         $('.user-info').fadeOut()
         @redirect('#/login')
         return false
+      if !@storage
+        @storage = new Storage(@session, @remote)
+        app.storage = @storage
       $('.nickname').text(@user.nickname)
       $('.avatar').attr('src', @user.avatar)
       $('.user-info').fadeIn()
@@ -68,10 +111,6 @@ app = $.sammy '#main', ( app ) ->
           context.redirect '#/login'
     @$element().fadeIn()
   
-  @bind 'render-all', (event, args) ->
-    @load('/' + args.path, { json: true }).then (content) ->
-      @renderEach(args.template, args.name, content).appendTo(args.target)
-
   # Others' profile pages
   @get '#/u/:username', { token: @session( 'token' ) }, (context) ->
     username = @params.username
@@ -107,7 +146,7 @@ app = $.sammy '#main', ( app ) ->
   @get '#/logout', (context) ->
     $('.user-info').fadeOut()
     @remote 'logout', ->
-      context.log 'Logged out gracefully!'
+      console.log 'Logged out gracefully!'
       # Note that if we don't, it's no biggie. Token
       # will end up expiring anyways.
     @session('user', null)
@@ -118,16 +157,22 @@ app = $.sammy '#main', ( app ) ->
   # Category list
   @get '#/', (context) ->
     @partial('templates/home.template')
-    console.log 'Getting snapshot'
-    @remote 'getSnapshot', (type, data) ->
-      console.log 'Got ' + type, data
 
-    @trigger 'render-all', {
-      path: 'categories?token=' + @session('token')
-      template: 'templates/category-summary.template'
-      name: 'category'
-      target: '.categories'
-    }
+    context.storage.get 'categories', (table) ->
+      table.query().each (cat) ->
+        console.log JSON.stringify cat
+    
+    #@bind 'render-all', (event, args) ->
+    #  @load('/' + args.path, { json: true }).then (content) ->
+    #    @renderEach(args.template, args.name, content).appendTo(args.target)
+
+
+    #@trigger 'render-all', {
+    #  path: 'categories?token=' + @session('token')
+    #  template: 'templates/category-summary.template'
+    #  name: 'category'
+    #  target: '.categories'
+    #}
 
   # Thread list in a category
   @get '#/r/:slug', (context) ->

@@ -111,7 +111,7 @@ class ForumStorage
   getSnapshot: (token, cb) ->
     # TODO: verify token
     User.find {}, (err, users) ->
-      cb 'user', sanitize(users)
+      cb 'users', sanitize(users)
     Category.find {}, (err, cats) ->
       cb 'categories', sanitize(cats)
     Thread.find {}, (err, threads) ->
