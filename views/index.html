@@ -28,10 +28,20 @@
     <script src="javascripts/libs/jquery-1.7.min.js"></script>
     <script src="javascripts/libs/showdown.js"></script>
     <script src="javascripts/libs/keymaster.min.js"></script>
-    <script src="javascripts/libs/sammy/sammy.js"></script>
-    <script src="javascripts/libs/sammy/plugins/sammy.template.js"></script>
-    <script src="javascripts/libs/sammy/plugins/sammy.json.js"></script>
-    <script src="javascripts/libs/sammy/plugins/sammy.storage.js"></script>
+    <script src="javascripts/libs/sammy/lib/sammy.js"></script>
+    <script src="javascripts/libs/sammy/lib/plugins/sammy.eco.js"></script>
+    <script src="javascripts/libs/sammy/lib/plugins/sammy.json.js"></script>
+    <script src="javascripts/libs/sammy/lib/plugins/sammy.storage.js"></script>
+    
+    <script src="templates/login.js"></script>
     <script src="javascripts/agora.js"></script>
+    <script src="javascripts/view.js"></script>
+    <script src="javascripts/views/login.js"></script>
+    
+    <script src="javascripts/data.js"></script>
+    
+    <script>
+    $( function() { Agora.app.run( '#/' ); } );
+    </script>
   </body>
 </html>

@@ -6,10 +6,13 @@ body {
   padding: 0;
 }
 
+#main h1, #main h2, #main h3 {
+  font-family: Inconsolata, Monaco, Courier, mono;
+}
+
 #container {
-  width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 1000px;
+  margin: 20px auto 0 auto;
 }
 
 #sidebar {
@@ -26,6 +29,26 @@ body {
   color: #FFF;
   margin: 0;
   padding: 5px;
+}
+
+#login-box > h1 {
+  font-size: 24px;
+}
+
+#username, #password {
+  padding-left: 10px;
+  margin-right: 10px;
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 2px solid #CDCDCD;
+  box-shadow: 3px 3px #CDCDCD;
+}
+
+#username:focus, #password:focus {
+  outline: none;
 }
 
 .category-title {
@@ -49,7 +72,7 @@ body {
 
 #main {
   float: right;
-  width: 650px;
+  width: 750px;
   margin-left: 50px;
   height: 100%;
   margin-top: 10px;
@@ -202,12 +225,12 @@ div.clear {
 }
 
 .profile-table {
-  border: 1px solid grey;
+  border: 1px solid #CCC;
 }
 
 .profile-table tr td, .profile-table tr th {
   padding: 5px; 
-  border: 1px solid grey;
+  border: 1px solid #CCC;
 }
 
 .profile-table tr th {
