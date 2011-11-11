@@ -172,17 +172,17 @@ app = $.sammy '#main', ( app ) ->
 
     context.storage.get 'categories', (Category) ->
       category = Category.query({ slug: context.slug }).first()
-      context.partial 'templates/category.template', { category: category }
-      threads = category.threads
-      context.storage.get 'threads', (Thread) ->
-        render0 = (i) ->
-          thread = Thread.query({ _id: threads[i] }).first()
-          thread.category = category
-          context.render('templates/thread-summary.template', { thread: thread }).then (threadnode) ->
-            $(threadnode).appendTo('.threads')
-            if i < threads.length
-              render0 i + 1
-        render0 0
+      context.partial('templates/category.template', { category: category }).then ->
+        threads = category.threads
+        context.storage.get 'threads', (Thread) ->
+          render0 = (i) ->
+            thread = Thread.query({ _id: threads[i] }).first()
+            thread.category = category
+            context.render('templates/thread-summary.template', { thread: thread }).then (threadnode) ->
+              $(threadnode).appendTo('.threads')
+              if i + 1 < threads.length
+                render0 i + 1
+          render0 0
 
   # Message list in a thread
   @get '#/r/:slug/:tid', (context) ->
@@ -197,38 +197,41 @@ app = $.sammy '#main', ( app ) ->
         context.storage.get 'posts', (Post) ->
           context.storage.get 'users', (User) ->
             render0 = (i) ->
+              console.log 'render0(', i, ')', 'id = ', posts[i]
               post = Post.query({ _id: posts[i] }).first()
+              console.log 'post', post
               user = User.query({ _id: post.user }).first()
+              console.log 'user', post
               console.log 'Got post', post, 'from user', user
               content = showdown.makeHtml(post.source)
               context.render('templates/post.template', post: { content: content, date: formatDate(post.date), user: user }).then (postnode) ->
                 $(postnode).appendTo('.thread')
-                if index < threads.posts.length
+                if i + 1 < posts.length
                   render0 i + 1
             render0 0
 
-    $.ajax({
-      url: '/thread/' + tid
-      data: { token: @session( 'token' ) }
-      dataType: 'json'
-      success: (thread) ->
-        context.partial('templates/thread.template', {thread: thread}).then ->
-          render0 = (index) ->
-            if index < thread.posts.length
-              post = thread.posts[index]
-              content = showdown.makeHtml(post.source)
-              context.getUser post.username, (postUser) ->
-                context.render('templates/post.template', {post: {content: content, date: formatDate(post.date), user: postUser}}).then (post) ->
-                  $(post).appendTo('.thread')
-                  render0(index + 1)
-            else
-              context.render('templates/post-reply.template', {post: {user: context.user, tid: tid}}).then (post) ->
-                $(post).appendTo('.thread')
-                @trigger 'setup-post-editor'
-                $('.submit-post').click ->
-                  context.trigger 'post-reply', { context: context }
-          render0(0)
-    })
+    #$.ajax({
+    #  url: '/thread/' + tid
+    #  data: { token: @session( 'token' ) }
+    #  dataType: 'json'
+    #  success: (thread) ->
+    #    context.partial('templates/thread.template', {thread: thread}).then ->
+    #      render0 = (index) ->
+    #        if index < thread.posts.length
+    #          post = thread.posts[index]
+    #          content = showdown.makeHtml(post.source)
+    #          context.getUser post.username, (postUser) ->
+    #            context.render('templates/post.template', {post: {content: content, date: formatDate(post.date), user: postUser}}).then (post) ->
+    #              $(post).appendTo('.thread')
+    #              render0(index + 1)
+    #        else
+    #          context.render('templates/post-reply.template', {post: {user: context.user, tid: tid}}).then (post) ->
+    #            $(post).appendTo('.thread')
+    #            @trigger 'setup-post-editor'
+    #            $('.submit-post').click ->
+    #              context.trigger 'post-reply', { context: context }
+    #      render0(0)
+    #})
 
   @bind 'setup-thread-opener', ->
     context = @
