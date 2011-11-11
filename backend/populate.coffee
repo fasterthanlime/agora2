@@ -41,7 +41,8 @@ Category.remove {}, ->
       avatar: "/stylesheets/avat1.png"
       slogan: "Pardieu, c'est un inculte!"
       sha1: sha1("sylvain")
-    }).save()
+    })
+    sylvain.save()
 
     bluesky = new User({
       username: "bluesky"
@@ -52,7 +53,8 @@ Category.remove {}, ->
       avatar: "/stylesheets/avat2.png"
       slogan: "Montjoie! Saint-Denis!"
       sha1: sha1("bluesky")
-    }).save()
+    })
+    bluesky.save()
 
     romac = new User({
       username: "romac"
@@ -63,7 +65,8 @@ Category.remove {}, ->
       avatar: "/stylesheets/avat3.png"
       slogan: "Un bon eskimo est un eskimo maure."
       sha1: sha1("romac")
-    }).save()
+    })
+    romac.save()
 
     Thread.remove {}, ->
       Post.remove {}, ->
@@ -72,7 +75,7 @@ Category.remove {}, ->
         })
 
         post11 = new Post({
-          user: bluesky
+          user: bluesky._id
           source: "C'est vrai quoi?"   
           date: Date.now()
         })
@@ -80,7 +83,7 @@ Category.remove {}, ->
         thread1.posts.push post11._id
 
         post12 = new Post({
-          user: romac
+          user: romac._id
           source: "Dude, I have no idea"
           date: Date.now()
         })
@@ -88,7 +91,7 @@ Category.remove {}, ->
         thread1.posts.push post12._id
 
         post13 = new Post({
-          user: sylvain
+          user: sylvain._id
           source: "YOBAAAAAAAA!"
           date: Date.now()
         })
