@@ -111,14 +111,16 @@ app = $.sammy '#main', ( app ) ->
     @$element().fadeIn()
   
   # Others' profile pages
-  @get '#/u/:username', { token: @session( 'token' ) }, (context) ->
+  @get '#/u/:username', (context) ->
     username = @params.username
-    $.get '/user/' + username, { token: @session( 'token' ) }, (user) ->
+    context.storage.get 'users', (User) ->
+      user = User.query({ username: username }).first()
       context.partial('templates/profile.template', { user: user, date: formatDate(user.joindate) })
 
   # Own profile page
   @get '#/u', (context) ->
-    $.get '/user/' + @user.username, { token: @session( 'token' ) }, (user) ->
+    context.storage.get 'users', (User) ->
+      user = User.query({ username: context.user.username }).first()
       context.partial('templates/profile.template', { user: user, date: formatDate(user.joindate) })
 
   # Login box
@@ -209,29 +211,6 @@ app = $.sammy '#main', ( app ) ->
                 if i + 1 < posts.length
                   render0 i + 1
             render0 0
-
-    #$.ajax({
-    #  url: '/thread/' + tid
-    #  data: { token: @session( 'token' ) }
-    #  dataType: 'json'
-    #  success: (thread) ->
-    #    context.partial('templates/thread.template', {thread: thread}).then ->
-    #      render0 = (index) ->
-    #        if index < thread.posts.length
-    #          post = thread.posts[index]
-    #          content = showdown.makeHtml(post.source)
-    #          context.getUser post.username, (postUser) ->
-    #            context.render('templates/post.template', {post: {content: content, date: formatDate(post.date), user: postUser}}).then (post) ->
-    #              $(post).appendTo('.thread')
-    #              render0(index + 1)
-    #        else
-    #          context.render('templates/post-reply.template', {post: {user: context.user, tid: tid}}).then (post) ->
-    #            $(post).appendTo('.thread')
-    #            @trigger 'setup-post-editor'
-    #            $('.submit-post').click ->
-    #              context.trigger 'post-reply', { context: context }
-    #      render0(0)
-    #})
 
   @bind 'setup-thread-opener', ->
     context = @
