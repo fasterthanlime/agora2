@@ -36,13 +36,12 @@ class Storage
   get: (tableName, cb) ->
     console.log 'Retrieving table', tableName
     if (@tables.hasOwnProperty tableName)
-      console.log 'Immediate retrieval'
+      console.log 'Immediate retrieval of', tableName
       cb @tables[tableName]
     else
-      console.log 'Queued!'
+      console.log 'Queuing callback for retrieval of', tableName
       @callbacks[tableName] ||= []
       @callbacks[tableName].push cb
-
 
   save: ->
     console.log 'TODO: implement Storage::save'
@@ -156,15 +155,18 @@ app = $.sammy '#main', ( app ) ->
 
   # Category list
   @get '#/', (context) ->
-    @partial('templates/home.template')
-
-    context.storage.get 'categories', (table) ->
-      tables = table.query().get()
-      render0 = (i) ->
-        context.render('templates/category-summary.template', { category: tables[i] }).appendTo('.categories').then ->
-          if i < tables.length
-            render0 i + 1
-      render0 0
+    @partial('templates/home.template').then ->
+      context.storage.get 'categories', (table) ->
+        numTables = table.query().count()
+        tables = table.query().get()
+        render0 = (i) ->
+          category = tables[i]
+          console.log 'render0(', i, '), category =', category
+          context.render('templates/category-summary.template', { category: category }).then (elem) ->
+            $(elem).appendTo('.categories')
+            if i + 1 < tables.length
+              render0 i + 1
+        render0 0
     
     #@bind 'render-all', (event, args) ->
     #  @load('/' + args.path, { json: true }).then (content) ->
