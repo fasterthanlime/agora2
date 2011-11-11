@@ -77,7 +77,7 @@ body {
 .post {
   display: block;
   list-style-type: none;
-  width: 700px;
+  width: 600px;
 }
 
 .new-post {
@@ -155,7 +155,7 @@ body {
 
 .post-body {
   float: right;
-  width: 550px;
+  width: 450px;
   display: inline-block;
 }
 
@@ -189,7 +189,7 @@ strong {
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 24px;
-  width: 690px;
+  width: 590px;
   padding: 0;
 }
 
