@@ -157,32 +157,35 @@ app = $.sammy '#main', ( app ) ->
   @get '#/', (context) ->
     @partial('templates/home.template').then ->
       context.storage.get 'categories', (table) ->
-        numTables = table.query().count()
         tables = table.query().get()
         render0 = (i) ->
           category = tables[i]
-          console.log 'render0(', i, '), category =', category
           context.render('templates/category-summary.template', { category: category }).then (elem) ->
             $(elem).appendTo('.categories')
             if i + 1 < tables.length
               render0 i + 1
         render0 0
-    
-    #@bind 'render-all', (event, args) ->
-    #  @load('/' + args.path, { json: true }).then (content) ->
-    #    @renderEach(args.template, args.name, content).appendTo(args.target)
-
-
-    #@trigger 'render-all', {
-    #  path: 'categories?token=' + @session('token')
-    #  template: 'templates/category-summary.template'
-    #  name: 'category'
-    #  target: '.categories'
-    #}
 
   # Thread list in a category
   @get '#/r/:slug', (context) ->
     @slug = @params['slug']
+
+    context.storage.get 'categories', (Category) ->
+      category = Category.query({ slug: context.slug }).first()
+      context.partial 'templates/category.template', { category: category }
+      threads = category.threads
+      context.storage.get 'threads', (Thread) ->
+        render0 = (i) ->
+          thread = Thread.query({ _id: threads[i] }).first()
+          thread.category = category
+          context.log 'Got thread', thread
+          context.render('templates/thread-summary.template', { thread: thread }).then (threadnode) ->
+            $(threadnode).appendTo('.threads')
+            if i < threads.length
+              render0 i + 1
+        render0 0
+        
+      console.log 'Got threads', threads
 
     $.get '/category/' + @slug, { token: @session('token') }, (category) ->
       context.partial 'templates/category.template', { category: category }
