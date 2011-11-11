@@ -178,32 +178,35 @@ app = $.sammy '#main', ( app ) ->
         render0 = (i) ->
           thread = Thread.query({ _id: threads[i] }).first()
           thread.category = category
-          context.log 'Got thread', thread
           context.render('templates/thread-summary.template', { thread: thread }).then (threadnode) ->
             $(threadnode).appendTo('.threads')
             if i < threads.length
               render0 i + 1
         render0 0
-        
-      console.log 'Got threads', threads
-
-    $.get '/category/' + @slug, { token: @session('token') }, (category) ->
-      context.partial 'templates/category.template', { category: category }
-      context.render('templates/new-thread.template', { post: { user: context.user, category: category._id }}).prependTo('.threads').then ->
-        @trigger 'setup-thread-opener'
-        @trigger 'setup-post-editor'
-      render0 = (index) ->
-        if index < category.threads.length
-          thread = category.threads[category.threads.length - 1 - index]
-          thread.category = category
-          context.render('templates/thread-summary.template', { thread: thread }).then (threadnode) ->
-            $(threadnode).appendTo('.threads')
-            render0(index + 1)
-      render0(0)
 
   # Message list in a thread
   @get '#/r/:slug/:tid', (context) ->
     tid = @params['tid']
+    console.log 'Displaying thread', tid
+
+    context.storage.get 'threads', (Thread) ->
+      thread = Thread.query({ _id: tid }).first()
+      console.log 'Got thread', thread
+      posts = thread.posts
+      context.partial('templates/thread.template', { thread: thread}).then ->
+        context.storage.get 'posts', (Post) ->
+          context.storage.get 'users', (User) ->
+            render0 = (i) ->
+              post = Post.query({ _id: posts[i] }).first()
+              user = User.query({ _id: post.user }).first()
+              console.log 'Got post', post, 'from user', user
+              content = showdown.makeHtml(post.source)
+              context.render('templates/post.template', post: { content: content, date: formatDate(post.date), user: user }).then (postnode) ->
+                $(postnode).appendTo('.thread')
+                if index < threads.posts.length
+                  render0 i + 1
+            render0 0
+
     $.ajax({
       url: '/thread/' + tid
       data: { token: @session( 'token' ) }
