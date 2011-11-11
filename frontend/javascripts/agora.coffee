@@ -55,6 +55,7 @@ app = $.sammy '#main', ( app ) ->
   app.storage = null
   app.gateway = null
   app.remote = null
+  app.redirect_to = '#/' # by default, to avoid redirecting to undefined..
   
   formatDate = (timestamp) ->
     pad = (number) ->
@@ -71,6 +72,11 @@ app = $.sammy '#main', ( app ) ->
     @user = @session 'user'
 
     if context.path != '#/login'
+      if !@remote && context.path != '#/resume'
+        console.log 'No remote, we are fucked :('
+        app.redirect_to = context.path
+        console.log 'Will redirect to ' + app.redirect_to
+        context.redirect '#/resume'
       if !@user
         $('.user-info').fadeOut()
         @redirect('#/login')
@@ -100,8 +106,8 @@ app = $.sammy '#main', ( app ) ->
       app.gateway.resume @session('token'), (result) ->
         if result.status == 'success'
           app.remote = result.remote
-          console.log 'Resumed!'
-          context.redirect '#/'
+          console.log 'Resumed!, can now go back to ' + app.redirect_to
+          context.redirect app.redirect_to
         else
           console.log 'Could not resume session, forced log off'
           $('.user-info').fadeOut()
@@ -109,7 +115,10 @@ app = $.sammy '#main', ( app ) ->
           context.session('user', null)
           context.redirect '#/login'
     @$element().fadeIn()
-  
+
+  @get '#/resume', (context) ->
+    console.log 'So, resume huh?'
+
   # Others' profile pages
   @get '#/u/:username', (context) ->
     username = @params.username
@@ -141,7 +150,7 @@ app = $.sammy '#main', ( app ) ->
               console.log 'Logged in, yay! session = ', result
               context.session 'user', result.session.user
               context.session 'token', result.session.token
-              context.redirect '#/'
+              context.redirect app.redirect_to
         }
 
   @get '#/logout', (context) ->
@@ -250,7 +259,7 @@ app = $.sammy '#main', ( app ) ->
         token: @session('token')
     }, (data) ->
       content = showdown.makeHtml($('.post-source').val())
-      context.render('templates/post.template', {post: {content: content, user: context.user, date: formatDate(data.date)}}).then (postnode) ->
+      context.render('templates/post.template', { post: { content: content, user: context.user, date: formatDate(data.date) } }).then (postnode) ->
         $(postnode).hide().appendTo('.thread').slideDown()
         $('.new-post').detach().appendTo('.thread')
         $('.post-preview').click()
