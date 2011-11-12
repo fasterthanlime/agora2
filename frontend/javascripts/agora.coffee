@@ -81,21 +81,8 @@
 
   # Login box
   @get '#/login', (context) ->
-    @partial('templates/login.template').then ->
-      $('#password').keypress (event) ->
-        return unless event.which == 13
-        event.preventDefault()
-        # TODO: Change this ASAP! SHA-1( password )
-        app.gateway.login $('#login').val(), $('#password').val(), {
-          onLogin: (result) ->
-            app.remote = result.remote
-            if (result.status != 'success')
-              context.log 'Error while logging in: ' + result
-            else
-              context.session 'user', result.session.user
-              context.session 'token', result.session.token
-              context.redirect app.redirect_to
-        }
+    view = new Agora.views.Login(context)
+    view.render().then -> view.bind()
 
   @get '#/logout', (context) ->
     $('.user-info').fadeOut()
