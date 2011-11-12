@@ -68,16 +68,13 @@
 
   # Others' profile pages
   @get '#/u/:username', (context) ->
-    username = @params.username
-    context.storage.get 'users', (User) ->
-      user = User.query({ username: username }).first()
-      context.partial('templates/profile.template', { user: user, date: @Agora.utils.formatDate(user.joindate) })
+    view = new Agora.views.Profile(context)
+    view.render @params.username
 
   # Own profile page
   @get '#/u', (context) ->
-    context.storage.get 'users', (User) ->
-      user = User.query({ username: context.user.username }).first()
-      context.partial('templates/profile.template', { user: user, date: @Agora.utils.formatDate(user.joindate) })
+    view = new Agora.views.Profile(context)
+    view.render context.user.username
 
   # Login box
   @get '#/login', (context) ->
@@ -97,16 +94,9 @@
 
   # Category list
   @get '#/', (context) ->
-    @partial('templates/home.template').then ->
-      context.storage.get 'categories', (table) ->
-        tables = table.query().get()
-        render0 = (i) ->
-          category = tables[i]
-          context.render('templates/category-summary.template', { category: category }).then (elem) ->
-            $(elem).appendTo('.categories')
-            if i + 1 < tables.length
-              render0 i + 1
-        render0 0
+    console.log context
+    view = new Agora.views.Categories(context)
+    view.render()
 
   # Thread list in a category
   @get '#/r/:slug', (context) ->
