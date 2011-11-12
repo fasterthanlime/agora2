@@ -4,7 +4,7 @@ pad = (number) ->
 
 showdown = new Showdown.converter()
 
-@utils = {
+@Agora.utils = {
   md2html: (source) ->
     showdown.makeHtml(source)
 

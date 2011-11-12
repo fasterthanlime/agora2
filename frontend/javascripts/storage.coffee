@@ -1,5 +1,5 @@
 
-class Storage
+@Agora.Storage = class Storage
   constructor: (@session, @remote) ->
     # TODO: restore freshness from local storage 
     # along with other saved data
@@ -35,5 +35,3 @@ class Storage
   save: ->
     console.log 'TODO: implement Storage::save'
 
-@classes ||= {}
-@classes.Storage = Storage

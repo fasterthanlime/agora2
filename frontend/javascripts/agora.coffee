@@ -1,6 +1,9 @@
-Storage = @classes.Storage
 
-app = $.sammy '#main', ( app ) ->
+@Agora = 
+  app: null,
+  views: {}
+
+@Agora.app = $.sammy '#main', ( app ) ->
   @use 'Template'
   @use 'Storage'
   @use 'Session'
@@ -25,7 +28,7 @@ app = $.sammy '#main', ( app ) ->
         @redirect('#/login')
         return false
       if !@storage
-        @storage = new Storage(@session, @remote)
+        @storage = new Agora.Storage(@session, @remote)
         app.storage = @storage
       $('.nickname').text(@user.nickname)
       $('.avatar').attr('src', @user.avatar)
@@ -68,13 +71,13 @@ app = $.sammy '#main', ( app ) ->
     username = @params.username
     context.storage.get 'users', (User) ->
       user = User.query({ username: username }).first()
-      context.partial('templates/profile.template', { user: user, date: @utils.formatDate(user.joindate) })
+      context.partial('templates/profile.template', { user: user, date: @Agora.utils.formatDate(user.joindate) })
 
   # Own profile page
   @get '#/u', (context) ->
     context.storage.get 'users', (User) ->
       user = User.query({ username: context.user.username }).first()
-      context.partial('templates/profile.template', { user: user, date: @utils.formatDate(user.joindate) })
+      context.partial('templates/profile.template', { user: user, date: @Agora.utils.formatDate(user.joindate) })
 
   # Login box
   @get '#/login', (context) ->
@@ -149,11 +152,11 @@ app = $.sammy '#main', ( app ) ->
             render0 = (i) ->
               post = Post.query({ _id: posts[i] }).first()
               user = User.query({ _id: post.user }).first()
-              content = @utils.md2html(post.source)
-              context.render('templates/post.template', post: { content: content, date: @utils.formatDate(post.date), user: user }).then (postnode) ->
+              content = @Agora.utils.md2html(post.source)
+              context.render('templates/post.template', post: { content: content, date: @Agora.utils.formatDate(post.date), user: user }).then (postnode) ->
                 $(postnode).appendTo('.thread')
                 if i + 1 < posts.length
                   render0 i + 1
             render0 0
 
-$ -> app.run '#/'
+$ -> Agora.app.run '#/'
