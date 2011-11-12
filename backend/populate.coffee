@@ -39,7 +39,7 @@ Category.remove {}, ->
       joindate: Date.now()
       posts: 0
       avatar: "/stylesheets/avat1.png"
-      slogan: "Pardieu, c'est un inculte!"
+      slogan: "Enclanchement de la phase numéro 2."
       sha1: sha1("sylvain")
     })
     sylvain.save()
@@ -51,7 +51,7 @@ Category.remove {}, ->
       joindate: Date.now()
       posts: 0
       avatar: "/stylesheets/avat2.png"
-      slogan: "Montjoie! Saint-Denis!"
+      slogan: "Et ma main dans la gueule, c'est anti-national?"
       sha1: sha1("bluesky")
     })
     bluesky.save()
