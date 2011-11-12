@@ -1,41 +1,6 @@
-class Storage
-  constructor: (@session, @remote) ->
-    # TODO: restore freshness from local storage 
-    # along with other saved data
-    @lastUpdate = -1
-    @tables = {}
-    @callbacks = {}
-
-    console.log 'Storage initialized with freshness', @lastUpdate
-    if @lastUpdate == -1
-      self = @
-      @remote 'getSnapshot', (tableName, data) ->
-        self.store(tableName, data)
-        self.callbacks[tableName] ||= []
-        self.callbacks[tableName].forEach (cb) ->
-          cb(self.tables[tableName])
-        self.callbacks[tableName] = []
-
-  store: (tableName, data) ->
-    query = TAFFY(data)
-    @tables[tableName] = { present: true, query: query }
-    console.log 'Just stored table', tableName, 'it has', query().count(), 'elements'
-
-  get: (tableName, cb) ->
-    console.log 'Retrieving table', tableName
-    if (@tables.hasOwnProperty tableName)
-      console.log 'Immediate retrieval of', tableName
-      cb @tables[tableName]
-    else
-      console.log 'Queuing callback for retrieval of', tableName
-      @callbacks[tableName] ||= []
-      @callbacks[tableName].push cb
-
-  save: ->
-    console.log 'TODO: implement Storage::save'
+Storage = @classes.Storage
 
 app = $.sammy '#main', ( app ) ->
-  
   @use 'Template'
   @use 'Storage'
   @use 'Session'
@@ -53,7 +18,7 @@ app = $.sammy '#main', ( app ) ->
     if context.path != '#/login'
       if !@remote && context.path != '#/resume'
         app.redirect_to = context.path
-        console.log 'Resuming, will redirect to ' + app.redirect_to + ' when done.'
+        context.log 'Resuming, will redirect to ' + app.redirect_to + ' when done.'
         context.redirect '#/resume'
       if !@user
         $('.user-info').fadeOut()
@@ -74,20 +39,21 @@ app = $.sammy '#main', ( app ) ->
       context.trigger 'after-dnode-connect'
 
   @bind 'before-dnode-connect', ->
-    console.log 'before-dnode-connect'
+    context = @
+    context.log 'Connecting to dnode'
     @$element().hide()
     
-  @bind 'after-dnode-connect', ->
+  @bind 'after-dnode-connect', (context) ->
     context = @
-    console.log 'after-dnode-connect'
+    context.log 'Just connected via dnode'
     if @session('token')
       app.gateway.resume @session('token'), (result) ->
         if result.status == 'success'
           app.remote = result.remote
-          console.log 'Resumed!, can now go back to ' + app.redirect_to
+          context.log 'Resumed!, can now go back to ' + app.redirect_to
           context.redirect app.redirect_to
         else
-          console.log 'Could not resume session, forced log off'
+          context.log 'Could not resume session, forced log off'
           $('.user-info').fadeOut()
           context.session('token', null)
           context.session('user', null)
@@ -95,7 +61,7 @@ app = $.sammy '#main', ( app ) ->
     @$element().fadeIn()
 
   @get '#/resume', (context) ->
-    console.log 'So, resume huh?'
+    context.log 'So, resume huh?'
 
   # Others' profile pages
   @get '#/u/:username', (context) ->
@@ -121,7 +87,7 @@ app = $.sammy '#main', ( app ) ->
           onLogin: (result) ->
             app.remote = result.remote
             if (result.status != 'success')
-              console.log 'Error while logging in: ' + result
+              context.log 'Error while logging in: ' + result
             else
               context.session 'user', result.session.user
               context.session 'token', result.session.token
@@ -131,7 +97,7 @@ app = $.sammy '#main', ( app ) ->
   @get '#/logout', (context) ->
     $('.user-info').fadeOut()
     @remote 'logout', ->
-      console.log 'Logged out gracefully!'
+      context.log 'Logged out gracefully!'
       # Note that if we don't, it's no biggie. Token
       # will end up expiring anyways.
     @session('user', null)
