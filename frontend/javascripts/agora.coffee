@@ -117,15 +117,12 @@ app = $.sammy '#main', ( app ) ->
         return unless event.which == 13
         event.preventDefault()
         # TODO: Change this ASAP! SHA-1( password )
-        console.log $('#login').val(), $('#password').val()
         app.gateway.login $('#login').val(), $('#password').val(), {
           onLogin: (result) ->
             app.remote = result.remote
-            console.log 'Got remote ', app.remote
             if (result.status != 'success')
-              console.log 'Error while logging in: ', result
+              console.log 'Error while logging in: ' + result
             else
-              console.log 'Logged in, yay! session = ', result
               context.session 'user', result.session.user
               context.session 'token', result.session.token
               context.redirect app.redirect_to
@@ -176,92 +173,21 @@ app = $.sammy '#main', ( app ) ->
   # Message list in a thread
   @get '#/r/:slug/:tid', (context) ->
     tid = @params['tid']
-    console.log 'Displaying thread', tid
 
     context.storage.get 'threads', (Thread) ->
       thread = Thread.query({ _id: tid }).first()
-      console.log 'Got thread', thread
       posts = thread.posts
       context.partial('templates/thread.template', { thread: thread}).then ->
         context.storage.get 'posts', (Post) ->
           context.storage.get 'users', (User) ->
             render0 = (i) ->
-              console.log 'render0(', i, ')', 'id = ', posts[i]
               post = Post.query({ _id: posts[i] }).first()
-              console.log 'post', post
               user = User.query({ _id: post.user }).first()
-              console.log 'user', post
-              console.log 'Got post', post, 'from user', user
               content = @utils.md2html(post.source)
               context.render('templates/post.template', post: { content: content, date: @utils.formatDate(post.date), user: user }).then (postnode) ->
                 $(postnode).appendTo('.thread')
                 if i + 1 < posts.length
                   render0 i + 1
             render0 0
-
-  @bind 'setup-thread-opener', ->
-    context = @
-    $('.post-title').blur ->
-      if $(this).val() == ""
-        $('.new-post').slideUp()
-
-    $('.post-title').focus ->
-      newpost = $('.new-post')
-      if newpost.css('display') == 'none'
-        $('.new-post').hide().css('height', '0px').show().animate({height: '191px'})
-
-    $('.submit-post').click ->
-      context.trigger 'new-thread'
-
-  @bind 'setup-post-editor', ->
-    context = @
-    $('.post-source').blur ->
-      source = $(this)
-      source.hide()
-      preview = source.parent().children('.post-preview')
-      preview.html(@utils.md2html(source.val())).show()
-
-    $('.post-preview').click ->
-      preview = $(this)
-      preview.hide()
-      source = preview.parent().children('.post-source')
-      source.show().focus()
-
-  @bind 'post-reply', (context) ->
-    context = @
-    tid = $('.reply-thread').val()
-    $.post '/post-reply', {
-        username: @user.username
-        tid: tid
-        source: $('.post-source').val()
-        token: @session('token')
-    }, (data) ->
-      content = @utils.md2html($('.post-source').val())
-      context.render('templates/post.template', { post: { content: content, user: context.user, date: @utils.formatDate(data.date) } }).then (postnode) ->
-        $(postnode).hide().appendTo('.thread').slideDown()
-        $('.new-post').detach().appendTo('.thread')
-        $('.post-preview').click()
-        $('.post-source').val('')
-
-  @bind 'new-thread', (context) ->
-    context = @
-    category = $('.post-category').val()
-    title = $('.post-title').val()
-    $.post '/new-thread', {
-        username: @user.username
-        category: category
-        title: title
-        source: $('.post-source').val()
-        token: @session( 'token' )
-    }, (data) ->
-      title = $('.new-header .post-title').val()
-      context.log title
-      $('.new-header, .new-post').remove()
-      context.render('templates/thread-summary.template', { thread: { category: { slug: context.slug }, _id: data.id, title: title } }).then (postnode) ->
-        $(postnode).hide().prependTo('.threads').slideDown()
-        context.render('templates/new-thread.template', { post: { user: context.user, category: category }}).prependTo('.threads').then ->
-          @trigger 'setup-thread-opener'
-          @trigger 'setup-post-editor'
- 
 
 $ -> app.run '#/'
