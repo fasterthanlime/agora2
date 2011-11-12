@@ -1,15 +1,3 @@
-
-showdown = new Showdown.converter()
-
-allDefined = (object, fields) ->
-  console.log 'Testing for fields', fields, 'in object', JSON.stringify object
-  result = true
-  fields.forEach (field) ->
-    if !(object.hasOwnProperty field)
-      console.log 'Missing key', field, 'in object', JSON.stringify object
-      result = false
-  result
-
 class Storage
   constructor: (@session, @remote) ->
     # TODO: restore freshness from local storage 
@@ -57,15 +45,6 @@ app = $.sammy '#main', ( app ) ->
   app.remote = null
   app.redirect_to = '#/' # by default, to avoid redirecting to undefined..
   
-  formatDate = (timestamp) ->
-    pad = (number) ->
-      if number < 10 
-        '0' + number
-      else
-        '' + number
-    date = new Date(timestamp)
-    pad(date.getDate()) + " " + ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"][date.getMonth()] + " " + date.getFullYear() + " à " + pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds())
-
   @before (context) ->
     @remote = app.remote
     @storage = app.storage
@@ -73,9 +52,8 @@ app = $.sammy '#main', ( app ) ->
 
     if context.path != '#/login'
       if !@remote && context.path != '#/resume'
-        console.log 'No remote, we are fucked :('
         app.redirect_to = context.path
-        console.log 'Will redirect to ' + app.redirect_to
+        console.log 'Resuming, will redirect to ' + app.redirect_to + ' when done.'
         context.redirect '#/resume'
       if !@user
         $('.user-info').fadeOut()
@@ -124,13 +102,13 @@ app = $.sammy '#main', ( app ) ->
     username = @params.username
     context.storage.get 'users', (User) ->
       user = User.query({ username: username }).first()
-      context.partial('templates/profile.template', { user: user, date: formatDate(user.joindate) })
+      context.partial('templates/profile.template', { user: user, date: @utils.formatDate(user.joindate) })
 
   # Own profile page
   @get '#/u', (context) ->
     context.storage.get 'users', (User) ->
       user = User.query({ username: context.user.username }).first()
-      context.partial('templates/profile.template', { user: user, date: formatDate(user.joindate) })
+      context.partial('templates/profile.template', { user: user, date: @utils.formatDate(user.joindate) })
 
   # Login box
   @get '#/login', (context) ->
@@ -214,8 +192,8 @@ app = $.sammy '#main', ( app ) ->
               user = User.query({ _id: post.user }).first()
               console.log 'user', post
               console.log 'Got post', post, 'from user', user
-              content = showdown.makeHtml(post.source)
-              context.render('templates/post.template', post: { content: content, date: formatDate(post.date), user: user }).then (postnode) ->
+              content = @utils.md2html(post.source)
+              context.render('templates/post.template', post: { content: content, date: @utils.formatDate(post.date), user: user }).then (postnode) ->
                 $(postnode).appendTo('.thread')
                 if i + 1 < posts.length
                   render0 i + 1
@@ -241,7 +219,7 @@ app = $.sammy '#main', ( app ) ->
       source = $(this)
       source.hide()
       preview = source.parent().children('.post-preview')
-      preview.html(showdown.makeHtml(source.val())).show()
+      preview.html(@utils.md2html(source.val())).show()
 
     $('.post-preview').click ->
       preview = $(this)
@@ -258,8 +236,8 @@ app = $.sammy '#main', ( app ) ->
         source: $('.post-source').val()
         token: @session('token')
     }, (data) ->
-      content = showdown.makeHtml($('.post-source').val())
-      context.render('templates/post.template', { post: { content: content, user: context.user, date: formatDate(data.date) } }).then (postnode) ->
+      content = @utils.md2html($('.post-source').val())
+      context.render('templates/post.template', { post: { content: content, user: context.user, date: @utils.formatDate(data.date) } }).then (postnode) ->
         $(postnode).hide().appendTo('.thread').slideDown()
         $('.new-post').detach().appendTo('.thread')
         $('.post-preview').click()
