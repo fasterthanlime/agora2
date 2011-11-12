@@ -94,27 +94,13 @@
 
   # Category list
   @get '#/', (context) ->
-    console.log context
     view = new Agora.views.Categories(context)
     view.render()
 
   # Thread list in a category
   @get '#/r/:slug', (context) ->
-    @slug = @params['slug']
-
-    context.storage.get 'categories', (Category) ->
-      category = Category.query({ slug: context.slug }).first()
-      context.partial('templates/category.template', { category: category }).then ->
-        threads = category.threads
-        context.storage.get 'threads', (Thread) ->
-          render0 = (i) ->
-            thread = Thread.query({ _id: threads[i] }).first()
-            thread.category = category
-            context.render('templates/thread-summary.template', { thread: thread }).then (threadnode) ->
-              $(threadnode).appendTo('.threads')
-              if i + 1 < threads.length
-                render0 i + 1
-          render0 0
+    view = new Agora.views.Threads(context)
+    view.render(@params)
 
   # Message list in a thread
   @get '#/r/:slug/:tid', (context) ->

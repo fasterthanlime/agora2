@@ -1,7 +1,7 @@
 <li class="thread">
   <div class="clear"></div>
   <div class="thread-header">
-    <a href="#/r/<%= thread.category.slug %>/<%= thread._id %>"><h2 class="thread-title"><%= thread.title %></h2></a>
+    <a href="#/r/<%= category.slug %>/<%= thread._id %>"><h2 class="thread-title"><%= thread.title %></h2></a>
   </div>
   <div class="clear"></div>
 </li>
