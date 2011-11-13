@@ -1,3 +1,8 @@
+<h2 class="thread-title">
+  <a href="#/">NMAG</a> &gt;
+  <a href="#/r/<%= category.slug %>"><%= category.slug.charAt(0).toUpperCase() + category.slug.slice(1) %></a>
+</h2>
+
 <div class="category">
   <div class="clear"></div>
   <div class="category-header">
