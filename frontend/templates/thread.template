@@ -1,4 +1,8 @@
-<h2 class="thread-title"><%= thread.title %></h2>
+<h2 class="thread-title">
+  <a href="#/">NMAG</a> &gt;
+  <a href="#/r/<%= category.slug %>"><%= category.slug.charAt(0).toUpperCase() + category.slug.slice(1) %></a> &gt;
+  <a href="#/r/<%= category.slug %>/<%= thread._id %>"><%= thread.title %></a>
+</h2>
 
 <ul class="thread" id="<%= thread.id %>">
   
