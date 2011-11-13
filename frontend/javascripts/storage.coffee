@@ -14,25 +14,20 @@
     if @lastUpdate == -1
       self = @
       @remote 'getSnapshot', (data) ->
-        console.log 'Got snapshot', data
+        console.log 'Received DB snapshot from server:', data
         for own key in data.types
-          self.store key, data[key]
+          self.tables[key] = TAFFY(data[key])
         while self.callbacks.length > 0
           cb = self.callbacks.shift()
           cb self.tables
         self.lastUpdate = Date.now()
         console.log 'Storage updated at', Agora.utils.formatDate(self.lastUpdate)
 
-  store: (tableName, data) ->
-    @tables[tableName] = TAFFY(data)
-    console.log 'Just stored table', tableName
-
   get: (cb) ->
     if @lastUpdate == -1
-      console.log 'Need database that is not ready yet, queuing for later'
+      console.log 'Deferring usage of database until it is loaded'
       @callbacks.push cb
     else
-      console.log 'Need database, it is ready, let us go!. lastUpdate = ', @lastUpdate, ', tables = ', @tables
       cb @tables
 
   save: ->
