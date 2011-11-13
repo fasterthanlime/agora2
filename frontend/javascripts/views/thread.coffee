@@ -10,12 +10,12 @@ class @Agora.views.Thread extends @Agora.View
     self = @
     context = @context
 
-    tid = params.tid
+    @tid = params.tid
 
     context.storage.get (db) ->
-      thread = db.Thread({ _id: tid }).first()
+      thread = db.Thread({ _id: self.tid }).first()
       category = db.Category({ _id: thread.category }).first() 
-      posts = thread.posts
+      posts = thread.posts.slice().reverse() # MongoDB sorts by IDs, we need desc
       context.partial('templates/thread.template', { category: category, thread: thread }).then ->
         $thread = $ '.thread'
         render = self.getRenderer(
@@ -32,7 +32,7 @@ class @Agora.views.Thread extends @Agora.View
           ,
           (node) -> $thread.append node 
           ->
-            context.render('templates/post-reply.template', { user: context.user, tid: tid }).then (node) ->
+            context.render('templates/post-reply.template', { user: context.user, tid: self.tid }).then (node) ->
               $thread.append node
               self.bind()
         )
@@ -50,5 +50,9 @@ class @Agora.views.Thread extends @Agora.View
       $('.post-source').show().focus()
 
   submit: (event) ->
-
+      @context.storage.addPost {
+        thread: @tid,
+        user: @context.user._id,
+        source: $('.post-source').val(),
+      }, ->
 

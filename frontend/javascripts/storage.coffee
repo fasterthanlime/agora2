@@ -30,6 +30,12 @@
     else
       cb @tables
 
+  addPost: (post) ->
+    console.log 'Adding post', post
+    @remote 'addPost', [post, (date) ->
+      console.log 'Server date =', date
+    ]
+
   save: ->
     console.log 'TODO: implement Storage::save'
 

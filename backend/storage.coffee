@@ -60,6 +60,19 @@ class Session
       console.log 'Session with token ', token, ' logged out.'
     store.removeSession @
 
+  addPost: (postData, cb) ->
+    postData.date = Date.now()
+    post = new Post(postData)
+    post.save()
+    console.log 'Adding post', post
+
+    Thread.findById postData.thread, (err, thread) ->
+      thread.posts.push(post)  
+      console.log 'Adding thread', thread
+      thread.save()
+
+    cb postData.date
+
   getSnapshot: (cb) ->
     store.getSnapshot @token, cb
 

@@ -8,7 +8,7 @@ class @Agora.views.Forum extends @Agora.View
       $categories = $ '.categories'
       context.storage.get (db) ->
         render = self.getRenderer(
-          db.Category().get(),
+          db.Category().order('_id desc').get(),
           'category-summary',
           (record) -> { category: record },
           (node) -> $categories.append node
