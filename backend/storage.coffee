@@ -71,7 +71,7 @@ class Session
       console.log 'Adding thread', thread
       thread.save()
 
-    cb postData.date
+    cb sanitize(post)
 
   getSnapshot: (cb) ->
     store.getSnapshot @token, cb

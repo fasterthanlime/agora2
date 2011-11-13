@@ -30,11 +30,21 @@
     else
       cb @tables
 
-  addPost: (post) ->
-    console.log 'Adding post', post
-    @remote 'addPost', [post, (date) ->
-      console.log 'Server date =', date
+  addPost: (postData) ->
+    self = @
+    console.log 'Sending post', postData
+    @remote 'addPost', [postData, (post) ->
+      self.onPost post
     ]
+
+  onPost: (post) ->
+    console.log 'On post', post
+    @tables.Post.insert(post)
+    threadQ = @tables.Thread({ _id: post.thread })
+    thread = threadQ.first()
+    console.log 'Got thread', thread
+    thread.posts.push post._id
+    threadQ.update thread
 
   save: ->
     console.log 'TODO: implement Storage::save'
