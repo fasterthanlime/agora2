@@ -215,6 +215,7 @@ strong {
 
 button.submit-post {
   font-size: 100% !important;
+  margin-top: -30px;
   float: right;
 }
 

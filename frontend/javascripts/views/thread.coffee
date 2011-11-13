@@ -26,6 +26,9 @@ class @Agora.views.Thread extends @Agora.View
             }
           ,
           (node) -> $thread.append node 
+          ->
+            context.render('templates/post-reply.template', { user: context.user, tid: tid }).then (node) ->
+              $thread.append node
         )
         render()
 

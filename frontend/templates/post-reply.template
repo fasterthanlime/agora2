@@ -1,14 +1,16 @@
 <li class="post new-post">
-  <input class="reply-thread" type="hidden" value="<%= post.tid %>"></input>
+  <input class="reply-thread" type="hidden" value="<%= tid %>"></input>
+
   <div class="clear"></div>
   <div class="post-header">
-    <p class="nickname"><%= post.user.nickname %></p>
-    <p><img class="avatar" src="<%= post.user.avatar %>"></p>
-    <p class="slogan"><%= post.user.slogan %></p>
+    <p class="nickname"><%= user.nickname %></p>
+    <p><img class="avatar" src="<%= user.avatar %>"></p>
   </div>
   <div class="post-body">
+    <div class="post-date">Maintenant</div>
     <textarea class="post-content post-source" placeholder="Cliquez ici pour répondre..."></textarea>
     <div class="post-preview" style="display: none;"></div>
+    <p class="slogan"><%= user.slogan %></p>
     <button class="submit-post cupid-green">Post</button>
   </div>
   <div class="clear"></div>

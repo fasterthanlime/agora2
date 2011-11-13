@@ -13,7 +13,7 @@
       @$el(selector).on( event, @[ callback ].bind( @ ) )
     @
 
-  getRenderer: (records, template, prepare, insert) ->
+  getRenderer: (records, template, prepare, insert, finish) ->
     context = @context
     render = (index = 0) ->
       if index < records.length
@@ -22,3 +22,5 @@
         context.render('templates/' + template + '.template', data ).then (node) ->
           insert node
           render index + 1
+      else
+        finish() unless !finish
