@@ -34,7 +34,7 @@ body {
   padding-left: 0;
   margin-left: auto;
   margin-right: auto;
-  background: rgba(245, 245, 245, 0.91);
+  background: rgba(252, 252, 255, 0.91);
   border-left:  3px solid #555;
   border-right: 3px solid #555;
 }
@@ -61,7 +61,7 @@ body {
 
 #sidebar .user-info {
   display: none;
-  padding: 10px;
+  padding: 2px;
   background: #73E773;
   border: 3px solid #555;
   border-left: none;
@@ -70,10 +70,6 @@ body {
   font-size: 14px;
   font-weight: bold;
   padding: 15px;
-}
-
-.avatar {
-  margin: 10px;
 }
 
 #main {
@@ -92,6 +88,9 @@ body {
   display: block;
   list-style-type: none;
   width: 600px;
+  margin-bottom: 8px;
+  border: 1px solid #888;
+  border-radius: 5px 5px;
 }
 
 .new-post {
@@ -99,11 +98,11 @@ body {
 }
 
 .post:nth-child(odd) {
-  background-color: #E6FFE6;
+  background-color: #CCFFCC;
 }
 
 .post:nth-child(even) {
-  background-color: #F0FFF0;
+  background-color: #E0FFE0;
 }
 
 .post h1 {
@@ -140,6 +139,15 @@ body {
 
 .slogan {
   font-size: 60%;
+  padding-top: 3px;
+  padding-bottom: 12px;
+}
+
+.post-date {
+  padding: 5px;
+  color: #444;
+  font-size: 70%;
+  float: right;
 }
 
 .nickname {
@@ -147,16 +155,11 @@ body {
   margin-top: 2px;
 }
 
-.post-date {
-  color: #444;
-  font-size: 80%;
-  float: right;
-}
-
 .post-header {
   float: left;
   margin-top: 0;
-  width: 150px;
+  padding-left: 9px;
+  width: 90px;
   font-size: 12pt;
   display: inline-block;
 }
@@ -169,7 +172,7 @@ body {
 
 .post-body {
   float: right;
-  width: 450px;
+  width: 500px;
   display: inline-block;
 }
 
@@ -180,15 +183,12 @@ body {
   border: none;
 }
 
-.post-header {
-  text-align: center;
-}
-
 .post-content, .post-preview {
   padding: 5px;
-  width: 540px;
-  min-height: 130px;
+  width: 490px;
+  min-height: 60px;
   height: 100%;
+  border-top: 1px solid black;
 }
 
 em {
@@ -222,8 +222,9 @@ button.submit-post {
 }
 
 .avatar {
-  width: 128px;
-  height: 128px;
+  width: 80px;
+  height: 80px;
+  border-radius: 5px 5px;
 }
 
 div.clear {
