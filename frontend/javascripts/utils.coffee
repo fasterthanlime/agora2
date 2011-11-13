@@ -1,6 +1,7 @@
 
 pad = (number) ->
-  ((number < 10) ? '0' : '') + number
+  return number unless number < 10
+  '0' + number
 
 showdown = new Showdown.converter()
 
