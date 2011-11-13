@@ -46,7 +46,7 @@ class @Agora.views.Thread extends @Agora.View
       preview.show()
 
   hidePreview: (event) ->
-      $(event.target).hide()
+      $('.post-preview').hide()
       $('.post-source').show().focus()
 
   submit: (event) ->
