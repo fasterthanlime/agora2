@@ -6,9 +6,9 @@ class @Agora.views.Forum extends @Agora.View
     context = @context
     context.partial('templates/home.template').then ->
       $categories = $ '.categories'
-      context.storage.get 'categories', (Category) ->
+      context.storage.get (db) ->
         render = self.getRenderer(
-          Category.query().get(),
+          db.Category().get(),
           'category-summary',
           (record) -> { category: record },
           (node) -> $categories.append node
