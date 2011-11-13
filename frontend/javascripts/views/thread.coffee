@@ -29,8 +29,20 @@ class @Agora.views.Thread extends @Agora.View
           ->
             context.render('templates/post-reply.template', { user: context.user, tid: tid }).then (node) ->
               $thread.append node
+              self.bind()
         )
         render()
 
   bind: ->
+    $('.post-source').blur ->
+      source = $(this).val()
+      preview = $('.post-preview')
+      preview.html Agora.utils.md2html(source)
+      $(this).hide()
+      preview.show()
+
+    $('.post-preview').click ->
+      $(this).hide()
+      $('.post-source').show().focus()
+
     console.log "TODO: Thread bind"

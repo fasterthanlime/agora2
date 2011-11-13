@@ -8,6 +8,7 @@
   </div>
   <div class="post-body">
     <div class="post-date">Maintenant</div>
+    <div class="clear"></div>
     <textarea class="post-content post-source" placeholder="Cliquez ici pour répondre..."></textarea>
     <div class="post-preview" style="display: none;"></div>
     <p class="slogan"><%= user.slogan %></p>
