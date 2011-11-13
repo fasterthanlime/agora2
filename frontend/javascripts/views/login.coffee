@@ -25,5 +25,7 @@ class @Agora.views.Login extends @Agora.View
           context.session 'user', result.session.user
           context.session 'token', result.session.token
           context.redirect app.redirect_to
+      onPost: (post) ->
+        alert JSON.stringify(post)
     }
 

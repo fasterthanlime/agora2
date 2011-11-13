@@ -72,6 +72,9 @@ class Session
       thread.save()
 
     cb sanitize(post)
+    store.sessions.forEach (session) ->
+      console.log session
+      session.listener.onPost sanitize(post)
 
   getSnapshot: (cb) ->
     store.getSnapshot @token, cb
