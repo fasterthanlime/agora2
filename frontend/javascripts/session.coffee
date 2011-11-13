@@ -1,5 +1,4 @@
-@Agora = 
-  app: null,
+@Agora = { app: null, views: {} }
 
 @setupSession = (app) ->
   

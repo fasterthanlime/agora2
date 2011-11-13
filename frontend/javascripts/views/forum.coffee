@@ -1,5 +1,5 @@
 
-class @Agora.views.Categories extends @Agora.View
+class @Agora.views.Forum extends @Agora.View
   
   render: ->
     self = @

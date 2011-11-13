@@ -1,6 +1,5 @@
 
-
-class @Agora.views.Threads extends @Agora.View
+class @Agora.views.Category extends @Agora.View
   
   render: (params) ->
     self = @
@@ -22,4 +21,4 @@ class @Agora.views.Threads extends @Agora.View
           render()
 
   bind: ->
-    console.log "TODO: Threads bind"
+    console.log "TODO: Category bind"
