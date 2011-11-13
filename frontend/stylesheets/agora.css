@@ -61,6 +61,7 @@ body {
 
 #sidebar .user-info {
   display: none;
+  width: 90px;
   padding: 2px;
   background: #73E773;
   border: 3px solid #555;
