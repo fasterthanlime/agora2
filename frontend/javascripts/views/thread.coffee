@@ -1,6 +1,11 @@
 
 class @Agora.views.Thread extends @Agora.View
   
+  events:
+    'click .submit-post' : 'submit',
+    'blur .post-source' : 'showPreview',
+    'click .post-preview' : 'hidePreview',
+
   render: (params) ->
     self = @
     context = @context
@@ -33,16 +38,17 @@ class @Agora.views.Thread extends @Agora.View
         )
         render()
 
-  bind: ->
-    $('.post-source').blur ->
-      source = $(this).val()
+  showPreview: (event) ->
+      source = $(event.target).val()
       preview = $('.post-preview')
       preview.html Agora.utils.md2html(source)
-      $(this).hide()
+      $(event.target).hide()
       preview.show()
 
-    $('.post-preview').click ->
-      $(this).hide()
+  hidePreview: (event) ->
+      $(event.target).hide()
       $('.post-source').show().focus()
 
-    console.log "TODO: Thread bind"
+  submit: (event) ->
+
+
