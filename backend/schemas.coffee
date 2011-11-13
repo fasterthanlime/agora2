@@ -17,6 +17,7 @@ User = new Schema({
 mongoose.model('User', User)
 
 Post = new Schema({
+  thread: ObjectId
   user: ObjectId
   source: String
   date: Number
@@ -24,6 +25,7 @@ Post = new Schema({
 mongoose.model('Post', Post)
 
 Thread = new Schema({
+  category: ObjectId
   title: String
   posts: [ObjectId]
 })

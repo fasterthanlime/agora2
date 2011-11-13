@@ -71,10 +71,12 @@ Category.remove {}, ->
     Thread.remove {}, ->
       Post.remove {}, ->
         thread1 = new Thread({
+          category: philo._id
           title: 'Les roses sont-elles rouges?' 
         })
 
         post11 = new Post({
+          thread: thread1._id
           user: bluesky._id
           source: "C'est vrai quoi?"   
           date: Date.now()
@@ -83,6 +85,7 @@ Category.remove {}, ->
         thread1.posts.push post11._id
 
         post12 = new Post({
+          thread: thread1._id
           user: romac._id
           source: "Dude, I have no idea"
           date: Date.now()
@@ -91,6 +94,7 @@ Category.remove {}, ->
         thread1.posts.push post12._id
 
         post13 = new Post({
+          thread: thread1._id
           user: sylvain._id
           source: "YOBAAAAAAAA!"
           date: Date.now()
