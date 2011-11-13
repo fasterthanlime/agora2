@@ -2,6 +2,20 @@ html, body, #container {
   height: 100%;
 }
 
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h2, h2 a {
+  font-weight: bold;
+  color: black;
+}
+
 body {
   font-family: "Lucida Grande", Lucida, Helvetica, Arial, sans-serif;
   background: url("/stylesheets/fond.png");
