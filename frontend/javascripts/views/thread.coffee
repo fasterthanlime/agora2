@@ -6,6 +6,8 @@ class @Agora.views.Thread extends @Agora.View
     'blur .post-source' : 'showPreview',
     'click .post-preview' : 'hidePreview',
 
+  appEvents: [ 'onPost' ]
+
   render: (params) ->
     self = @
     context = @context
@@ -39,20 +41,35 @@ class @Agora.views.Thread extends @Agora.View
         render()
 
   showPreview: (event) ->
-      source = $(event.target).val()
-      preview = $('.post-preview')
-      preview.html Agora.utils.md2html(source)
-      $(event.target).hide()
-      preview.show()
+    source = $(event.target).val()
+    preview = $('.post-preview')
+    preview.html Agora.utils.md2html(source)
+    $(event.target).hide()
+    preview.show()
 
   hidePreview: (event) ->
-      $('.post-preview').hide()
-      $('.post-source').show().focus()
+    $('.post-preview').hide()
+    $('.post-source').show().focus()
 
   submit: (event) ->
-      @context.storage.addPost {
-        thread: @tid,
-        user: @context.user._id,
-        source: $('.post-source').val(),
-      }, ->
+    post = {
+      thread: @tid,
+      user: @context.user._id,
+      source: $('.post-source').val(),
+    }
+    @context.storage.addPost post, ->
+    @app.trigger 'onPost', post
+
+  onPost: (post) ->
+    context = @context
+    if (post.thread != @tid)
+      return
+    context.storage.get (db) ->
+      content = Agora.utils.md2html post.source
+      context.render( 'templates/post.template', post: {
+        content: content
+        date: Agora.utils.formatDate post.date
+        user: db.User({ _id: post.user }).first()
+      }).then (node) ->
+        $(node).insertBefore('.new-post')
 

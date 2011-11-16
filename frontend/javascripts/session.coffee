@@ -7,10 +7,6 @@
   app.remote = null
   app.redirect_to = '#/' # by default, to avoid redirecting to undefined..
 
-  app.notify = (type, data) ->
-    alert('Received notification "' + type + '" with data', data)
-    app.trigger(type, data)
-
   @before (context) ->
     @remote = app.remote
     @storage = app.storage
@@ -34,6 +30,11 @@
 
   @bind 'run', ->
     context = @
+
+    app.notify = (type, data) ->
+      context.log('Received notification "' + type + '" with data', data)
+      app.trigger(type, data)
+    
     @trigger 'before-dnode-connect'
     DNode.connect (gateway) ->
       app.gateway = gateway

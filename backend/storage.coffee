@@ -75,9 +75,7 @@ class Session
       thread.save()
 
     cb sanitize(post)
-    store.sessions.forEach (session) ->
-      console.log 'Notifying session', session.user.username, 'about post', post.source
-      self.notify('onPost', sanitize(post))
+    store.notify(@token, 'onPost', sanitize(post))
 
   getSnapshot: (cb) ->
     store.getSnapshot @token, cb
@@ -99,33 +97,6 @@ class ForumStorage
         # RPC on other connected clients, ftw
         console.log 'notify -> ', session.user.username, ' of ', method, args
         session.notify(method, args)
-
-  startThread: (token, _thread, _post, cb) ->
-    # TODO: verify token
-    validate _thread, ['categoryId', 'title'], (err) ->
-      if (err)
-        console.log 'Received invalid thread object ', thread, ' - error = ', err
-      else
-        thread = new Thread(_thread)
-        thread.save()
-        cb(thread._id)
-        @notify(token, 'newThread', [thread])
-        @reply(thread._id, _post)
-
-  reply: (token, threadId, _post, cb) ->
-    # TODO: verify token
-    validate _post, ['threadId', 'userId', 'source'], (err) ->
-      if (err)
-        console.log 'Received invalid post reply ', thread, ' - error = ', err
-      else
-        post = new Post(_post)
-        post.save()
-        Thread.findById threadId, (err, thread) ->
-          thread.posts.push(post)
-          thread.save()
-
-        cb(post._id)
-        @notify(token, 'postReply', [threadId, post])
 
   getSnapshot: (token, cb) ->
     # TODO: verify token
