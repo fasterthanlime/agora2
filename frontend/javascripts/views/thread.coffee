@@ -72,4 +72,5 @@ class @Agora.views.Thread extends @Agora.View
         user: db.User({ _id: post.user }).first()
       }).then (node) ->
         $(node).insertBefore('.new-post')
+        $('body').scrollTo('.new-post', 500)
 
