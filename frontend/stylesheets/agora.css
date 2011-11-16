@@ -195,6 +195,11 @@ body {
   min-height: 60px;
   height: 100%;
   border-top: 1px solid black;
+  overflow-x: auto;
+}
+
+.post-content img {
+  max-width: 490px;
 }
 
 em {
