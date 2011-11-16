@@ -4,6 +4,7 @@ class @Agora.views.Thread extends @Agora.View
   events:
     'click .submit-post' : 'submit',
     'blur .post-source' : 'showPreview',
+    'keypress .post-source' : 'keyPress',
     'click .post-preview' : 'hidePreview',
 
   appEvents: [ 'onPost' ]
@@ -40,6 +41,11 @@ class @Agora.views.Thread extends @Agora.View
         )
         render()
 
+  keyPress: (event) ->
+    if (event.charCode == 13 && event.ctrlKey)
+      $('.submit-post').click()
+      return false
+
   showPreview: (event) ->
     source = $(event.target).val()
     preview = $('.post-preview')
@@ -53,12 +59,16 @@ class @Agora.views.Thread extends @Agora.View
 
   submit: (event) ->
     post = {
-      thread: @tid,
-      user: @context.user._id,
-      source: $('.post-source').val(),
+      thread: @tid
+      user: @context.user._id
+      source: $('.post-source').val()
+      date: Date.now()
     }
     @context.storage.addPost post, ->
     @app.trigger 'onPost', post
+
+    $('.post-source').val('')
+    $('.post-preview').click()
 
   onPost: (post) ->
     context = @context
