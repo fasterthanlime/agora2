@@ -45,6 +45,8 @@ class Session
   constructor: (user, @listener) ->
     @user = sanitize(user, ['sha1'])
     @token = generateToken @user.username
+    console.log @listener
+    @notify = @listener.notify
 
   getRemote: ->
     session = @
@@ -61,6 +63,7 @@ class Session
     store.removeSession @
 
   addPost: (postData, cb) ->
+    self = @
     postData.date = Date.now()
     post = new Post(postData)
     post.save()
@@ -68,13 +71,13 @@ class Session
 
     Thread.findById postData.thread, (err, thread) ->
       thread.posts.push(post)  
-      console.log 'Adding thread', thread
+      console.log 'Adding to thread', thread.title
       thread.save()
 
     cb sanitize(post)
     store.sessions.forEach (session) ->
-      console.log session
-      session.listener.onPost sanitize(post)
+      console.log 'Notifying session', session.user.username, 'about post', post.source
+      self.notify('onPost', sanitize(post))
 
   getSnapshot: (cb) ->
     store.getSnapshot @token, cb
@@ -173,7 +176,7 @@ module.exports = {
         else
           session = new Session(user, listener)
           store.addSession session
-          listener.onLogin {
+          listener.notify 'onLogin', {
             status: 'success'
             session: sanitize(session, ['listener'])
             remote: session.getRemote()
