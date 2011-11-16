@@ -98,7 +98,7 @@ class ForumStorage
       if session.token != token
         # RPC on other connected clients, ftw
         console.log 'notify -> ', session.user.username, ' of ', method, args
-        session.listener[method].apply(null, args)
+        session.notify(method, args)
 
   startThread: (token, _thread, _post, cb) ->
     # TODO: verify token
@@ -148,12 +148,13 @@ module.exports = {
   store: store 
   Gateway: {
     # storage, of type ForumStorage
-    resume: (token, cb) ->
+    resume: (token, notify, cb) ->
       console.log 'Trying to resume from token ', token
       found = false
       store.sessions.forEach (session) ->
         if session.token == token
           console.log 'Found session!'
+          session.notify = notify
           cb {
             status: 'success'
             remote: session.getRemote()

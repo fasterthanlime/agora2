@@ -7,6 +7,10 @@
   app.remote = null
   app.redirect_to = '#/' # by default, to avoid redirecting to undefined..
 
+  app.notify = (type, data) ->
+    alert('Received notification "' + type + '" with data', data)
+    app.trigger(type, data)
+
   @before (context) ->
     @remote = app.remote
     @storage = app.storage
@@ -44,7 +48,7 @@
     context = @
     context.log 'Just connected via dnode'
     if @session('token')
-      app.gateway.resume @session('token'), (result) ->
+      app.gateway.resume @session('token'), app.notify, (result) ->
         if result.status == 'success'
           app.remote = result.remote
           context.log 'Resumed!, can now go back to ' + app.redirect_to
