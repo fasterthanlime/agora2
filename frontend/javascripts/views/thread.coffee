@@ -42,7 +42,8 @@ class @Agora.views.Thread extends @Agora.View
         render()
 
   keyPress: (event) ->
-    if (event.charCode == 13 && event.ctrlKey)
+    console.log event
+    if ((event.charCode == 13 || event.charCode == 10) && event.ctrlKey)
       $('.submit-post').click()
       return false
 
