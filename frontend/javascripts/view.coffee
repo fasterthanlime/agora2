@@ -12,10 +12,12 @@
       [event, selector] = binding.split ' '
       console.log "Binding #{event} with #{selector}."
       @$el(selector).on( event, @[ callback ].bind( @ ) )
-    for index, event of @appEvents
-      console.log "Binding appevent #{event}"
-      self = @
-      @app.bind(event, (context, data) -> self[ event ].call(self, data))
+    if not @bound
+      @bound = true
+      for index, event of @appEvents
+        console.log "Binding appevent #{event}"
+        self = @
+        @app.bind(event, (context, data) -> self[ event ].call(self, data))
     @
 
   getRenderer: (records, template, prepare, insert, finish) ->

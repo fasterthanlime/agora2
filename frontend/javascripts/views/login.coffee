@@ -7,7 +7,9 @@ class @Agora.views.Login extends @Agora.View
   appEvents: [ 'onLogin' ]
   
   render: (data) ->
-    @context.partial 'templates/login.template'
+    self = @
+    @context.partial('templates/login.template').then ->
+      self.bind()
     
   submit: (event) ->
     return unless event.which == 13

@@ -6,6 +6,7 @@
   app.gateway = null
   app.remote = null
   app.redirect_to = '#/' # by default, to avoid redirecting to undefined..
+  app.viewCache = {}
 
   @before (context) ->
     @remote = app.remote
