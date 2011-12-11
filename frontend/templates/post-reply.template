@@ -1,4 +1,4 @@
-<li class="post new-post">
+<li class="post new-post box">
   <input class="reply-thread" type="hidden" value="<%= tid %>"></input>
 
   <div class="clear"></div>

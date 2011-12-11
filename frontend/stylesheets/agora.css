@@ -45,9 +45,9 @@ body {
 }
 
 A:link {text-decoration: none; color: #000000;}
-A:visited {text-decoration: none, color: #000000;}
+A:visited {text-decoration: none; color: #000000;}
 A:active {text-decoration: none; color: #3D3D3D;}
-A:hover {text-decoration: none; color: #3D3D3D;}
+A:hover {text-decoration: none; color: #7F7F7F;}
 
 /*======================================================
 ========================SIDEBAR=========================

@@ -9,59 +9,55 @@
 <body>
 <div id="container">
 
-<div id="sidebar">
-  <div id="sidebar-logo">
-  <center>
-  <img src="stylesheets/logo-nmag.png" alt="NMAG"/>
-  </center>
-  </div>
+  <div id="sidebar">
+    <div id="sidebar-logo">
+      <center><a href="/"><img src="stylesheets/logo-nmag.png" alt="NMAG"/></a></center>
+    </div>
 
-  <script>
-  function toggleBlock(elementId) {
-    var element = document.getElementById(elementId);
+    <script>
+      function toggleBlock(elementId) {
+        var element = document.getElementById(elementId);
 
-    if(element.style.display == '')
-      element.style.display = 'none';
-    else
-      element.style.display = '';
-  }
-  </script>
+        if(element.style.display == '')
+          element.style.display = 'none';
+        else
+          element.style.display = '';
+      }
+    </script>
 
-  <div id="sidebar-menu" class="user-info box">
-    <div id="sidebar-menu-title">
-      <a href="#" onclick="toggleBlock('sidebar-menu-list'); return false;" style="text-decoration: none; font-weight: bold; color: black;">
-        <span class="nickname"></span>
-      </a>
-  <div id="new-message-counter">(3)</div>
-  </div>
+    <div id="sidebar-menu" class="user-info box">
+      <div id="sidebar-menu-title">
+        <a href="#" onclick="toggleBlock('sidebar-menu-list'); return false;" style="text-decoration: none; font-weight: bold; color: black;">
+          <span class="nickname"></span>
+        </a>
+      <div id="new-message-counter">(3)</div>
+    </div>
 
-  <div id="sidebar-menu-list" style="display: ;">
-  <hr><ul style="list-style-type: none; padding: 0px; margin: 0px;">
-  <li>Paramètres</li>
-  <li>Messagerie</li>
-  <li>Nouveaux messages</li>
-  <li><a href="#/logout">Déconnexion</a></li>
-  
-  </ul>
-  </div>
+    <div id="sidebar-menu-list" style="display: ;">
+    <hr><ul style="list-style-type: none; padding: 0px; margin: 0px;">
+      <li>Paramètres</li>
+      <li>Messagerie</li>
+      <li>Nouveaux messages</li>
+      <li><a href="#/logout">Déconnexion</a></li>
+    </ul>
+    </div>
 
-  </div>
+    </div>
 
 
-  <div id="sidebar-chat" class="user-info box">
-  Chat <br>
+    <div id="sidebar-chat" class="user-info box">
+       Chat <br>
+    </div>
 
-  </div>
+    <div class="user-info box">
+      <div id="sidebar-chat-response">
+        Votre message ici.
+      </div>
 
-  <div class="user-info box">
-  <div id="sidebar-chat-response">
-  Votre message ici.
-  </div>
-
-  <div id="sidebar-chat-button">
-  GO
-  </div>
-  </div>
+      <div id="sidebar-chat-button">
+        GO
+      </div>
+    </div>
   </div>
 
   <div id="main"></div>
