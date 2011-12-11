@@ -20,6 +20,7 @@ class @Agora.views.Login extends @Agora.View
   onLogin: (result) ->
     if (result.status != 'success')
       @context.log 'Error while logging in: ', result
+      $('#login-status').text(result.reason)
     else
       @app.remote = result.remote
       @context.session 'user', result.session.user
