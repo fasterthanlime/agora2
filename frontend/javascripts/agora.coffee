@@ -6,31 +6,38 @@
 
   setupSession.apply @, [app]
 
+  load = (context, givenView) ->
+    app.view = app.viewCache[context.path]
+    if not app.view
+      app.view = new givenView(context)
+      app.viewCache[context.path] = app.view
+      console.log "Just cached view for", context.path
+    else
+      console.log "Got view from cache for", context.path
+
+  render = (context, givenView) ->
+    load(context, givenView)
+    app.view.render(context.params)
+
   # Login box
   @get '#/login', (context) ->
-    app.view = new Agora.views.Login(context)
-    app.view.render().then -> app.view.bind()
+    render(context, Agora.views.Login)
 
   # List of categories
   @get '#/', (context) ->
-    console.log Agora.views
-    app.view = new Agora.views.Forum(context)
-    app.view.render()
+    render(context, Agora.views.Forum)
 
   # Thread list in a category
   @get '#/r/:slug', (context) ->
-    app.view = new Agora.views.Category(context)
-    app.view.render(@params)
+    render(context, Agora.views.Category)
 
   # Message list in a thread
   @get '#/r/:slug/:tid', (context) ->
-    app.view = new Agora.views.Thread(context)
-    app.view.render(@params)
+    render(context, Agora.views.Thread)
 
   # Profile page
   @get '#/u/:username', (context) ->
-    app.view = new Agora.views.Profile(context)
-    app.view.render @params.username
+    render(context, Agora.views.Profile)
 
   # Own profile page
   @get '#/u', (context) ->

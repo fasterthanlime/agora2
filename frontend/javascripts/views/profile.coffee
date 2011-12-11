@@ -1,7 +1,8 @@
 
 class @Agora.views.Profile extends @Agora.View
   
-  render: (username) ->
+  render: (params) ->
+    username = params.username
     context = @context
     context.storage.get (db) ->
       user = db.User({ username: username }).first()
