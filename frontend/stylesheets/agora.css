@@ -35,6 +35,15 @@ body {
   box-shadow: 0px 0px 30px grey;
 }
 
+
+.box {
+  display: block;
+  border: 1px solid #60BF60;
+  border-radius: 5px 5px;
+  padding: 5px;
+  background: #D4FFD4;
+}
+
 /*======================================================
 ========================SIDEBAR=========================
 ======================================================*/
@@ -71,11 +80,7 @@ body {
 }
 
 #sidebar-menu {
-  padding: 5px;
-  border: 1px solid #60BF60;
-  border-radius: 5px 5px;
   margin: 5px;
-  background: #D4FFD4;
 }
 
 #sidebar-menu p {
@@ -85,13 +90,9 @@ body {
 }
 
 #sidebar-chat {
-  padding: 5px;
   height: 450px;
   overflow-y: scroll;
-  border: 1px solid #60BF60;
-  border-radius: 5px 5px;
   margin: 5px;
-  background: #D4FFD4;
 }
 
 #sidebar-chat p {
@@ -102,12 +103,8 @@ body {
 #sidebar-chat-response {
   width: 150px;
   height: 18px;
-  border: 1px solid #60BF60;
   margin: 5px;
-  padding: 5px;
-  border-radius: 5px 5px;
   float: left;
-  background: #D4FFD4;
 }
 
 #sidebar-chat-response  p{
@@ -118,12 +115,8 @@ body {
 #sidebar-chat-button {
   width: 18px;
   height: 18px;
-  border: 1px solid #60BF60;
   margin: 5px 5px 5px 0px;
-  padding: 5px;
-  border-radius: 5px 5px;
   float: right;
-  background: #D4FFD4;
 }
 
 #sidebar h1 {
@@ -157,8 +150,7 @@ body {
   list-style-type: none;
   width: 775px;
   margin-bottom: 5px;
-  border: 1px solid #888;
-  border-radius: 5px 5px;
+  padding: 0;
 }
 
 .new-post {
