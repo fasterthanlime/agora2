@@ -15,11 +15,11 @@ html {
 body {
   /*background-image: url('test-fleurs.png');
   background-position:center top;
-  background-repeat: repeat-y;
-  background-attachment: fixed;*/
-  
+  background-repeat: repeat-y;*/
+
   background-image: url('barre.png');
   background-repeat: repeat;
+  background-attachment: fixed;
 }
 
 #logo {
