@@ -125,9 +125,14 @@ module.exports = {
     resume: (token, notify, cb) ->
       console.log 'Trying to resume from token ', token
       found = false
+      dead = []
       store.sessions.forEach (session) ->
         if session.token == token
           console.log 'Found session!'
+          if not session.getRemote
+            # No remote? Invalidate session
+            dead.push session
+            return
           session.notify = notify
           cb {
             status: 'success'
@@ -139,10 +144,10 @@ module.exports = {
         cb {
           status: 'failure'
         }
-
+      dead.reverse().forEach (deadSessionIndex) ->
+        store.sessions.splice(deadSessionIndex, 1)
 
     login: (username, password, listener) ->
-      # TODO: find User in database, associate with session
       console.log 'Attempted login with username ', username
       User.findOne { username: username }, (err, user) ->
         if (err || !user)
