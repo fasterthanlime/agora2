@@ -44,6 +44,11 @@ body {
   background: #D4FFD4;
 }
 
+A:link {text-decoration: none; color: #000000;}
+A:visited {text-decoration: none, color: #000000;}
+A:active {text-decoration: none; color: #3D3D3D;}
+A:hover {text-decoration: none; color: #3D3D3D;}
+
 /*======================================================
 ========================SIDEBAR=========================
 ======================================================*/
@@ -170,6 +175,12 @@ body {
 .thread-title {
   margin-bottom: 10px;
 }
+
+
+.post A:link {text-decoration: none; color: blue;}
+.post A:visited {text-decoration: none}
+.post A:active {text-decoration: none}
+.post A:hover {text-decoration: underlined; color: blue;}
 
 .post h1 {
   font-size: 36px;

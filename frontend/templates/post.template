@@ -1,4 +1,4 @@
-<li class="post">
+<li class="post box">
   <div class="clear"></div>
   <div class="post-header">
     <a href="#/u/<%= post.user.username %>">
