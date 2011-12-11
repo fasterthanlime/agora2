@@ -8,29 +8,29 @@
 
   # Login box
   @get '#/login', (context) ->
-    @view = new Agora.views.Login(context)
-    @view.render().then -> view.bind()
+    app.view = new Agora.views.Login(context)
+    app.view.render().then -> app.view.bind()
 
   # List of categories
   @get '#/', (context) ->
     console.log Agora.views
-    @view = new Agora.views.Forum(context)
-    @view.render()
+    app.view = new Agora.views.Forum(context)
+    app.view.render()
 
   # Thread list in a category
   @get '#/r/:slug', (context) ->
-    @view = new Agora.views.Category(context)
-    @view.render(@params)
+    app.view = new Agora.views.Category(context)
+    app.view.render(@params)
 
   # Message list in a thread
   @get '#/r/:slug/:tid', (context) ->
-    @view = new Agora.views.Thread(context)
-    @view.render(@params)
+    app.view = new Agora.views.Thread(context)
+    app.view.render(@params)
 
   # Profile page
   @get '#/u/:username', (context) ->
-    @view = new Agora.views.Profile(context)
-    @view.render @params.username
+    app.view = new Agora.views.Profile(context)
+    app.view.render @params.username
 
   # Own profile page
   @get '#/u', (context) ->

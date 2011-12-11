@@ -1,54 +1,25 @@
-<<<<<<< HEAD
-html, body, #container {
-  min-height: 100%;
-  height: auto;
-}
-
-a {
-  text-decoration: none;
-  color: #333;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-h2, h2 a {
-  font-size: 18pt;
-  font-weight: bold;
+html, body, #container, #main {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: white;
+  
+  font-family:  "Lucida Grande", Lucida, Helvetica, Arial, sans-serif;
   color: black;
 }
 
-body {
-  font-family: "Lucida Grande", Lucida, Helvetica, Arial, sans-serif;
-  background: url("/stylesheets/fond.png");
-  color: #333;
-  margin: 0;
-  padding: 0;
-=======
-html, body, #container, #main {
-	margin: 0;
-	padding: 0;
-	height: 100%;
-	background: white;
-	
-	font-family:  "Lucida Grande", Lucida, Helvetica, Arial, sans-serif;
-	color: black;
-}
-
 html {
-	overflow-y: scroll;
+  overflow-y: scroll;
 }
 
 body {
-	/*background-image: url('test-fleurs.png');
-	background-position:center top;
-	background-repeat: repeat-y;
-	background-attachment: fixed;*/
-	
-	background-image: url('barre.png');
-	background-repeat: repeat;
->>>>>>> 4aa4ec5... Merging the CSS files
+  /*background-image: url('test-fleurs.png');
+  background-position:center top;
+  background-repeat: repeat-y;
+  background-attachment: fixed;*/
+  
+  background-image: url('barre.png');
+  background-repeat: repeat;
 }
 
 #logo {
@@ -57,116 +28,102 @@ body {
 }
 
 #container {
-<<<<<<< HEAD
-  width: 900px;
-  padding-left: 0;
-  margin-left: auto;
-  margin-right: auto;
-  background: rgba(252, 252, 255, 0.91);
-  border-left:  3px solid #555;
-  border-right: 3px solid #555;
-=======
-	width: 1000px;
-	height: auto;
-	margin: 0 auto;
-	min-height: 100%;
-	box-shadow: 0px 0px 30px grey;
->>>>>>> 4aa4ec5... Merging the CSS files
+  width: 1000px;
+  height: auto;
+  margin: 0 auto;
+  min-height: 100%;
+  box-shadow: 0px 0px 30px grey;
 }
 
 /*======================================================
 ========================SIDEBAR=========================
 ======================================================*/
 
+.user-info {
+  display: none;
+}
+
 #sidebar {
-<<<<<<< HEAD
   float: left;
-  width: 200px;
-  height: 700px;
+  width: 208px;
+  background: white;
+  height: 100%;
   margin: 0;
   padding: 0;
-=======
-	float: left;
-	width: 208px;
-	background: white;
-	height: 100%;
-	margin: 0;
-	padding: 0;
 }
 
 #sidebar-logo {
-	height: 62px;
-	background-color: white;
-	padding: 7px;
+  height: 62px;
+  background-color: white;
+  padding: 7px;
 }
 
 #sidebar-menu-title {
-	height: 18px;
+  height: 18px;
 }
 
 #name {
-	float:left;
+  float:left;
 }
 
 #new-message-counter {
-	float:right;
+  float:right;
 }
 
 #sidebar-menu {
-	padding: 5px;
-	border: 1px solid #60BF60;
-	border-radius: 5px 5px;
-	margin: 5px;
-	background: #D4FFD4;
+  padding: 5px;
+  border: 1px solid #60BF60;
+  border-radius: 5px 5px;
+  margin: 5px;
+  background: #D4FFD4;
 }
 
 #sidebar-menu p {
-	font-style:italic;
-	font-size:1.1em;
-	margin:0;
+  font-style:italic;
+  font-size:1.1em;
+  margin:0;
 }
 
 #sidebar-chat {
-	padding: 5px;
-	height: 450px;
-	overflow-y: scroll;
-	border: 1px solid #60BF60;
-	border-radius: 5px 5px;
-	margin: 5px;
-	background: #D4FFD4;
+  padding: 5px;
+  height: 450px;
+  overflow-y: scroll;
+  border: 1px solid #60BF60;
+  border-radius: 5px 5px;
+  margin: 5px;
+  background: #D4FFD4;
 }
 
 #sidebar-chat p {
-	text-align: justify;
-	padding: 0 1em;
+  text-align: justify;
+  padding: 0 1em;
 }
 
 #sidebar-chat-response {
-	width: 150px;
-	height: 18px;
-	border: 1px solid #60BF60;
-	margin: 5px;
-	padding: 5px;
-	border-radius: 5px 5px;
-	float: left;
-	background: #D4FFD4;
+  width: 150px;
+  height: 18px;
+  border: 1px solid #60BF60;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px 5px;
+  float: left;
+  background: #D4FFD4;
 }
 
-#sidebar-chat-response	p{
-	padding: 1em;
-	margin: 0;
+#sidebar-chat-response  p{
+  padding: 1em;
+  margin: 0;
 }
 
 #sidebar-chat-button {
-	width: 18px;
-	height: 18px;
-	border: 1px solid #60BF60;
-	margin: 5px 5px 5px 0px;
-	padding: 5px;
-	border-radius: 5px 5px;
-	float: right;
-	background: #D4FFD4;
->>>>>>> 4aa4ec5... Merging the CSS files
+  width: 18px;
+  height: 18px;
+  border: 1px solid #60BF60;
+  margin: 5px 5px 5px 0px;
+  padding: 5px;
+  border-radius: 5px 5px;
+  float: right;
+  background: #D4FFD4;
 }
 
 #sidebar h1 {
@@ -180,40 +137,17 @@ body {
 ========================MAIN============================
 ======================================================*/
 
-<<<<<<< HEAD
-#sidebar .user-info {
-  display: none;
-  width: 90px;
-  padding: 2px;
-  background: #73E773;
-  border: 3px solid #555;
-  border-left: none;
-  border-radius: 0 8px 8px 0;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 15px;
-}
-
 #main {
+  width: 775px;
   float: right;
-  width: 670px;
-  margin-left: 30px;
-  height: 100%;
-  margin-top: 10px;
-=======
-#main {
-	width: 775px;
-	float: right;
-	margin: 5px 5px 5px 0px;
-	padding: 5px;
-	height: 600px;
+  margin: 5px 5px 5px 0px;
+  padding: 5px;
+  height: 600px;
 }
 
 .category-title {
   margin-bottom: 5px;
   margin-top: 30px;
->>>>>>> 4aa4ec5... Merging the CSS files
 }
 
 .thread, .categories {
@@ -291,7 +225,6 @@ body {
 }
 
 .nickname {
-  display: block;
   margin-top: 2px;
 }
 
