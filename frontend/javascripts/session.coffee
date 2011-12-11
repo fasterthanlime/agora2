@@ -24,9 +24,9 @@
       if !@storage
         @storage = new Agora.Storage(@session, @remote)
         app.storage = @storage
-      $('.nickname').text(@user.nickname)
-      $('.avatar').attr('src', @user.avatar)
-      $('.user-info').fadeIn()
+      if not $('.user-info').is(':visible')
+        $('#sidebar .nickname').text(@user.nickname)
+        $('.user-info').fadeIn()
 
   @bind 'run', ->
     context = @
