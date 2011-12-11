@@ -13,6 +13,7 @@ a:hover {
 }
 
 h2, h2 a {
+  font-size: 18pt;
   font-weight: bold;
   color: black;
 }
@@ -256,3 +257,10 @@ div.clear {
   font-weight: bold;
   text-align: center;
 }
+
+#login-status {
+  color: red;
+  font-size: 80%;
+  margin: 0.4em;
+}
+

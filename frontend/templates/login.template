@@ -2,4 +2,5 @@
   <h2>Se connecter</h2>
   <input id="username" type="text"></input>
   <input id="password" type="password"></input>
+  <div id="login-status">Salut</div>
 </div>
