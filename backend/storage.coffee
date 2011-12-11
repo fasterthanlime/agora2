@@ -96,7 +96,10 @@ class ForumStorage
       if session.token != token
         # RPC on other connected clients, ftw
         console.log 'notify -> ', session.user.username, ' of ', method, args
-        session.notify(method, args)
+        try
+          session.notify(method, args)
+        catch error
+          console.log 'Error while notifying ', session.token, error
 
   getSnapshot: (token, cb) ->
     # TODO: verify token
@@ -144,7 +147,10 @@ module.exports = {
       User.findOne { username: username }, (err, user) ->
         if (err || !user)
           console.log 'User not found: ', username, ' error: ', err
-          cb { status: 'error' }
+          listener.notify 'onLogin', {
+            status: 'error'
+            reason: 'User not found'
+          }
         else
           session = new Session(user, listener)
           store.addSession session
@@ -155,6 +161,6 @@ module.exports = {
           }
   }
 
-} 
+}
 
 
