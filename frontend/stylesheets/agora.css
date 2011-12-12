@@ -1,7 +1,8 @@
 html, body, #container, #main {
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: auto;
+  min-height: 100%;
   background: white;
   
   font-family:  "Lucida Grande", Lucida, Helvetica, Arial, sans-serif;
@@ -19,7 +20,6 @@ body {
 
   background-image: url('barre.png');
   background-repeat: repeat;
-  background-attachment: fixed;
 }
 
 #logo {
