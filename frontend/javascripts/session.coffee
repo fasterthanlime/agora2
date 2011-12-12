@@ -1,12 +1,15 @@
 @Agora = { app: null, views: {} }
 
 @setupSession = (app) ->
-  
+
   app.storage = null
   app.gateway = null
   app.remote = null
   app.redirect_to = '#/' # by default, to avoid redirecting to undefined..
   app.viewCache = {}
+
+  @error = (message, original_error) ->
+    console.log "Error", message, original_error.stack
 
   @before (context) ->
     @remote = app.remote

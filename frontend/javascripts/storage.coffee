@@ -11,6 +11,7 @@
     @refresh()
 
   refresh: ->
+    console.log "Refreshing."
     if @lastUpdate == -1
       self = @
       @remote 'getSnapshot', (data) ->
