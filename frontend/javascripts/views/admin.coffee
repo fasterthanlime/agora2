@@ -4,11 +4,12 @@ class @Agora.views.Admin extends @Agora.View
   render: ->
     self = @
     context = @context
-    $admin = $ '.admin'
     
-    db.User.find({}, (err, users) ->
-      users.forEach (user) ->
-        $admin.append('Utilisateur ' + user.nickname)
-    )
-    context.partial('templates/admin.template'), {}
+    context.storage.get (db) ->
+      context.partial('templates/admin.template').then ->
+        $admin = $ '.admin'
+        db.User().each (user) ->
+          console.log 'Got user ' + user.nickname
+          node = $('<p>Utilisateur ' + user.nickname + '</p>')
+          $admin.append node
   

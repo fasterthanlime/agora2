@@ -17,7 +17,7 @@ class @Agora.views.Thread extends @Agora.View
 
     context.storage.get (db) ->
       thread = db.Thread({ _id: self.tid }).first()
-      category = db.Category({ _id: thread.category }).first() 
+      category = db.Category({ _id: thread.category }).first()
       posts = thread.posts.slice().reverse() # MongoDB sorts by IDs, we need desc
       context.partial('templates/thread.template', { category: category, thread: thread }).then ->
         $thread = $ '.thread'
