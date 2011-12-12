@@ -4,4 +4,3 @@
   <input id="password" type="password"></input>
   <div id="login-status"></div>
 </div>
-<div class="clear"></div>

@@ -14,12 +14,9 @@ html {
 }
 
 body {
-  /*background-image: url('test-fleurs.png');
-  background-position:center top;
-  background-repeat: repeat-y;*/
-
   background-image: url('barre.png');
   background-repeat: repeat;
+  background-attachment: fixed;
 }
 
 #logo {
@@ -29,9 +26,7 @@ body {
 
 #container {
   width: 1000px;
-  height: auto;
   margin: 0 auto;
-  min-height: 100%;
   box-shadow: 0px 0px 30px grey;
 }
 
