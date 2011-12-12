@@ -6,7 +6,7 @@ class @Agora.views.Admin extends @Agora.View
     context = @context
     context.storage.get (db) ->
       user = db.User({ username: username }).first()
-      context.partial 'templates/profile.template', {
+      context.partial 'templates/admin.template', {
         user: user
         date: Agora.utils.formatDate(user.joindate)
       }
