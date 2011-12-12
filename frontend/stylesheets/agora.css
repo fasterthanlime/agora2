@@ -327,6 +327,11 @@ div.clear {
   text-align: center;
 }
 
+¨
+#login-box {
+  height: 100%;
+}
+
 #login-status {
   color: red;
   font-size: 80%;
