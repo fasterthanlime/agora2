@@ -172,10 +172,10 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 }
 
 
-.post A:link {text-decoration: none; color: blue;}
-.post A:visited {text-decoration: none}
-.post A:active {text-decoration: none}
-.post A:hover {text-decoration: underlined; color: blue;}
+.post-body A:link {text-decoration: none; color: blue;}
+.post-body A:visited {text-decoration: none}
+.post-body A:active {text-decoration: none}
+.post-body A:hover {text-decoration: underlined; color: blue;}
 
 .post h1 {
   font-size: 36px;

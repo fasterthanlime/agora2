@@ -42,5 +42,9 @@
   # Own profile page
   @get '#/u', (context) ->
     context.redirect '#/u/' + context.user.username
+  
+  # Admin page
+  @get '#/admin', (context) ->
+    render(context, Agora.views.Admin)
 
 $ -> Agora.app.run '#/'
