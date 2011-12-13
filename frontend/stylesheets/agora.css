@@ -121,7 +121,8 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 }
 
 #new-message-counter {
-  float:right;
+  float: right;
+  position: relative;
 }
 
 #sidebar-menu {
