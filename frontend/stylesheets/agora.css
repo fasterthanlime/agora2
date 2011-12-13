@@ -145,16 +145,6 @@ A:hover {text-decoration: none; color: #7F7F7F;}
   padding: 0 1em;
 }
 
-#sidebar-chat-response {
-  height: 24px;
-  margin: 5px;
-}
-
-button.submit-chat {
-  font-size: 100% !important;
-  float: right;
-}
-
 /*======================================================
 ========================MAIN============================
 ======================================================*/
