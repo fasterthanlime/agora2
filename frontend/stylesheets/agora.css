@@ -58,6 +58,30 @@ A:hover {text-decoration: none; color: #7F7F7F;}
   -webkit-border-radius: 3px;  
 }
 
+
+
+@font-face {
+  font-family: 'QlassikMediumRegular';
+  src: url('fonts/Qlassik_TB-webfont.eot');
+  src: url('fonts/Qlassik_TB-webfont.eot?#iefix') format('embedded-opentype'),
+    url('fonts/Qlassik_TB-webfont.woff') format('woff'),
+    url('fonts/Qlassik_TB-webfont.ttf') format('truetype'),
+    url('fonts/Qlassik_TB-webfont.svg#QlassikMediumRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'QlassikBoldRegular';
+  src: url('fonts/QlassikBold_TB-webfont.eot');
+  src: url('fonts/QlassikBold_TB-webfont.eot?#iefix') format('embedded-opentype'),
+    url('fonts/QlassikBold_TB-webfont.woff') format('woff'),
+    url('fonts/QlassikBold_TB-webfont.ttf') format('truetype'),
+    url('fonts/QlassikBold_TB-webfont.svg#QlassikBoldRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /*======================================================
 ========================SIDEBAR=========================
 ======================================================*/
@@ -73,6 +97,13 @@ A:hover {text-decoration: none; color: #7F7F7F;}
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+#sidebar h1 {
+  font-family: Inconsolata, Monaco, Courier, mono;
+  color: #FFF;
+  margin: 0;
+  padding: 5px;
 }
 
 #sidebar-logo {
@@ -115,29 +146,13 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 }
 
 #sidebar-chat-response {
-  width: 150px;
-  height: 18px;
+  height: 24px;
   margin: 5px;
-  float: left;
 }
 
-#sidebar-chat-response  p{
-  padding: 1em;
-  margin: 0;
-}
-
-#sidebar-chat-button {
-  width: 18px;
-  height: 18px;
-  margin: 5px 5px 5px 0px;
+button.submit-chat {
+  font-size: 100% !important;
   float: right;
-}
-
-#sidebar h1 {
-  font-family: Inconsolata, Monaco, Courier, mono;
-  color: #FFF;
-  margin: 0;
-  padding: 5px;
 }
 
 /*======================================================
@@ -344,29 +359,4 @@ div.clear {
   color: red;
   font-size: 80%;
   margin: 0.4em;
-}
-
-
-@font-face {
-    font-family: 'QlassikMediumRegular';
-    src: url('fonts/Qlassik_TB-webfont.eot');
-    src: url('fonts/Qlassik_TB-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/Qlassik_TB-webfont.woff') format('woff'),
-         url('fonts/Qlassik_TB-webfont.ttf') format('truetype'),
-         url('fonts/Qlassik_TB-webfont.svg#QlassikMediumRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'QlassikBoldRegular';
-    src: url('fonts/QlassikBold_TB-webfont.eot');
-    src: url('fonts/QlassikBold_TB-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/QlassikBold_TB-webfont.woff') format('woff'),
-         url('fonts/QlassikBold_TB-webfont.ttf') format('truetype'),
-         url('fonts/QlassikBold_TB-webfont.svg#QlassikBoldRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
 }
