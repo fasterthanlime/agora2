@@ -63,16 +63,14 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 }*/
 
 ::-webkit-scrollbar {  
-    height: 1.5ex;  
-    -webkit-border-radius: 1ex;
-    background: #ccc;
-    }
+  width: 8px;  
+  background: #D4FFD4;
+}
   
 ::-webkit-scrollbar-thumb {  
-    border-top: 1px solid #fff;  
-    background: #ccc -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(240, 240, 240)), to(rgb(210, 210, 210)));  
-       -webkit-border-radius: 1ex;  
-      -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .4);  
+  border-top: 1px solid #fff;  
+  background: #60BF60;    
+  -webkit-border-radius: 1px;  
 }  
 
 /*======================================================
