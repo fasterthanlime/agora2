@@ -18,8 +18,8 @@ body {
 	min-height: 100%;
   background-image: url('barre.png');
   background-repeat: repeat;
-  background-attachment: fixed;
 }
+  background-attachment: fixed;
 
 #logo {
   margin-top: 10px;
@@ -190,6 +190,7 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 .thread-title {
   margin-bottom: 5px;
   margin-top: 0px;
+  color: #7F7F7F;
 }
 
 
