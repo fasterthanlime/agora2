@@ -64,8 +64,9 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 
 ::-webkit-scrollbar {  
     height: 1.5ex;  
-     -webkit-border-radius: 1ex;  
-    }  
+    -webkit-border-radius: 1ex;
+    background: #ccc;
+    }
   
 ::-webkit-scrollbar-thumb {  
     border-top: 1px solid #fff;  
