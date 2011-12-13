@@ -150,7 +150,7 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 ======================================================*/
 
 #main {
-  width: 775px;
+  width: 782px;
   float: right;
   margin: 5px;
 }
@@ -162,6 +162,7 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 
 .thread, .threads, .categories {
   padding: 0;
+  float: right;
   width: 775px;
   list-style-type: none;
 }
@@ -187,7 +188,8 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 }
 
 .thread-title {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  margin-top: 0px;
 }
 
 
