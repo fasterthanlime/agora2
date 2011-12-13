@@ -163,14 +163,14 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 .thread, .threads, .categories {
   padding: 0;
   float: right;
-  width: 775px;
+  width: 782px;
   list-style-type: none;
 }
 
 .post {
   display: block;
   list-style-type: none;
-  width: 775px;
+  width: 780px;
   margin-bottom: 5px;
   padding: 0;
 }
