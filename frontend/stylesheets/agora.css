@@ -339,11 +339,11 @@ div.clear {
 
 @font-face {
     font-family: 'DroidSansRegular';
-    src: url('DroidSans-webfont.eot');
-    src: url('DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
-         url('DroidSans-webfont.woff') format('woff'),
-         url('DroidSans-webfont.ttf') format('truetype'),
-         url('DroidSans-webfont.svg#DroidSansRegular') format('svg');
+    src: url('fonts/DroidSans-webfont.eot');
+    src: url('fonts/DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/DroidSans-webfont.woff') format('woff'),
+         url('fonts/DroidSans-webfont.ttf') format('truetype'),
+         url('fonts/DroidSans-webfont.svg#DroidSansRegular') format('svg');
     font-weight: normal;
     font-style: normal;
 
@@ -351,10 +351,10 @@ div.clear {
 
 @font-face {
     font-family: 'DroidSansBold';
-    src: url('DroidSans-Bold-webfont.eot');
-    src: url('DroidSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('DroidSans-Bold-webfont.woff') format('woff'),
-         url('DroidSans-Bold-webfont.ttf') format('truetype'),
-         url('DroidSans-Bold-webfont.svg#DroidSansBold') format('svg');
+    src: url('fonts/DroidSans-Bold-webfont.eot');
+    src: url('fonts/DroidSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/DroidSans-Bold-webfont.woff') format('woff'),
+         url('fonts/DroidSans-Bold-webfont.ttf') format('truetype'),
+         url('fonts/DroidSans-Bold-webfont.svg#DroidSansBold') format('svg');
     font-weight: normal;
     font-style: normal;
