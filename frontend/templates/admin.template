@@ -1,3 +1,9 @@
 <div class="admin">
 Ceci est la page d'administration.
 </div>
+
+<div class="admin-user-list">
+  <div class="clear"></div>
+  <ul class="admin-user">
+  </ul>
+</div>
