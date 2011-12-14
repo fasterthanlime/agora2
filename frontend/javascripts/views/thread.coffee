@@ -8,7 +8,7 @@ class @Agora.views.Thread extends @Agora.View
     'click .post-preview' : 'hidePreview',
     'click .post-admin-delete' : 'delete',
 
-  appEvents: [ 'onPost' ]
+  appEvents: [ 'onPost', 'onPostDeletion' ]
 
   render: (params) ->
     self = @
@@ -98,4 +98,13 @@ class @Agora.views.Thread extends @Agora.View
       }).then (node) ->
         $(node).insertBefore('.new-post')
         $('body').scrollTo('.new-post', 500)
+
+  onPostDeletion: (info) ->
+    context = @context
+    if (info.threadID != @tid)
+      return
+    context.storage.onPostDeletion(info)
+    $post = $('.post[data-id=' + info.postID + ']')
+    $post.slideUp()
+    setTimeout (() -> $post.remove()), 1000
 

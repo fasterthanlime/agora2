@@ -5,7 +5,7 @@ arrayWithout = (array, value) ->
   for i in [0..array.length]
     if array[i] != value
       newArray.push array[i]
-  console.log 'array', array, 'without', value, 'is', newArray
+  # console.log 'array', array, 'without', value, 'is', newArray
   newArray
 
 
