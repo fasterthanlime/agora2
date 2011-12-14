@@ -34,7 +34,7 @@ without = (object, blacklist = []) ->
 
 arrayRemove = (array, value) ->
   for i in [0..array.length]
-    if array[i] == value
+    if ('' + array[i]) == value
       array.splice i, 1
 
 generateToken = (user) ->
@@ -56,7 +56,7 @@ class Session
   getRemote: ->
     session = @
     return (name, args) ->
-      console.log 'Calling', name, 'with args', args
+      console.log 'Calling', name
       if args instanceof Array
         session[name].apply(session, args)
       else
