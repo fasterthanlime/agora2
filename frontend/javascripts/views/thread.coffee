@@ -73,18 +73,14 @@ class @Agora.views.Thread extends @Agora.View
     $('.post-preview').click()
     
   delete: (event) ->
-    post = {
-      thread: @tid
-      user: @context.user._id
-      source: $('.post-source').val()
-      date: Date.now()
-    }
-    source = $(event.target).val()
-    @context.storage.deletePost (id,postId), ->
-
-    $('.post-source').val('')
-    $('.post-preview').click()
-
+    postID = $(event.target).parents('.post').attr('data-id')
+    threadID = @tid
+    console.log 'Deleting post', postID, 'from thread', threadID
+    @context.storage.deletePost ({
+      postID: postID
+      threadID: threadID
+    })
+    
   onPost: (post) ->
     context = @context
     if (post.thread != @tid)
