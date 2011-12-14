@@ -20,15 +20,19 @@ class @Agora.views.Thread extends @Agora.View
       thread = db.Thread({ _id: self.tid }).first()
       category = db.Category({ _id: thread.category }).first()
       posts = thread.posts.slice().reverse() # MongoDB sorts by IDs, we need desc
+
+      isAdmin = true # FIXME that's not true.
+      postTemplate = if isAdmin then 'post-admin' else 'post'
       context.partial('templates/thread.template', { category: category, thread: thread }).then ->
         $thread = $ '.thread'
         render = self.getRenderer(
           posts,
-          'post',
+          postTemplate,
           (record) ->
             post = db.Post({ _id: record }).first()
             content = Agora.utils.md2html post.source
             post: {
+              id: record
               content: content
               date: Agora.utils.formatDate post.date
               user: db.User({ _id: post.user }).first()

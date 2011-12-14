@@ -60,6 +60,7 @@ class Session
   getRemote: ->
     session = @
     return (name, args) ->
+      console.log 'Calling', name, 'with args', args
       if args instanceof Array
         session[name].apply(session, args)
       else
@@ -88,7 +89,7 @@ class Session
 
   deletePost: (info) ->
     self = @
-    Thread.findByid info.threadID, (err, thread) ->
+    Thread.findById info.threadID, (err, thread) ->
       thread.posts = arrayWithout(thread.posts, info.postID)
       thread.save()
       Post.remove({id : info.postID})
