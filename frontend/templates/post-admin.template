@@ -7,7 +7,7 @@
     </a>
   </div>
   <div class="post-body">
-    <div class="post-admin-interface"><input type="button" name="Delete" classe="post-admin-remove"></div>
+    <div class="post-admin-interface"><input type="button" name="Delete" classe="post-admin-delete"></div>
     <div class="post-date"><%= post.date %></div>
     <div class="clear"></div>
     <div class="post-content"><%= post.content %></div>

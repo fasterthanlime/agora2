@@ -6,6 +6,7 @@ class @Agora.views.Thread extends @Agora.View
     'blur .post-source' : 'showPreview',
     'keypress .post-source' : 'keyPress',
     'click .post-preview' : 'hidePreview',
+    'click .post-admin-delete' : 'delete',
 
   appEvents: [ 'onPost' ]
 
