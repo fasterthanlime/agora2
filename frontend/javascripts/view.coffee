@@ -8,6 +8,7 @@
     @app = Agora.app
   
   bind: ->
+    self = @
     for binding, callback of @events
       [event, selector] = binding.split ' '
       console.log "Binding #{event} with #{selector}."
@@ -15,9 +16,15 @@
     if not @bound
       @bound = true
       for index, event of @appEvents
-        console.log "Binding appevent #{event}"
-        self = @
-        @app.bind(event, (context, data) -> self[ event ].call(self, data))
+        doStuff = (() ->
+          method = self[event]
+          console.log "Binding appevent #{event} to method #{method}"
+          self.app.bind(event, (context, data) ->
+            console.log "Calling method #{event} with #{data}"
+            method.call(self, data)
+          )
+        )
+        doStuff()
     @
 
   getRenderer: (records, template, prepare, insert, finish) ->

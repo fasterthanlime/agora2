@@ -93,7 +93,7 @@ class Session
       console.log 'OKAY 3'
       Post.remove({id : info.postID})
       console.log 'Deleted post', info.postID, 'from thread', info.threadID
-      store.notify(@token, 'onPostDeletion', info)
+      store.notify(@token, 'onDeletePost', info)
 
   getSnapshot: (cb) ->
     store.getSnapshot @token, cb

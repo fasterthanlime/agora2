@@ -60,8 +60,8 @@ arrayWithout = (array, value) ->
     thread.posts.push post._id
     threadQ.update thread
 
-  onPostDeletion: (info) ->
-    console.log 'On post deletion', info.postID
+  onDeletePost: (info) ->
+    console.log 'On delete post', info.postID
     thread = @tables.Thread({ _id: info.threadID }).first()
     thread.posts = arrayWithout(thread.posts, info.postID)
     @tables.Post({ _id: info.postID }).remove()
