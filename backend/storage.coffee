@@ -32,6 +32,15 @@ without = (object, blacklist = []) ->
       newObject.splice index, 1
   newObject
 
+# TODO: extract common useful methods in a common file
+arrayWithout = (array, value) ->
+  newArray = []
+  for i in [0..array.length]
+    if array[i] != value
+      newArray.push array[i]
+  console.log 'array', array, 'without', value, 'is', newArray
+  newArray
+
 generateToken = (user) ->
   token = new Token({
     value: sha1(user + Math.random())
@@ -70,12 +79,21 @@ class Session
     console.log 'Adding post', post
 
     Thread.findById postData.thread, (err, thread) ->
-      thread.posts.push(post)  
+      thread.posts.push(post)
       console.log 'Adding to thread', thread.title
       thread.save()
 
     cb sanitize(post)
     store.notify(@token, 'onPost', sanitize(post))
+
+  deletePost: (info) ->
+    self = @
+    Thread.findByid info.threadID, (err, thread) ->
+      thread.posts = arrayWithout(thread.posts, info.postID)
+      thread.save()
+      Post.remove({id : info.postID})
+      console.log 'Deleted post', info.postID, 'from thread', info.threadID
+      store.notify(@token, 'onPostDeletion', info) 
 
   getSnapshot: (cb) ->
     store.getSnapshot @token, cb

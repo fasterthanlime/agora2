@@ -1,4 +1,14 @@
 
+# TODO: extract common useful methods in a common file
+arrayWithout = (array, value) ->
+  newArray = []
+  for i in [0..array.length]
+    if array[i] != value
+      newArray.push array[i]
+  console.log 'array', array, 'without', value, 'is', newArray
+  newArray
+
+
 @Agora.Storage = class Storage
   constructor: (@session, @remote) ->
     # TODO: restore freshness from local storage 
@@ -38,6 +48,9 @@
       self.onPost post
     ]
 
+  deletePost: (info) ->
+    @remote 'deletePost', [info]
+
   onPost: (post) ->
     console.log 'On post', post
     @tables.Post.insert(post)
@@ -46,6 +59,13 @@
     console.log 'Got thread', thread
     thread.posts.push post._id
     threadQ.update thread
+
+  onPostDeletion: (info) ->
+    console.log 'On post deletion', info.postID
+    thread = @tables.Thread({ _id: info.threadID }).first()
+    thread.posts = arrayWithout(thread.posts, info.postID)
+    @tables.Post({ _id: info.postID }).remove()
+    console.log 'Post', info.postID, 'removed from DB'
 
   save: ->
     console.log 'TODO: implement Storage::save'
