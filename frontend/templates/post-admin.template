@@ -1,0 +1,17 @@
+<li class="post box">
+  <div class="clear"></div>
+  <div class="post-header">
+    <a href="#/u/<%= post.user.username %>">
+      <p class="nickname"><%= post.user.nickname %></p>
+      <p><img class="avatar" src="<%= post.user.avatar %>"></p>
+    </a>
+  </div>
+  <div class="post-body">
+    <div class="post-admin-interface"><input type="button" name="Delete" classe="post-admin-remove"></div>
+    <div class="post-date"><%= post.date %></div>
+    <div class="clear"></div>
+    <div class="post-content"><%= post.content %></div>
+    <div class="slogan"><%= post.user.slogan %></div>
+  </div>
+  <div class="clear"></div>
+</li>
