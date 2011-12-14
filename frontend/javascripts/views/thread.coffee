@@ -6,6 +6,7 @@ class @Agora.views.Thread extends @Agora.View
     'blur .post-source' : 'showPreview',
     'keypress .post-source' : 'keyPress',
     'click .post-preview' : 'hidePreview',
+    'click .post-admin-delete' : 'delete',
 
   appEvents: [ 'onPost' ]
 
@@ -70,7 +71,16 @@ class @Agora.views.Thread extends @Agora.View
 
     $('.post-source').val('')
     $('.post-preview').click()
-
+    
+  delete: (event) ->
+    postID = $(event.target).parents('.post').attr('data-id')
+    threadID = @tid
+    console.log 'Deleting post', postID, 'from thread', threadID
+    @context.storage.deletePost ({
+      postID: postID
+      threadID: threadID
+    })
+    
   onPost: (post) ->
     context = @context
     if (post.thread != @tid)
