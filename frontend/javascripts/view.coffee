@@ -10,9 +10,7 @@
   bind: ->
     self = @
     for binding, callback of @events
-      [event, selector] = binding.split ' '
-      console.log "Binding #{event} with #{selector}."
-      @$el(selector).on( event, @[ callback ].bind( @ ) )
+      @bindDOM(binding, callback)
     if not @bound
       @bound = true
       for index, event of @appEvents
@@ -26,6 +24,11 @@
         )
         doStuff()
     @
+
+  bindDOM: (binding, callback) ->
+    [event, selector] = binding.split ' '
+    console.log "Binding #{event} with #{selector}."
+    @$el(selector).on( event, @[ callback ].bind( @ ) )
 
   getRenderer: (records, template, prepare, insert, finish) ->
     context = @context

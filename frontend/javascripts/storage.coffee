@@ -41,11 +41,12 @@ arrayWithout = (array, value) ->
     else
       cb @tables
 
-  addPost: (postData) ->
+  addPost: (postData, cb) ->
     self = @
     console.log 'Sending post', postData
     @remote 'addPost', [postData, (post) ->
       self.onPost post
+      cb post
     ]
 
   deletePost: (info) ->

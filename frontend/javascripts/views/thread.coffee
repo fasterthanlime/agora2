@@ -70,8 +70,10 @@ class @Agora.views.Thread extends @Agora.View
       source: $('.post-source').val()
       date: Date.now()
     }
-    @context.storage.addPost post, ->
-    @app.trigger 'onPost', post
+
+    self = @
+    @context.storage.addPost post, (postData) ->
+        self.app.trigger 'onPost', postData
 
     $('.post-source').val('')
     $('.post-preview').click()
@@ -86,19 +88,24 @@ class @Agora.views.Thread extends @Agora.View
     })
     
   onPost: (post) ->
+    self = @
     console.log 'Thread view onPost', post
     context = @context
     if (post.thread != @tid)
       return
     context.storage.get (db) ->
       content = Agora.utils.md2html post.source
-      context.render( 'templates/post.template', post: {
+      isAdmin = true # FIXME that's not true.
+      postTemplate = if isAdmin then 'post-admin' else 'post'
+      context.render( "templates/#{postTemplate}.template", post: {
+        id: post._id
         content: content
         date: Agora.utils.formatDate post.date
         user: db.User({ _id: post.user }).first()
       }).then (node) ->
         $(node).insertBefore('.new-post')
         $('body').scrollTo('.new-post', 500)
+        self.bindDOM("click .post[data-id=#{post._id}] .post-admin-delete", 'delete')
 
   onDeletePost: (info) ->
     console.log 'Thread view onDeletePost', info
