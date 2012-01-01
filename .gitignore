@@ -4,3 +4,4 @@ frontend/javascripts/*.js
 frontend/javascripts/views/*.js
 backend/*.js
 data/
+node_modules
