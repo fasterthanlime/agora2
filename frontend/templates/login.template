@@ -1,6 +1,6 @@
 <div id="login-box">
   <h2>Se connecter</h2>
-  <input id="username" type="text"></input>
-  <input id="password" type="password"></input>
+  <input id="username" type="text">
+  <input id="password" type="password">
   <div id="login-status"></div>
 </div>

@@ -1,20 +1,22 @@
 
 <li class="header new-header">
-  <input class="post-title" type="text" placeholder="Nouveau sujet..."></input>
-  <input class="post-category" type="hidden" value="<%= post.category %>"></input>
+  <input class="post-title" type="text" placeholder="Nouveau sujet...">
+  <input class="post-category" type="hidden" value="<%= category.slug %>">
 </li>
 
-<li class="post new-post" style="display: none;">
+<li class="post new-post box" style="display: none;">
   <div class="clear"></div>
   <div class="post-header">
-    <p class="nickname"><%= post.user.nickname %></p>
-    <p><img class="avatar" src="<%= post.user.avatar %>"></p>
-    <p class="slogan"><%= post.user.slogan %></p>
+    <p class="nickname"><%= user.nickname %></p>
+    <p><img class="avatar" src="<%= user.avatar %>"></p>
   </div>
   <div class="post-body">
-    <textarea class="post-content post-source" placeholder="Message"></textarea>
+    <div class="post-date">Maintenant</div>
+    <div class="clear"></div>
+    <textarea class="post-content post-source" placeholder="Corps du nouveau post"></textarea>
     <div class="post-preview" style="display: none;"></div>
-    <button class="submit-post cupid-green">Post</button>
+    <p class="slogan"><%= user.slogan %></p>
+    <button class="submit-post cupid-green">Nouveau sujet</button>
   </div>
   <div class="clear"></div>
 </li>

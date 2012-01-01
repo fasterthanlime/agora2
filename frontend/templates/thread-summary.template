@@ -1,7 +1,14 @@
-<li class="thread">
+<li class="thread box">
   <div class="clear"></div>
-  <div class="thread-header">
-    <a href="#/r/<%= category.slug %>/<%= thread._id %>"><h2 class="thread-title"><%= thread.title %></h2></a>
-  </div>
+  <a href="#/r/<%= category.slug %>/<%= thread._id %>">
+    <div class="thread-header">
+          <img class="avatar small" src="<%= user.avatar %>">
+          <h2 class="thread-title"><%= thread.title %></h2>
+      <ul class="facts">
+          <li> <%= thread.posts.length %> post<% if (thread.posts.length > 1) { %>s<% } %></li>
+          <li>Dernier post: <%= lastUpdate %> par <img class="avatar small" src="<%= lastUser.avatar %>"></li>
+      </ul>
+    </div>
+  </a>
   <div class="clear"></div>
 </li>

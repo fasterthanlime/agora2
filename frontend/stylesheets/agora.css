@@ -14,12 +14,12 @@ html {
 
 body {
   width: 100%;
-	height: auto;
-	min-height: 100%;
+  height: auto;
+  min-height: 100%;
   background-image: url('barre.png');
   background-repeat: repeat;
-}
   background-attachment: fixed;
+}
 
 #logo {
   margin-top: 10px;
@@ -42,10 +42,14 @@ body {
   background: #D4FFD4;
 }
 
-A:link {text-decoration: none; color: #000000;}
-A:visited {text-decoration: none; color: #000000;}
-A:active {text-decoration: none; color: #3D3D3D;}
-A:hover {text-decoration: none; color: #7F7F7F;}
+li {
+  margin: 5px;
+}
+
+a:link    {text-decoration: none; color: #000000;}
+a:visited {text-decoration: none; color: #000000;}
+a:active  {text-decoration: none; color: #3D3D3D;}
+a:hover   {text-decoration: none; color: #AB0000;}
 
 ::-webkit-scrollbar {  
   width: 8px;  
@@ -157,7 +161,7 @@ A:hover {text-decoration: none; color: #7F7F7F;}
 
 .category-title {
   margin-bottom: 5px;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .thread, .threads, .categories {
@@ -187,16 +191,30 @@ A:hover {text-decoration: none; color: #7F7F7F;}
   background-color: #E0FFE0;
 }
 
-.thread-title {
-  margin-bottom: 5px;
-  margin-top: 0px;
+h2.thread-title {
+  font-size: 1.0em;
+  display: inline-block;
+  margin: 0;
 }
 
+.thread-header {
+  padding: 5px;
+}
 
-.post-body A:link {text-decoration: none; color: blue;}
-.post-body A:visited {text-decoration: none}
-.post-body A:active {text-decoration: none}
-.post-body A:hover {text-decoration: underlined; color: blue;}
+.thread-header .facts {
+  display: inline-block;
+  float: right;
+}
+
+.thread-header .facts li {
+  list-style-type: none;
+  display: inline;
+}
+
+.post-body a:link {text-decoration: none; color: blue;}
+.post-body a:visited {text-decoration: none}
+.post-body a:active {text-decoration: none}
+.post-body a:hover {text-decoration: underlined; color: blue;}
 
 .post h1 {
   font-size: 36px;
@@ -281,6 +299,7 @@ button.post-admin-delete {
   display: block;
   font-size: 14px;
   border: none;
+  font-family: QlassikMediumRegular, QlassikBoldRegular, "Lucida Grande", Lucida, Helvetica, Arial, sans-serif;
 }
 
 .post-content, .post-preview {
@@ -331,6 +350,12 @@ button.submit-post {
   width: 80px;
   height: 80px;
   border-radius: 5px 5px;
+}
+
+.avatar.small {
+  width: 35px;
+  height: 35px;
+  vertical-align: middle;
 }
 
 div.clear {
