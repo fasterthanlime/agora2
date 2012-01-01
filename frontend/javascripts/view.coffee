@@ -16,9 +16,7 @@
       for index, event of @appEvents
         doStuff = (() ->
           method = self[event]
-          console.log "Binding appevent #{event} to method #{method}"
           self.app.bind(event, (context, data) ->
-            console.log "Calling method #{event} with #{data}"
             method.call(self, data)
           )
         )

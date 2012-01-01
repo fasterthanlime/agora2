@@ -56,7 +56,7 @@ class Session
   getRemote: ->
     session = @
     return (name, args) ->
-      console.log 'Calling', name
+      console.log "Calling #{name}"
       if args instanceof Array
         session[name].apply(session, args)
       else
@@ -65,7 +65,7 @@ class Session
   logout: ->
     token = @token
     Token.remove { value: @token }, (err) ->
-      console.log 'Session with token ', token, ' logged out.'
+      console.log "Session with token #{token} logged out."
     store.removeSession @
 
   addPost: (postData, cb) ->
@@ -73,11 +73,11 @@ class Session
     postData.date = Date.now()
     post = new Post(postData)
     post.save()
-    console.log 'Adding post', post
+    console.log "Adding post #{post}"
 
     Thread.findById postData.thread, (err, thread) ->
       thread.posts.push(post)
-      console.log 'Adding to thread', thread.title
+      console.log "Adding to thread' #{thread.title}"
       thread.save()
 
     cb sanitize(post)
@@ -89,7 +89,7 @@ class Session
       arrayRemove(thread.posts, info.postID)
       thread.save()
       Post.remove({id : info.postID})
-      console.log 'Deleted post', info.postID, 'from thread', info.threadID
+      console.log "Deleted post #{info.postID}, from thread #{info.threadID}"
       store.notify(@token, 'onDeletePost', info)
 
   getSnapshot: (cb) ->
@@ -100,7 +100,7 @@ class ForumStorage
     @sessions = []
 
   addSession: (session) ->
-    console.log 'New session with token ', session.token
+    console.log "New session with token #{session.token}"
     @sessions.push session
 
   removeSession: (session) ->
@@ -114,7 +114,7 @@ class ForumStorage
         try
           session.notify(method, args)
         catch error
-          console.log 'Error while notifying ', session.token, error
+          console.log "Error while notifying #{session.token} #{error}"
 
   getSnapshot: (token, cb) ->
     # TODO: verify token
@@ -138,7 +138,7 @@ module.exports = {
   Gateway: {
     # storage, of type ForumStorage
     resume: (token, notify, cb) ->
-      console.log 'Trying to resume from token ', token
+      console.log "Trying to resume from token #{token}"
       found = false
       dead = []
       store.sessions.forEach (session) ->
@@ -166,19 +166,26 @@ module.exports = {
       console.log 'Attempted login with username ', username
       User.findOne { username: username }, (err, user) ->
         if (err || !user)
-          console.log 'User not found: ', username, ' error: ', err
+          console.log "User not found: #{username}, error: #{err}"
           listener.notify 'onLogin', {
             status: 'error'
             reason: 'User not found'
           }
         else
-          session = new Session(user, listener)
-          store.addSession session
-          listener.notify 'onLogin', {
-            status: 'success'
-            session: sanitize(session, ['listener'])
-            remote: session.getRemote()
-          }
+          if (sha1(password) == user.sha1)
+            session = new Session(user, listener)
+            store.addSession session
+            listener.notify 'onLogin', {
+              status: 'success'
+              session: sanitize(session, ['listener'])
+              remote: session.getRemote()
+            }
+          else
+            console.log "Invalid password for user #{username}"
+            listener.notify 'onLogin', {
+              status: 'error'
+              reason: 'Invalid password'
+            }
   }
 
 }
