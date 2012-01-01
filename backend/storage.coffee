@@ -86,11 +86,8 @@ class Session
   deletePost: (info) ->
     self = @
     Thread.findById info.threadID, (err, thread) ->
-      console.log 'OKAY 1 (length = ', thread.posts.length
       arrayRemove(thread.posts, info.postID)
-      console.log 'OKAY 2 (length = ', thread.posts.length
       thread.save()
-      console.log 'OKAY 3'
       Post.remove({id : info.postID})
       console.log 'Deleted post', info.postID, 'from thread', info.threadID
       store.notify(@token, 'onDeletePost', info)
